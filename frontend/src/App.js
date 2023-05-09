@@ -11,7 +11,7 @@ const Planetpass = () => {
     <div style={{ backgroundColor: '#E6F7FF' }}>
       <Navbar bg="light" expand="lg">
         <Container>
-          <Navbar.Brand href="#home"><img src={navlogo} alt="logo" className="App-logo" style={{ width: '85px' }} />
+          <Navbar.Brand href="#home"><img src={navlogo} alt="logo" className="App-logo" style={{ width: '75px' }} />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0">
             <FaBars />
