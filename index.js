@@ -34,18 +34,22 @@ app.get('/hotels', (req, res) => {
             <label for="guests">Number of Adults</label>
             <input type="number" id="guests" name="guests" min="1" max="10" required>
             <br>
+            <label for="rooms">Number of Rooms</label>
+            <input type="number" id="rooms" name="rooms" min="1" max="10" required>
+            <br>
             <input type="submit" value="Submit">
             </form>
             `);
 });
 
 app.post('/hotels', async (req, res) => {
-    const { city, checkin, checkout, guests } = req.body;
+    const { city, checkin, checkout, guests, rooms } = req.body;
 
     console.log(`City: ${city}`);
     console.log(`Check In: ${checkin}`);
     console.log(`Check Out: ${checkout}`);
     console.log(`Guests: ${guests}`);
+    console.log(`Rooms: ${rooms}`);
 
     try {
         const result = await hotelAPI.get('/locations', {
@@ -70,7 +74,7 @@ app.post('/hotels', async (req, res) => {
                 dest_id: dest_id,
                 filter_by_currency: 'CAD',
                 locale: 'en-gb',
-                room_number: 1
+                room_number: rooms
             }
         });
 
