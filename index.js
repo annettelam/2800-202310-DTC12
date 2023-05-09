@@ -74,13 +74,23 @@ app.post('/hotels', async (req, res) => {
             }
         });
 
-        res.json(hotels.data.result);
+        list_of_hotels = hotels.data.result.map(hotel => {
+            return `
+            <div>
+                <h2>${hotel.hotel_name}</h2>
+                <img src="${hotel.main_photo_url}" alt="Hotel Image">
+                <p>Price: ${hotel.min_total_price}</p>
+                <p>Address: ${hotel.address}</p>
+                <p>Rating: ${hotel.review_score} / 10</p>
+            </div>
+            `;
+        });
+
+        res.send(list_of_hotels.join(''));
 
     } catch (error) {
         console.log(error);
     }
-
-
 });
 
 app.listen(port, () => {
