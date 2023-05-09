@@ -90,6 +90,6 @@
     .text-center.my-5 form input[type=email],
     .text-center.my-5 form input[type=password],
     .text-center.my-5 form button[type=submit] {
-        margin-top: 1rem;
+        margin-bottom: 1rem;
     }
 }
