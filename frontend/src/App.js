@@ -1,12 +1,15 @@
 import React from 'react';
 import { Navbar, Nav, Container, Form, Button } from 'react-bootstrap';
 import { FaBars } from 'react-icons/fa';
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Planetpass = () => {
   return (
     <div>
       <Navbar bg="" expand="lg">
         <Container>
+
           <Navbar.Brand href="#home">PlanetPass</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0">
             <FaBars />
