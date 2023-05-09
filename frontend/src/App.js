@@ -3,13 +3,13 @@ import { Navbar, Nav, Container, Form, Button } from 'react-bootstrap';
 import { FaBars } from 'react-icons/fa';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import logo from './logo.png';
 
 const Planetpass = () => {
   return (
     <div>
       <Navbar bg="" expand="lg">
         <Container>
-
           <Navbar.Brand href="#home">PlanetPass</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0">
             <FaBars />
@@ -29,13 +29,13 @@ const Planetpass = () => {
       </Navbar>
       <div className="text-center my-5">
         <h1>Welcome to PlanetPass!</h1>
+        <img src={logo} alt="logo" className="App-logo" />
         <p>Please sign up or login to access the site.</p>
         <Form>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control type="email" placeholder="Enter email" />
             <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
             </Form.Text>
           </Form.Group>
 
