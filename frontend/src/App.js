@@ -3,12 +3,13 @@ import { Navbar, Nav, Container, Form, Button } from 'react-bootstrap';
 import { FaBars } from 'react-icons/fa';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './fonts.css';
 import alicelogo from './alicelogo.png';
 import navlogo from './navlogo.png';
 
 const Planetpass = () => {
   return (
-    <div style={{ backgroundColor: '#E6F7FF' }}>
+    <div style={{ backgroundColor: '#E6F7FF', fontFamily: 'Questrial' }}>
       <Navbar bg="light" expand="lg">
         <Container>
           <Navbar.Brand href="#home"><img src={navlogo} alt="logo" className="App-logo" style={{ width: '75px' }} />
@@ -35,7 +36,7 @@ const Planetpass = () => {
 
         <Form>
           <Form.Group controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
+            <Form.Label>Email Address</Form.Label>
             <Form.Control type="email" placeholder="Enter email" />
             <Form.Text className="text-muted">
             </Form.Text>
