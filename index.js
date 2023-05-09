@@ -79,13 +79,18 @@ app.post('/hotels', async (req, res) => {
         });
 
         list_of_hotels = hotels.data.result.map(hotel => {
+            if (hotel.review_score == null) {
+                hotel.review_score = "No reviews yet";
+            } else {
+                hotel.review_score = hotel.review_score + "/10";
+            }
             return `
             <div>
                 <h2>${hotel.hotel_name}</h2>
                 <img src="${hotel.main_photo_url}" alt="Hotel Image">
                 <p>Price: ${hotel.min_total_price}</p>
                 <p>Address: ${hotel.address}</p>
-                <p>Rating: ${hotel.review_score} / 10</p>
+                <p>Rating: ${hotel.review_score}</p>
             </div>
             `;
         });
