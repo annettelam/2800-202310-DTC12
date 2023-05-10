@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Attractions near <%= location %></title>
+  </head>
+  <body>
+    <% if (attractions.length === 0) { %>
+      <p>No attractions found near <%= location %></p>
+    <% } else { %>
+      <ul>
+        <% attractions.forEach(attraction => { %>
+          <li><%= attraction %></li>
+        <% }); %>
+      </ul>
+    <% } %>
+  </body>
+</html>

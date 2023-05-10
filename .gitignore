@@ -1,0 +1,15 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore log files
+*.log
+
+# Ignore compiled code
+*.class
+*.pyc
+*.o
+
+# Ignore temporary files
+*.tmp
+*.bak
+*.swp
