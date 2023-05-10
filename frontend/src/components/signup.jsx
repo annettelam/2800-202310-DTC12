@@ -43,29 +43,25 @@ export const SignUp = (props) => {
             <div className="text-center my-5">
                 <img src={alicelogo} alt="logo" className="App-logo" style={{ width: '300px' }} />
 
-                <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId="formBasicEmail">
+                <Form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Form.Group controlId="formBasicEmail" style={{ width: '100%' }}>
                         <Form.Label>Email Address</Form.Label>
                         <Form.Control type="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                        <Form.Text className="text-muted">
-                        </Form.Text>
                     </Form.Group>
 
-                    <Form.Group controlId="formBasicName">
+                    <Form.Group controlId="formBasicName" style={{ width: '100%' }}>
                         <Form.Label>Username</Form.Label>
                         <Form.Control type="name" placeholder="Enter full name" value={name} onChange={(e) => setName(e.target.value)} />
-                        <Form.Text className="text-muted">
-                        </Form.Text>
                     </Form.Group>
 
-                    <Form.Group controlId="formBasicPassword">
+                    <Form.Group controlId="formBasicPassword" style={{ width: '100%' }}>
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     </Form.Group>
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
-                    <button onClick={() => props.onFormSwitch('login')} className='btn btn-link d-inline-block float-end'>Already have an account? Login here.</button>
+
+                    <Button variant="primary" type="submit" style={{ width: '100%' }}>
+                        Submit
+                    </Button>
                 </Form>
             </div>
             <footer className="bg-light text-center text-lg-start">
