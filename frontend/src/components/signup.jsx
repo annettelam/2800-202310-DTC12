@@ -4,7 +4,6 @@ import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../fonts.css';
 import alicelogo from '../alicelogo.png';
-import NavigationBar from './navbar/navbar';
 import { Footer } from './footer/footer';
 
 export const SignUp = (props) => {
@@ -19,7 +18,6 @@ export const SignUp = (props) => {
 
     return (
         <div style={{ backgroundColor: '#E6F7FF', fontFamily: 'Questrial' }}>
-            <NavigationBar />
             <div className="text-center my-5">
                 <img src={alicelogo} alt="logo" className="App-logo" style={{ width: '300px' }} />
 

@@ -4,7 +4,6 @@ import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../fonts.css';
 import alicelogo from '../alicelogo.png';
-import NavigationBar from './navbar/navbar';
 import { Footer } from './footer/footer';
 
 export const Login = (props) => {
@@ -18,7 +17,6 @@ export const Login = (props) => {
 
     return (
         <div style={{ backgroundColor: '#E6F7FF', fontFamily: 'Questrial' }}>
-            <NavigationBar />
             <div className="text-center my-5">
                 <img src={alicelogo} alt="logo" className="App-logo" style={{ width: '300px' }} />
 
@@ -34,10 +32,9 @@ export const Login = (props) => {
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     </Form.Group>
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="submit" style={{ width: '100%' }}>
                         Submit
                     </Button>
-                    <button onClick={() => props.onFormSwitch('signup')} className='btn btn-link d-inline-block float-end'>Don't have an account? Sign up here!</button>
                 </Form>
             </div>
             <Footer />
