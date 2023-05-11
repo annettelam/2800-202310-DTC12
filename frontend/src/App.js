@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import { CustomNavbar } from "./components/navbar/navbar";
@@ -9,7 +9,10 @@ import { SignUp } from "./components/signup";
 
 
 const Planetpass = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const handleLogin = () => {
+    localStorage.setItem('loggedIn', 'true');
+    console.log("Logged in");
+  };
 
   return (
     <Router>
@@ -17,9 +20,9 @@ const Planetpass = () => {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/flights" element={<Flights loggedIn={loggedIn} />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp setLoggedIn={setLoggedIn} />} />
+          <Route path="/flights" element={<Flights />} />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/signup" element={<SignUp onLogin={handleLogin} />} />
         </Routes>
       </div>
     </Router>
