@@ -58,7 +58,7 @@ app.get('/search', async (req, res) => {
             console.log("inside image if");
             attraction.photoUrl = "https://i.etsystatic.com/21654192/r/il/ede702/3942995056/il_1588xN.3942995056_48ro.jpg";
         } else {
-            const photoUrl = tripAdvisorImgData.data[0].images.medium.url;
+            const photoUrl = tripAdvisorImgData.data[0].images.large.url;
             attraction.photoUrl = photoUrl;
         }
     }
