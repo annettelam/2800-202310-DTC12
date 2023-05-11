@@ -9,7 +9,7 @@ export const Flights = ({loggedIn}) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!loggedIn) {
+        if (localStorage.getItem('loggedIn') !== 'true') {
             navigate('/login');
         }
     }, [loggedIn, navigate]);

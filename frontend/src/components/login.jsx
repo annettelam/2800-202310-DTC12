@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -8,10 +9,12 @@ import '../fonts.css';
 import alicelogo from '../alicelogo.png';
 import { Footer } from './footer/footer';
 
-export const Login = () => {
+export const Login = ({onLogin}) => {
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+    const [msg, setMsg] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // prevents page from reloading
@@ -20,6 +23,16 @@ export const Login = () => {
         try {
             await axios.post('http://localhost:4000/login', {
                 email, password
+            }).then((res) => {
+                console.log(res.data);
+                if (res.data) {
+                    if (res.data === 'Success') {
+                        onLogin();
+                        navigate('/flights');
+                    } else {
+                        setMsg(res.data);
+                    }
+                }
             })
         } catch (err) {
             console.log(err);
@@ -57,6 +70,9 @@ export const Login = () => {
                     <Button variant="primary" type="submit" style={{ width: '100%' }}>
                         Submit
                     </Button>
+                    {msg &&
+                        <p className='text-danger fw-bold' style={{ textAlign: 'left' }}> {msg} </p>
+                    }
                 </Form>
             </div>
             <Footer />

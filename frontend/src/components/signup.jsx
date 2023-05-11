@@ -8,7 +8,7 @@ import '../fonts.css';
 import alicelogo from '../alicelogo.png';
 import { Footer } from './footer/footer';
 
-export const SignUp = ({setLoggedIn}) => {
+export const SignUp = ({onLogin}) => {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
@@ -27,7 +27,7 @@ export const SignUp = ({setLoggedIn}) => {
                 console.log(res.data);
                 if (res.data) {
                     if (res.data === 'Success') {
-                        setLoggedIn(true);
+                        onLogin();
                         navigate('/flights');
                     } else {
                         setMsg(res.data);
