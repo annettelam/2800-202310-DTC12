@@ -3,7 +3,7 @@ require("./utils.js");
 require('dotenv').config();
 const app = express();
 const cors = require('cors');
-const port = 5000;
+const port = 4000;
 
 /* secret information section */
 const mongodb_database = process.env.MONGODB_DATABASE;
