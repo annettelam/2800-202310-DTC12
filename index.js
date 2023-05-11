@@ -12,65 +12,64 @@ app.get('/', (req, res) => {
     res.render('search');
 });
 
-app.get('/search', (req, res) => {
+app.get('/search', async (req, res) => {
     const location = req.query.location;
+    console.log(location, "location inside get search");
     const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=${googleMapsApiKey}`;
+    
+    const attractions = [];
+    // 1st call to get tripadvisor places
+    // 2nd call to get images
+    // async/await structure after fetch works
+    // append all results to data response
+    // return dataResponse
 
-  fetch(googleMapsApiUrl)
-    .then(res => res.json())
-    .then(json => {
-        const {lat, lng} = json.results[0].geometry.location;
-        const tripAdvisorApiUrl = `https://api.content.tripadvisor.com/api/v1/location/nearby_search?latLong=${lat}%2C%20${lng}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
-        console.log(tripAdvisorApiUrl);
-        return fetch(tripAdvisorApiUrl);
-    })
-    .then(res => res.json())
-    .then(json => {
-        console.log(json);
-        if (!json.data || !Array.isArray(json.data)) {
-            res.render('results', {location, attractions: []});
-        } else if (json.data.length === 0) {
-            res.render('results', {location, attractions: []});
-        } else {
-            const attractions = json.data.map(attraction => ({
+    const googleMapsResponse = await fetch(googleMapsApiUrl);
+    const googleMapsData = await googleMapsResponse.json();
+    const { lat, lng } = googleMapsData.results[0].geometry.location;
+
+    const tripAdvisorApiUrl = `https://api.content.tripadvisor.com/api/v1/location/nearby_search?latLong=${lat}%2C%20${lng}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
+    
+    const tripAdvisorResponse = await fetch(tripAdvisorApiUrl);
+    const tripAdvisorData = await tripAdvisorResponse.json();
+
+    if (!tripAdvisorData.data
+        || !Array.isArray(tripAdvisorData.data)
+        || tripAdvisorData.data.length === 0
+    ) {
+        // Not good
+        console.log('not good')
+        res.render('results', {location, attractions: []});
+    } else {
+        tripAdvisorData.data.forEach((attraction) => {
+            attractions.push({
                 name: attraction.name,
                 location_id: attraction.location_id
-              }));              
-            res.render('results', {location, attractions});
-        }
-    })
-    .catch(err => {
-        console.error('error:' + err);
-        res.status(500).send('An error occurred');
-    });
-});
+            });
+        })   
+    }
 
-app.get('/image', (req, res) => {
-    const locationId = req.query.location_id;
-    const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location_photos/list?location_id=${encodeURIComponent(locationId)}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
-    console.log(locationId)
-    fetch(tripAdvisorImgUrl)
-        .then(res => res.json())
-        .then(json => {
-            console.log(json);
-            if (!json.data || !Array.isArray(json.data) || json.data.length === 0) {
-                res.sendFile(path.join(__dirname, 'public', 'no-photo.png'));
-            } else {
-                const photoUrl = json.data[0].images.medium.url;
-                return fetch(photoUrl, {
-                headers: {'X-TripAdvisor-API-Key': tripAdvisorApiKey}
-                });
-            }
-        })
-        .then(res => {
-            if (res) {
-                res.body.pipe(res);
-            }
-        })
-        .catch(err => {
-            console.error('error:' + err);
-            res.sendFile(path.join(__dirname, 'public', 'no-photo.png'));
-        });
+    for (let i = 0; i < attractions.length; i ++) {
+        const attraction = attractions[i];
+        const locationId = attraction.location_id;
+        const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(locationId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`
+
+        const tripAdvisorImgResponse = await fetch(tripAdvisorImgUrl);
+        const tripAdvisorImgData = await tripAdvisorImgResponse.json();
+        if (!tripAdvisorImgData.data
+            || !Array.isArray(tripAdvisorImgData.data)
+            || tripAdvisorImgData.data.length === 0
+        ) {
+            console.log("inside image if");
+            attraction.photoUrl = "https://i.etsystatic.com/21654192/r/il/ede702/3942995056/il_1588xN.3942995056_48ro.jpg";
+        } else {
+            const photoUrl = tripAdvisorImgData.data[0].images.medium.url;
+            attraction.photoUrl = photoUrl;
+        }
+    }
+
+    res.render('results', {location, attractions})
+    
 });
   
 

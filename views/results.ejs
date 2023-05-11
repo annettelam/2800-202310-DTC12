@@ -10,18 +10,18 @@
     <% if (attractions.length === 0) { %>
       <p>No attractions found near <%= location %></p>
     <% } else { %>
-        <div class="row">
-            <% attractions.forEach(attraction => { %>
-              <div class="col-sm-4 mb-4">
-                <div class="thumbnail">
-                  <img src="/image?location_id=<%= attraction.location_id %>" class="img-thumbnail" style="height: 150px;">
-                  <div class="caption">
-                    <h4><%= attraction.name %></h4>
-                  </div>
-                </div>
+      <div class="row">
+        <% attractions.forEach(attraction => { %>
+          <div class="col-sm-4 mb-4">
+            <div class="thumbnail">
+              <div class="caption">
+                <h4><%= attraction.name %></h4>
+                <img src="<%= attraction.photoUrl %>" style="height: 150px;" />
               </div>
-            <% }); %>
+            </div>
           </div>
+        <% }); %>
+      </div>
           
     <% } %>
     <!-- Add the Bootstrap JS file -->
