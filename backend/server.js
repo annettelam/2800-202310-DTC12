@@ -77,9 +77,33 @@ app.post('/signup', async (req, res) => {
     res.json("Success");
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     console.log(`backend: ${email}, ${password}`);
+
+    // Find user in database
+    const result = await userCollection.find({ email: email }).toArray();
+
+    // Check if user was found
+    if (result.length === 0) {
+        console.log("User not found");
+        res.json("Invalid Email/Password!");
+        return;
+    }
+
+    // Check if password is correct
+    const user = result[0];
+    if (user.password !== password) {
+        console.log("Invalid password");
+        res.json("Invalid Email/Password!");
+        return;
+    }
+
+    // Set session
+    req.session.authenticated = true;
+
+    // Send response
+    res.json("Success");
 });
 
 app.listen(port, () => {
