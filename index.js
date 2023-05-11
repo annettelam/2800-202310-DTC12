@@ -18,11 +18,6 @@ app.get('/search', async (req, res) => {
     const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=${googleMapsApiKey}`;
     
     const attractions = [];
-    // 1st call to get tripadvisor places
-    // 2nd call to get images
-    // async/await structure after fetch works
-    // append all results to data response
-    // return dataResponse
 
     const googleMapsResponse = await fetch(googleMapsApiUrl);
     const googleMapsData = await googleMapsResponse.json();
@@ -69,7 +64,6 @@ app.get('/search', async (req, res) => {
     }
 
     res.render('results', {location, attractions})
-    
 });
   
 
