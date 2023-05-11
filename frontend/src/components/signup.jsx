@@ -29,7 +29,7 @@ export const SignUp = (props) => {
 
                     <Form.Group controlId="formBasicName" style={{ width: '100%' }}>
                         <Form.Label>Username</Form.Label>
-                        <Form.Control type="name" placeholder="Enter full name" value={name} onChange={(e) => setName(e.target.value)} />
+                        <Form.Control type="name" placeholder="Enter username" value={name} onChange={(e) => setName(e.target.value)} />
                     </Form.Group>
 
                     <Form.Group controlId="formBasicPassword" style={{ width: '100%' }}>
