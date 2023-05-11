@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 require("./utils.js");
 require('dotenv').config();
 const app = express();
@@ -51,9 +52,10 @@ app.post('/signup', async (req, res) => {
             return;
         }
     }
+    const hashedPassword = bcrypt.hashSync(password, 10);
 
     // Add user to database
-    await userCollection.insertOne({username: username, email: email, password: password});
+    await userCollection.insertOne({username: username, email: email, password: hashedPassword});
 });
 
 app.post('/login', (req, res) => {
