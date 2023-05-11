@@ -3,16 +3,30 @@
   <head>
     <meta charset="utf-8">
     <title>Attractions near <%= location %></title>
+    <!-- Add the Bootstrap CSS file -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   </head>
   <body>
     <% if (attractions.length === 0) { %>
       <p>No attractions found near <%= location %></p>
     <% } else { %>
-      <ul>
-        <% attractions.forEach(attraction => { %>
-          <li><%= attraction %></li>
-        <% }); %>
-      </ul>
+        <div class="row">
+            <% attractions.forEach(attraction => { %>
+              <div class="col-sm-4 mb-4">
+                <div class="thumbnail">
+                  <img src="/image?location_id=<%= attraction.location_id %>" class="img-thumbnail" style="height: 150px;">
+                  <div class="caption">
+                    <h4><%= attraction.name %></h4>
+                  </div>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+          
     <% } %>
+    <!-- Add the Bootstrap JS file -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   </body>
 </html>
