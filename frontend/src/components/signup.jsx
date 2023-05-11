@@ -11,6 +11,7 @@ export const SignUp = () => {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [msg, setMsg] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // prevents page from reloading
@@ -19,6 +20,11 @@ export const SignUp = () => {
         try {
             await axios.post('http://localhost:5000/signup', {
                 email, username, password
+            }).then((res) => {
+                console.log(res.data);
+                if (res.data) {
+                    setMsg(res.data);
+                } 
             })
         } catch (err) {
             console.log(err);
@@ -31,7 +37,7 @@ export const SignUp = () => {
             <div className="text-center my-5">
                 <img src={alicelogo} alt="logo" className="App-logo" style={{ width: '300px' }} />
 
-                <Form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formBasicEmail" style={{ width: '100%' }}>
                         <Form.Label>Email Address</Form.Label>
                         <Form.Control type="email" name="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -50,6 +56,9 @@ export const SignUp = () => {
                     <Button variant="primary" type="submit" style={{ width: '100%' }}>
                         Submit
                     </Button>
+                    {msg &&
+                        <p className='text-danger fw-bold' style={{ textAlign: 'left' }}> {msg} </p>
+                    }
                 </Form>
             </div>
             <Footer />
