@@ -57,6 +57,9 @@ app.get('/flights', (req, res) => {
         <input type="date" id="returnDate" name="returnDate">
       </div>
       <br>
+      <label for="adults">Number of Adults</label>
+      <input type="number" id="adults" name="adults" min="1" max="10" required>
+      <br>
       <input type="submit" value="Submit">
     </form>
     <script>
@@ -75,7 +78,7 @@ app.get('/flights', (req, res) => {
 
 
 app.post('/flightResults', async (req, res) => {
-  const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType } = req.body;
+  const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults } = req.body;
   console.log(req.body)
   console.log(originDisplayCode)
   console.log(destinationDisplayCode)
@@ -84,14 +87,16 @@ app.post('/flightResults', async (req, res) => {
   console.log(tripType)
 
 
+
   try {
     let params = {
       origin: originDisplayCode,
       destination: destinationDisplayCode,
       date: departureDate,
-      adults: '1',
+      adults: adults,
       currency: 'CAD',
-      // countryCode: 'US',
+      cabinClass: 'economy'
+      // countryCode: 'CA',
       // market: 'en-US'
     }
 
@@ -101,6 +106,7 @@ app.post('/flightResults', async (req, res) => {
 
 
     const results = await searchFlights(params);
+    console.log(results)
     // const filterlegs = results.data.filter((trip) => {
     //   if (trip.legs.length === 1) {
     //     return true;
@@ -168,7 +174,7 @@ const flightInformation = (flights, tripType, returnDate) => {
       <p>duration: ${duration}</p>
       <p>carrier: ${carrier}</p>
       <p>stopCount: ${stopCount}</p>`
-    console.log(price, originName, originDisplayCode, destinationName, destinationDisplayCode, departureTime, arrivalTime, duration, carrier, stopCount);
+    //console.log(price, originName, originDisplayCode, destinationName, destinationDisplayCode, departureTime, arrivalTime, duration, carrier, stopCount);
     if (stopCount > 0) {
       for (let j = 0; j < stopCount; j++) {
         const stopName = flights[i].legs[0].stops[j].name
@@ -178,6 +184,7 @@ const flightInformation = (flights, tripType, returnDate) => {
          <p>stopDisplayCode: ${stopDisplayCode}</p>`
       }
     }
+
     // if (tripType === 'roundTrip') {
     //   matchFlight = flights[i].legs.length === 2 && flights[i].legs[1].departure.slice(0, 10) === returnDate;
     if (tripType === 'roundTrip' && flights[i].legs[1].departure.slice(0, 10) === returnDate) {
@@ -199,7 +206,7 @@ const flightInformation = (flights, tripType, returnDate) => {
       <p>returnFlightDuration: ${returnFlightDuration}</p>
       <p>returnFlightCarrier: ${returnFlightCarrier}</p>
       <p>returnFlightStopCount: ${returnFlightStopCount}</p>`
-      console.log(returnFlightOriginName, returnFlightOriginDisplayCode, returnFlightDestinationName, returnFlightDestinationDisplayCode, returnFlightDepartureTime, returnFlightArrivalTime, returnFlightDuration, returnFlightCarrier, returnFlightStopCount);
+      //console.log(returnFlightOriginName, returnFlightOriginDisplayCode, returnFlightDestinationName, returnFlightDestinationDisplayCode, returnFlightDepartureTime, returnFlightArrivalTime, returnFlightDuration, returnFlightCarrier, returnFlightStopCount);
       if (returnFlightStopCount > 0) {
         for (let k = 0; k < returnFlightStopCount; k++) {
           const returnFlightStopName = flights[i].legs[1].stops[k].name
@@ -209,9 +216,17 @@ const flightInformation = (flights, tripType, returnDate) => {
          <p> returnFlightStopDisplayCode : ${returnFlightStopDisplayCode} </p>`
         }
       }
+      const is_eco_contender = flights[i].is_eco_contender;
+      const eco_contender_delta = Math.round(Math.abs(flights[i].eco_contender_delta));
+      console.log(is_eco_contender, eco_contender_delta)
+      if (is_eco_contender) {
+        if (eco_contender_delta > 0) {
+          html += `<p>is_eco_contender: ${is_eco_contender}</p>`;
+          html += `<p>Carbon emission produced is ${eco_contender_delta}% lower than the average emissions of all flight options on the same route.</p>`;
+        }
+      }
     }
   }
-  console.log(html)
   return html;
 }
 
