@@ -1,31 +1,42 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom'; // Assuming you're using React Router
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../fonts.css';
 import alicelogo from '../alicelogo.png';
 import { Footer } from './footer/footer';
 
-export const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+export const SignUp = ({ setLoggedIn }) => {
     const navigate = useNavigate();
+
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [msg, setMsg] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // prevents page from reloading
-        console.log(email, password);
+        console.log(email, username, password);
 
         try {
-            await axios.post('http://localhost:5000/login', {
+            await axios.post('http://localhost:5000/signup', {
                 email,
+                username,
                 password
+            }).then((res) => {
+                console.log(res.data);
+                if (res.data) {
+                    if (res.data === 'Success') {
+                        setLoggedIn(true);
+                        navigate('/flights');
+                    } else {
+                        setMsg(res.data);
+                    }
+                }
             });
-
-            // Redirect to the dashboard page after successful login
-            navigate('/dashboard');
-            console.log('Login successful');
         } catch (err) {
             console.log(err);
         }
@@ -37,7 +48,7 @@ export const Login = () => {
                 <img src={alicelogo} alt="logo" className="App-logo" style={{ width: '300px' }} />
 
                 <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId="formBasicEmail">
+                    <Form.Group controlId="formBasicEmail" style={{ width: '100%' }}>
                         <Form.Label>Email Address</Form.Label>
                         <Form.Control
                             type="email"
@@ -46,10 +57,20 @@ export const Login = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
-                        <Form.Text className="text-muted"></Form.Text>
                     </Form.Group>
 
-                    <Form.Group controlId="formBasicPassword">
+                    <Form.Group controlId="formBasicUsername" style={{ width: '100%' }}>
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control
+                            type="username"
+                            name="username"
+                            placeholder="Enter username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </Form.Group>
+
+                    <Form.Group controlId="formBasicPassword" style={{ width: '100%' }}>
                         <Form.Label>Password</Form.Label>
                         <Form.Control
                             type="password"
@@ -59,9 +80,15 @@ export const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </Form.Group>
+
                     <Button variant="primary" type="submit" style={{ width: '100%' }}>
                         Submit
                     </Button>
+                    {msg && (
+                        <p className="text-danger fw-bold" style={{ textAlign: 'left' }}>
+                            {msg}
+                        </p>
+                    )}
                 </Form>
             </div>
             <Footer />
