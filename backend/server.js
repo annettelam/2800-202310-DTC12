@@ -6,6 +6,8 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const app = express();
 const cors = require('cors');
+
+const saltRounds = 10;
 const port = 4000;
 
 /* secret information section */
@@ -67,11 +69,12 @@ app.post('/signup', async (req, res) => {
             return;
         }
     }
-    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    // Create hashed password using bcrypt
+    const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
     // Add user to database
     await userCollection.insertOne({username: username, email: email, password: hashedPassword});
-    await userCollection.insertOne({username: username, email: email, password: password});
 
     // Set session
     req.session.authenticated = true;
@@ -95,8 +98,7 @@ app.post('/login', async (req, res) => {
     }
 
     // Check if password is correct
-    const user = result[0];
-    if (user.password !== password) {
+    if (await !bcrypt.compare(password, result[0].password)) {
         console.log("Invalid password");
         res.json("Invalid Email/Password!");
         return;
