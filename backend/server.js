@@ -1,6 +1,8 @@
 const express = require('express');
 require("./utils.js");
 require('dotenv').config();
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const app = express();
 const cors = require('cors');
 const port = 4000;
@@ -8,7 +10,6 @@ const port = 4000;
 /* secret information section */
 const mongodb_database = process.env.MONGODB_DATABASE;
 
-// session information
 const mongodb_host = process.env.MONGODB_HOST
 const mongodb_user = process.env.MONGODB_USER;
 const mongodb_password = process.env.MONGODB_PASSWORD;
@@ -19,9 +20,23 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 var { database } = include('databaseConnection');
 const userCollection = database.db(mongodb_database).collection('users');
 
+var mongoStore = MongoStore.create({
+    mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
+    crypto: {
+        secret: mongodb_session_secret
+    }
+})
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
+app.use(session({
+    secret: node_session_secret,
+    store: mongoStore,
+    saveUninitialized: false,
+    resave: true
+}
+));
 
 app.post('/signup', async (req, res) => {
     // Get the user information
@@ -54,11 +69,41 @@ app.post('/signup', async (req, res) => {
 
     // Add user to database
     await userCollection.insertOne({username: username, email: email, password: password});
+
+    // Set session
+    req.session.authenticated = true;
+
+    // Send response
+    res.json("Success");
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     console.log(`backend: ${email}, ${password}`);
+
+    // Find user in database
+    const result = await userCollection.find({ email: email }).toArray();
+
+    // Check if user was found
+    if (result.length === 0) {
+        console.log("User not found");
+        res.json("Invalid Email/Password!");
+        return;
+    }
+
+    // Check if password is correct
+    const user = result[0];
+    if (user.password !== password) {
+        console.log("Invalid password");
+        res.json("Invalid Email/Password!");
+        return;
+    }
+
+    // Set session
+    req.session.authenticated = true;
+
+    // Send response
+    res.json("Success");
 });
 
 app.listen(port, () => {

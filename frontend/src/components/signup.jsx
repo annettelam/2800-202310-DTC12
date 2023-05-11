@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 import '../App.css';
@@ -7,7 +8,9 @@ import '../fonts.css';
 import alicelogo from '../alicelogo.png';
 import { Footer } from './footer/footer';
 
-export const SignUp = () => {
+export const SignUp = ({onLogin}) => {
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -23,7 +26,12 @@ export const SignUp = () => {
             }).then((res) => {
                 console.log(res.data);
                 if (res.data) {
-                    setMsg(res.data);
+                    if (res.data === 'Success') {
+                        onLogin();
+                        navigate('/flights');
+                    } else {
+                        setMsg(res.data);
+                    }
                 } 
             })
         } catch (err) {
