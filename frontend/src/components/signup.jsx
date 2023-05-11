@@ -9,16 +9,16 @@ import { Footer } from './footer/footer';
 
 export const SignUp = () => {
     const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // prevents page from reloading
-        console.log(email, name, password);
+        console.log(email, username, password);
 
         try {
             await axios.post('http://localhost:5000/signup', {
-                email, name, password
+                email, username, password
             })
         } catch (err) {
             console.log(err);
@@ -37,9 +37,9 @@ export const SignUp = () => {
                         <Form.Control type="email" name="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
                     </Form.Group>
 
-                    <Form.Group controlId="formBasicName" style={{ width: '100%' }}>
+                    <Form.Group controlId="formBasicUsername" style={{ width: '100%' }}>
                         <Form.Label>Username</Form.Label>
-                        <Form.Control type="name" name="name" placeholder="Enter username" value={name} onChange={(e) => setName(e.target.value)} />
+                        <Form.Control type="username" name="username" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} />
                     </Form.Group>
 
                     <Form.Group controlId="formBasicPassword" style={{ width: '100%' }}>

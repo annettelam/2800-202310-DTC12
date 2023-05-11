@@ -25,11 +25,29 @@ app.use(cors());
 
 app.post('/signup', async (req, res) => {
     // Get the user information
-    const { email, name, password } = req.body;
-    console.log(`backend: ${email}, ${name}, ${password}`);
+    const { email, username, password } = req.body;
+    console.log(`backend: ${email}, ${username}, ${password}`);
+
+    // Check if username or email already exists
+    const result = await userCollection.find({
+        $or: [{ username: username }, { email: email }]
+    }).toArray();
+
+    if (result.length !== 0) {
+        const existingUser = result.find(user => user.username === username);
+        const existingEmail = result.find(user => user.email === email);
+
+        if (existingUser) {
+            console.log("Username already exists");
+            return;
+        } else if (existingEmail) {
+            console.log("Email already exists");
+            return;
+        }
+    }
 
     // Add user to database
-    await userCollection.insertOne({name: name, email: email, password: password});
+    await userCollection.insertOne({username: username, email: email, password: password});
 });
 
 app.post('/login', (req, res) => {
