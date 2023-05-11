@@ -14,7 +14,7 @@ ul {
     justify-content: center;
   }
   
-  img {
+  .attraction-image {
     width: 100%;
     height: auto;
     max-height: 150px;
