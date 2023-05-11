@@ -21,7 +21,7 @@ export const SignUp = ({setLoggedIn}) => {
         console.log(email, username, password);
 
         try {
-            await axios.post('http://localhost:5000/signup', {
+            await axios.post('http://localhost:4000/signup', {
                 email, username, password
             }).then((res) => {
                 console.log(res.data);
