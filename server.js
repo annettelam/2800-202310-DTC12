@@ -60,6 +60,14 @@ app.get('/flights', (req, res) => {
       <label for="adults">Number of Adults</label>
       <input type="number" id="adults" name="adults" min="1" max="10" required>
       <br>
+      <label for="cabinClass">Cabin Class</label>
+      <select id="cabinClass" name="cabinClass">
+        <option value="economy">Economy</option>
+        <option value="premium_economy">Premium Economy</option>
+        <option value="business">Business</option>
+        <option value="first">First</option>
+      </select>
+      <br>
       <input type="submit" value="Submit">
     </form>
     <script>
@@ -77,14 +85,16 @@ app.get('/flights', (req, res) => {
 });
 
 
+
 app.post('/flightResults', async (req, res) => {
-  const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults } = req.body;
+  const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass } = req.body;
   console.log(req.body)
   console.log(originDisplayCode)
   console.log(destinationDisplayCode)
   console.log(departureDate)
   // console.log(returnDate)
   console.log(tripType)
+  console.log(cabinClass)
 
 
 
@@ -94,10 +104,9 @@ app.post('/flightResults', async (req, res) => {
       destination: destinationDisplayCode,
       date: departureDate,
       adults: adults,
+      cabinClass: cabinClass,
       currency: 'CAD',
-      cabinClass: 'economy'
-      // countryCode: 'CA',
-      // market: 'en-US'
+      countryCode: 'CA'
     }
 
     if (tripType === 'roundTrip') {
