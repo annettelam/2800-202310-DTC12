@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import { CustomNavbar } from "./components/navbar/navbar";
@@ -10,14 +10,17 @@ import { Dashboard } from "./components/dashboard/dashboard";
 
 
 const Planetpass = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
+
   const handleLogin = () => {
     localStorage.setItem('loggedIn', 'true');
+    setLoggedIn(true);
     console.log("Logged in");
   };
 
   return (
     <Router>
-      <CustomNavbar />
+      <CustomNavbar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
