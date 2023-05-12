@@ -118,6 +118,35 @@ app.post('/logout', (req, res) => {
     req.session.destroy();
 });
 
+app.get('/dashboard', async (req, res) => {
+    // Check if the user is authenticated
+    if (!req.session.authenticated) {
+      res.status(401).json("Please log in to view your dashboard");
+      return;
+    }
+  
+    try {
+      // Retrieve user data from the MongoDB Atlas database
+      const result = await userCollection.findOne({ email: req.session.user.email });
+  
+      // Check if user was found
+      if (!result) {
+        res.status(404).json("User not found");
+        return;
+      }
+  
+      // Extract the required fields
+      const { email, username, originCity } = result;
+  
+      // Send the user data as a JSON response
+      res.json({ email, username, originCity });
+    } catch (error) {
+      console.log('Error fetching user data:', error);
+      res.status(500).json("Internal server error");
+    }
+  });
+  
+
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
 });
