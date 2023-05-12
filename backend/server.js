@@ -112,7 +112,7 @@ app.post('/login', async (req, res) => {
     }
 
     // Check if password is correct
-    if (await !bcrypt.compare(password, result[0].password)) {
+    if (!await bcrypt.compare(password, result[0].password)) {
         console.log("Invalid password");
         res.json("Invalid Email/Password!");
         return;
@@ -120,23 +120,40 @@ app.post('/login', async (req, res) => {
 
     // Set session
     req.session.authenticated = true;
-
-    // Create user object to send back to client
-    const user = {
+    req.session.user = {
         username: result[0].username,
         email: result[0].email,
         firstName: result[0].firstName,
         lastName: result[0].lastName,
         city: result[0].city,
-    }
+    };
 
     // Send response
     res.json({
         message: "Success",
-        user: user,
+        user: req.session.user,
     });
 });
 
+app.get('/profile', (req, res) => {
+    // Check if user is logged in
+    if (!req.session.authenticated) {
+        res.redirect('/login'); // Redirect to login if not logged in
+        return;
+    }
+
+    // Retrieve user information from the session
+    const { username, email, firstName, lastName, city } = req.session.user;
+
+    // Send the user's information as a response
+    res.json({
+        username: username,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        city: city,
+    });
+});
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.office365.com',
@@ -208,12 +225,16 @@ app.post('/reset-password/:token', async (req, res) => {
     return res.status(200).json({ message: 'Password reset successfully' });
 });
 
-
-
+///////////////////////////////////////////////////////////////////////////////////////
 
 app.post('/logout', (req, res) => {
     req.session.destroy();
     res.send('ok');
+});
+
+// Catch-all route handler for 404 errors
+app.get('*', (req, res) => {
+    res.status(404).send("Page not found");
 });
 
 app.listen(port, () => {
