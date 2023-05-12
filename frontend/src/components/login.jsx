@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../fonts.css';
@@ -62,6 +63,9 @@ export const Login = ({onLogin}) => {
                     {msg &&
                         <p className='text-danger fw-bold' style={{ textAlign: 'left' }}> {msg} </p>
                     }
+                    <div style={{ marginTop: '10px' }}>
+                        <Link to="/forgotpassword">Forgot Password?</Link>
+                    </div>
                 </Form>
             </div>
             <Footer />
