@@ -144,7 +144,7 @@ app.get('/dashboard', async (req, res) => {
       console.log('Error fetching user data:', error);
       res.status(500).json("Internal server error");
     }
-  });
+});
   
 
 app.listen(port, () => {
