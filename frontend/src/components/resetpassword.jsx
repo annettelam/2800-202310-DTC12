@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 
 export const ResetPassword = ({ }) => {
     const { token } = useParams();
-    console.log(token);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
