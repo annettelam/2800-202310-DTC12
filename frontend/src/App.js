@@ -5,6 +5,7 @@ import { CustomNavbar } from "./components/navbar/navbar";
 import { Home } from "./components/home/home";
 import { Login } from "./components/login";
 import { SignUp } from "./components/signup";
+import { ForgotPassword } from "./components/forgotpassword";
 
 
 const Planetpass = () => {
@@ -16,6 +17,9 @@ const Planetpass = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+         
+          
         </Routes>
       </div>
     </Router>

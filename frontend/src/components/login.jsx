@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../fonts.css';
@@ -45,6 +46,9 @@ export const Login = () => {
                     <Button variant="primary" type="submit" style={{ width: '100%' }}>
                         Submit
                     </Button>
+                    <div style={{ marginTop: '10px' }}>
+                        <Link to="/forgotpassword">Forgot Password?</Link>
+                    </div>
                 </Form>
             </div>
             <Footer />
