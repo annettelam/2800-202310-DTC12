@@ -7,7 +7,6 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../App.css';
 import '../../fonts.css';
-import { Footer } from '../footer/footer';
 import dashBackground from '../../dashbkg.jpg';
 
 export const Profile = () => {
@@ -73,9 +72,6 @@ export const Profile = () => {
                             </Box>
                         </Box>
                     </Card>
-
-
-
                 </Container>
             </div>
         </ChakraProvider>
