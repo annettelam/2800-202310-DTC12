@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Navbar, Nav, Container, Form, Button } from 'react-bootstrap';
 import { FaBars } from 'react-icons/fa';
 import { Link } from "react-router-dom";
+import axios from 'axios';
 import '../../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
@@ -13,9 +14,21 @@ export const CustomNavbar = ({loggedIn, setLoggedIn}) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem('loggedIn');
-        setLoggedIn(false);
-        navigate('/');
+        console.log('Logging out');
+        try {
+            // Destroy session on server
+            axios.post('http://localhost:4000/logout');
+
+            // Remove loggedIn from localStorage
+            localStorage.removeItem('loggedIn');
+
+            // Update loggedIn state
+            setLoggedIn(false);
+
+            navigate('/');
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (
