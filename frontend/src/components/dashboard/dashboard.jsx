@@ -1,6 +1,18 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChakraProvider, Box, Heading, Text, Card, CardHeader, CardBody, CardFooter, Flex, SimpleGrid, Button } from '@chakra-ui/react';
+import {
+    ChakraProvider,
+    Box,
+    Heading,
+    Text,
+    Card,
+    CardHeader,
+    CardBody,
+    CardFooter,
+    Flex,
+    Button,
+    Stack,
+} from '@chakra-ui/react';
 import '../home/home.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
@@ -18,6 +30,7 @@ export const Dashboard = (props) => {
             navigate('/login');
         }
     }, [navigate]);
+
     return (
         <ChakraProvider>
             <div
@@ -32,7 +45,6 @@ export const Dashboard = (props) => {
                     minHeight: '100vh',
                 }}
             >
-                <br></br>
                 <Container>
                     <Box p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
                         <Heading align="center">Welcome, {user.firstName} {user.lastName}!</Heading>
@@ -42,11 +54,11 @@ export const Dashboard = (props) => {
                     </Box>
                 </Container>
                 <Flex justifyContent="center" alignItems="center" minHeight="25vh">
-                    <SimpleGrid
-                        spacing={8}
-                        templateColumns="repeat(4, 1fr)"
-                        justifyItems="center"
-                        className="simple-grid"
+                    <Stack
+                        spacing={4}
+                        direction={['column', 'row']} // Stack cards vertically on small screens, horizontally on larger screens
+                        align="center"
+                        className="card-stack"
                     >
                         <Card>
                             <CardHeader>
@@ -100,10 +112,11 @@ export const Dashboard = (props) => {
                                 <Button>View here</Button>
                             </CardFooter>
                         </Card>
-                    </SimpleGrid>
+                    </Stack>
                 </Flex>
             </div>
             <Footer />
         </ChakraProvider>
     );
 };
+

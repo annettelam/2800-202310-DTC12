@@ -1,32 +1,33 @@
 .dashboard-container {
-    background-position: center;
+    padding: 1rem;
     background-repeat: no-repeat;
+    background-position: center top 50px;
+    /* Move background down 50 pixels */
+    background-attachment: fixed;
     background-size: cover;
+    font-family: Questrial;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    /* Display cards in a column */
-    align-items: center;
-    /* Center cards horizontally */
-    padding: 20px;
-    /* Add padding for spacing */
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .dashboard-container {
-        background-position: center top 50px;
-        /* Move background down 50 pixels */
+        padding-top: 4rem;
+        /* Adjust top padding for smaller screens */
     }
+}
 
-    .card {
-        width: 100%;
-        /* Take full width of the container */
-        margin: 10px 0;
-        /* Adjust vertical margin as needed */
-    }
+.simple-grid {
+    grid-template-columns: repeat(2, 1fr);
+    /* Display two cards per row on small screens */
+}
 
+@media screen and (min-width: 768px) {
     .simple-grid {
-        grid-template-columns: 1fr;
-        /* Change grid columns to 1fr for vertical stacking */
+        grid-template-columns: repeat(4, 1fr);
+        /* Display four cards per row on larger screens */
     }
+}
+
+.card {
+    margin: 1rem;
 }
