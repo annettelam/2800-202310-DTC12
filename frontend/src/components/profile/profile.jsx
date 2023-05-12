@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     ChakraProvider, Heading, Container, Box, Card,
-    Divider, Avatar, Text
+    Divider, Avatar, Text, Flex
 } from '@chakra-ui/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../App.css';
@@ -43,25 +43,27 @@ export const Profile = () => {
                     </Box>
 
                     <Card maxWidth="500px" mx="auto">
-                        <Box p="4" textAlign="center">
-                            <Box mx="auto">
-                                <Avatar size="md" />
-                            </Box>
-                            <Divider my="4" />
+                        <Box p="5" textAlign="center">
+                            <Flex justify="center" align="center" mb="4">
+                                <Box>
+                                    <Avatar size="md" />
+                                </Box>
+                            </Flex>
+                            <Divider my="2" />
                             <Box display="flex" flexDirection="column" alignItems="center">
-                                <Box mb="2">
+                                <Box>
                                     <strong>Username:</strong> {user.username}
                                 </Box>
                                 <Divider my="2" />
-                                <Box mb="2">
+                                <Box>
                                     <strong>First Name:</strong> {user.firstName}
                                 </Box>
                                 <Divider my="2" />
-                                <Box mb="2">
+                                <Box>
                                     <strong>Last Name:</strong> {user.lastName}
                                 </Box>
                                 <Divider my="2" />
-                                <Box mb="2">
+                                <Box>
                                     <strong>Email:</strong> {user.email}
                                 </Box>
                                 <Divider my="2" />
@@ -71,6 +73,9 @@ export const Profile = () => {
                             </Box>
                         </Box>
                     </Card>
+
+
+
                 </Container>
             </div>
             <Footer />
