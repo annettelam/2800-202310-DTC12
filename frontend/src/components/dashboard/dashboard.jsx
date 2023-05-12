@@ -1,46 +1,65 @@
-import React from 'react';
-import { ChakraProvider, Box, Heading, Text, Button } from '@chakra-ui/react';
-import { Container, Row, Col, Image } from 'react-bootstrap';
-import '../home/home.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../fonts.css';
-import { Footer } from '../footer/footer';
-import wireframe from '../../wireframe.png';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Navbar, Nav, Container } from 'react-bootstrap';
 
-export const Dashboard = (props) => {
-    return (
-        <ChakraProvider>
-            <br></br>
-            <br></br>
-            <div
-                style={{
-                    background: 'linear-gradient(to top, #0CBAA6, white)',
-                    fontFamily: 'Questrial',
-                    minHeight: '100vh',
-                }}
-            >
-                <Container fluid>
-                    <Row>
-                        <Col className="p-0" xs={6} md={6}>
-                            <div className="h-100 d-flex align-items-center justify-content-center">
-                                <Box maxW="32rem" textAlign="center">
-                                    <Heading mb={4}>DASHBOARD TEST</Heading>
-                                    <Text fontSize="xl">Lorem ipsum dolor sit amet.</Text>
-                                    <Button size="lg" colorScheme="green" mt="24px">
-                                        Lorem ipsum.
-                                    </Button>
-                                </Box>
-                            </div>
-                        </Col>
-                        <Col className="p-0" xs={6} md={6}>
-                            <div className="h-100 d-flex align-items-center justify-content-center">
-                                <Image src={wireframe} alt="main2" fluid />
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-            <Footer />
-        </ChakraProvider>
-    );
+export const Dashboard = () => {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get('/dashboard');
+      const data = response.data;
+      setUserData(data);
+    } catch (error) {
+      console.log('Error fetching user data:', error);
+    }
+  };
+
+  return (
+    <div style={{ backgroundColor: '#E6F7FF', fontFamily: 'Questrial' }}>
+      <Navbar bg="light" expand="lg">
+        <Container>
+          <Navbar.Brand href="#home">Dashboard</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link href="#home">Home</Nav.Link>
+              <Nav.Link href="#dashboard">Dashboard</Nav.Link>
+              <Nav.Link href="#flights">Find Flights</Nav.Link>
+              <Nav.Link href="#hotels">Find Hotels</Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <div className="container mt-5">
+        <h1>Welcome to your Dashboard</h1>
+        {userData && (
+          <div>
+            <h3>Email: {userData.email}</h3>
+            <h3>Username: {userData.username}</h3>
+            <h3>Origin City: {userData.originCity}</h3>
+            <h3>Saved Flights:</h3>
+            {/* <ul>
+              {userData.savedFlights.map((flight, index) => (
+                <li key={index}>{flight}</li>
+              ))}
+            </ul> */}
+            <h3>Saved Hotels:</h3>
+            {/* <ul>
+              {userData.savedHotels.map((hotel, index) => (
+                <li key={index}>{hotel}</li>
+              ))}
+            </ul> */}
+          </div>
+        )}
+      </div>
+      <footer className="bg-light text-center text-lg-start">
+        <div className="text-center p-3">© 2023 PlanetPass. All Rights Reserved.</div>
+      </footer>
+    </div>
+  );
 };
