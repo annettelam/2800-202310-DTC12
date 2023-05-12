@@ -9,6 +9,7 @@ import { SignUp } from "./components/signup";
 import { ForgotPassword } from "./components/forgotpassword";
 import { ResetPassword } from "./components/resetpassword";
 import { Dashboard } from "./components/dashboard/dashboard";
+import { Profile } from "./components/profile/profile";
 
 
 const Planetpass = () => {
@@ -33,6 +34,7 @@ const Planetpass = () => {
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/flights" element={<Flights />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </Router>
