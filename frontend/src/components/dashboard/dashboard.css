@@ -1,0 +1,33 @@
+.dashboard-container {
+    padding: 1rem;
+    background-repeat: no-repeat;
+    background-position: center top 50px;
+    /* Move background down 50 pixels */
+    background-attachment: fixed;
+    background-size: cover;
+    font-family: Questrial;
+    min-height: 100vh;
+}
+
+@media screen and (max-width: 768px) {
+    .dashboard-container {
+        padding-top: 4rem;
+        /* Adjust top padding for smaller screens */
+    }
+}
+
+.simple-grid {
+    grid-template-columns: repeat(2, 1fr);
+    /* Display two cards per row on small screens */
+}
+
+@media screen and (min-width: 768px) {
+    .simple-grid {
+        grid-template-columns: repeat(4, 1fr);
+        /* Display four cards per row on larger screens */
+    }
+}
+
+.card {
+    margin: 1rem;
+}

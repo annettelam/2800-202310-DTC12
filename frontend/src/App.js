@@ -11,6 +11,7 @@ import { ForgotPassword } from "./components/forgotpassword";
 import { ResetPassword } from "./components/resetpassword";
 import { Dashboard } from "./components/dashboard/dashboard";
 import { NotFoundPage } from "./components/404/404";
+import { Profile } from "./components/profile/profile";
 
 
 const Planetpass = () => {
@@ -36,10 +37,11 @@ const Planetpass = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/flights" element={<Flights />} />
           <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </div>
+          <Route path="/profile" element={<Profile />} />
+        </Routes >
+      </div >
       <Footer />
-    </Router>
+    </Router >
   );
 };
 

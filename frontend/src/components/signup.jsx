@@ -8,7 +8,7 @@ import '../fonts.css';
 import alicelogo from '../alicelogo.png';
 import { Footer } from './footer/footer';
 
-export const SignUp = ({onLogin}) => {
+export const SignUp = ({ onLogin }) => {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
@@ -31,11 +31,11 @@ export const SignUp = ({onLogin}) => {
                 if (res.data) {
                     if (res.data.message === 'Success') {
                         onLogin(JSON.stringify(res.data.user));
-                        navigate('/flights');
+                        navigate('/profile');
                     } else {
                         setMsg(res.data);
                     }
-                } 
+                }
             })
         } catch (err) {
             console.log(err);
@@ -69,12 +69,12 @@ export const SignUp = ({onLogin}) => {
                         <Form.Label>Username</Form.Label>
                         <Form.Control type="username" name="username" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} />
                     </Form.Group>
-                    
+
                     <Form.Group controlId="formBasicCity" style={{ width: '100%' }}>
                         <Form.Label>City</Form.Label>
                         <Form.Control type="city" name="city" placeholder="Enter city" value={city} onChange={(e) => setCity(e.target.value)} />
                     </Form.Group>
-                    
+
                     <Form.Group controlId="formBasicPassword" style={{ width: '100%' }}>
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
