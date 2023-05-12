@@ -47,7 +47,7 @@ export const SignUp = ({onLogin}) => {
             <div className="text-center my-5">
                 <img src={alicelogo} alt="logo" className="App-logo" style={{ width: '300px' }} />
 
-                <Form onSubmit={handleSubmit}>
+                <Form className='text-center my-5' onSubmit={handleSubmit}>
                     <Form.Group controlId="formBasicEmail" style={{ width: '100%' }}>
                         <Form.Label>Email Address</Form.Label>
                         <Form.Control type="email" name="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
