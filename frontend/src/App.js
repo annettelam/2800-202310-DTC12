@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import { CustomNavbar } from "./components/navbar/navbar";
+import { Footer } from "./components/footer/footer";
 import { Home } from "./components/home/home";
 import { Flights } from "./components/flights/flights";
 import { Login } from "./components/login";
@@ -37,6 +38,7 @@ const Planetpass = () => {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
+      <Footer />
     </Router>
   );
 };

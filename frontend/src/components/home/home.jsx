@@ -4,7 +4,6 @@ import { Container, Row, Col, Image } from 'react-bootstrap';
 import './home.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
-import { Footer } from '../footer/footer';
 import wireframe from '../../wireframe.png';
 
 export const Home = (props) => {
@@ -40,7 +39,6 @@ export const Home = (props) => {
                     </Row>
                 </Container>
             </div>
-            <Footer />
         </ChakraProvider>
     );
 };
