@@ -109,8 +109,17 @@ app.post('/login', async (req, res) => {
     // Set session
     req.session.authenticated = true;
 
+    // Create user object to send back to client
+    const user = {
+        username: result[0].username,
+        email: result[0].email,
+    }
+
     // Send response
-    res.json("Success");
+    res.json({
+        message: "Success",
+        user: user,
+    });
 });
 
 

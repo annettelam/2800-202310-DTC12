@@ -26,8 +26,8 @@ export const Login = ({onLogin}) => {
             }).then((res) => {
                 console.log(res.data);
                 if (res.data) {
-                    if (res.data === 'Success') {
-                        onLogin();
+                    if (res.data.message === 'Success') {
+                        onLogin(JSON.stringify(res.data.user));
                         navigate('/flights');
                     } else {
                         setMsg(res.data);

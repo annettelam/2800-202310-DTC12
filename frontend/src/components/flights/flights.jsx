@@ -7,6 +7,7 @@ import { Footer } from '../footer/footer';
 
 export const Flights = () => {
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
@@ -16,6 +17,7 @@ export const Flights = () => {
 
     return (
         <div style={{ backgroundColor: '#E6F7FF', fontFamily: 'Questrial' }}>
+            <h1> Welcome {user.username} </h1>
             <div className="text-center my-5"> This is the flights page </div>
             <Footer />
         </div >

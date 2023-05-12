@@ -14,9 +14,10 @@ import { Dashboard } from "./components/dashboard/dashboard";
 const Planetpass = () => {
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem('loggedIn'));
 
-  const handleLogin = () => {
+  const handleLogin = (user) => {
     localStorage.setItem('loggedIn', 'true');
     setLoggedIn(true);
+    localStorage.setItem('user', user);
     console.log("Logged in");
   };
 
