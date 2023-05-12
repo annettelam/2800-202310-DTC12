@@ -6,6 +6,8 @@ import { Home } from "./components/home/home";
 import { Flights } from "./components/flights/flights";
 import { Login } from "./components/login";
 import { SignUp } from "./components/signup";
+import { ForgotPassword } from "./components/forgotpassword";
+import { ResetPassword } from "./components/resetpassword";
 import { Dashboard } from "./components/dashboard/dashboard";
 
 
@@ -26,6 +28,8 @@ const Planetpass = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/signup" element={<SignUp onLogin={handleLogin} />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/flights" element={<Flights />} />
         </Routes>
