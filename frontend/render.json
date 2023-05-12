@@ -1,0 +1,22 @@
+{
+    "buildCommand": "npm ci && npm run build",
+    "startCommand": "npm run start",
+    "env": {
+        "NODE_ENV": "production",
+        "PORT": 3000
+    },
+    "cleanUrls": true,
+    "staticPublishPath": "build",
+    "staticUrls": {
+        "/": "build/index.html"
+    },
+    "routes": [
+        {
+            "handle": "filesystem"
+        },
+        {
+            "src": "/.*",
+            "dest": "/index.html"
+        }
+    ]
+}
