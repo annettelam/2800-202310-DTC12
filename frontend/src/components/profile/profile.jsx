@@ -78,7 +78,6 @@ export const Profile = () => {
 
                 </Container>
             </div>
-            <Footer />
         </ChakraProvider>
     );
 };
