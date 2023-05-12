@@ -9,8 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import navlogo from '../../navlogo.png';
 
-
-export const CustomNavbar = ({loggedIn, setLoggedIn}) => {
+export const CustomNavbar = ({ loggedIn, setLoggedIn }) => {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -46,17 +45,21 @@ export const CustomNavbar = ({loggedIn, setLoggedIn}) => {
                         <Nav.Link href="/flights">Find Flights</Nav.Link>
                         <Nav.Link href="#hotels">Find Hotels</Nav.Link>
                     </Nav>
-                    {loggedIn ? (
-                        <Button variant="danger" onClick={handleLogout} className="me-2">Logout</Button>
-                    ) : (
-                        <Form>
-                            <Button variant="outline-success" as={Link} to='/signup' className="me-2">Sign Up</Button>
-                            <Button variant="outline-success" as={Link} to='/login' className="me-2">Login</Button>
-                        </Form>
-                    )}
+                    <Form className="d-flex align-items-center">
+                        {loggedIn ? (
+                            <>
+                                <Button variant="outline-secondary" as={Link} to='/profile' className="me-2">Profile</Button>
+                                <Button variant="danger" onClick={handleLogout} className="me-2">Logout</Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button variant="outline-success" as={Link} to='/signup' className="me-2">Sign Up</Button>
+                                <Button variant="outline-success" as={Link} to='/login' className="me-2">Login</Button>
+                            </>
+                        )}
+                    </Form>
                 </Navbar.Collapse>
             </Container>
         </Navbar>
     );
 }
-

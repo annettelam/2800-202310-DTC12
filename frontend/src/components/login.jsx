@@ -7,9 +7,8 @@ import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../fonts.css';
 import alicelogo from '../alicelogo.png';
-import { Footer } from './footer/footer';
 
-export const Login = ({onLogin}) => {
+export const Login = ({ onLogin }) => {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
@@ -28,7 +27,7 @@ export const Login = ({onLogin}) => {
                 if (res.data) {
                     if (res.data.message === 'Success') {
                         onLogin(JSON.stringify(res.data.user));
-                        navigate('/flights');
+                        navigate('/profile');
                     } else {
                         setMsg(res.data);
                     }
@@ -78,7 +77,6 @@ export const Login = ({onLogin}) => {
                     </div>
                 </Form>
             </div>
-            <Footer />
         </div>
     );
 };
