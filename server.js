@@ -6,28 +6,6 @@ const port = 3000;
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// app.get('/flights', async (req, res) => {
-//   const { apiKey, origin, destination, date } = req.query;
-
-//   const results = await searchFlights(apiKey, origin, destination, date);
-
-//   res.json(results);
-// });
-
-// app.listen(port, () => {
-//   console.log(`Server listening on port ${port}`);
-// });
-
-// const express = require('express');
-// //const { searchFlights } = require('./skyscanner');
-// const sampleData = require('./sample.json');
-
-
-// const app = express();
-// const port = 3000;
-// app.use(express.urlencoded({ extended: false }));
-
-// app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -116,14 +94,6 @@ app.post('/flightResults', async (req, res) => {
 
     const results = await searchFlights(params);
     console.log(results)
-    // const filterlegs = results.data.filter((trip) => {
-    //   if (trip.legs.length === 1) {
-    //     return true;
-    //   }
-    // })
-    // console.log(filterlegs.length)
-    // console.log(results.data)
-
     const filteredResults = results.data.data.filter((flight) => {
       var matchFlight = false;
 
@@ -240,8 +210,7 @@ const flightInformation = (flights, tripType, returnDate) => {
 }
 
 
-
-
+// for testing sample data
 // const sampleSearchFlights = (originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType) => {
 //   return new Promise((resolve, reject) => {
 //     setTimeout(() => {
