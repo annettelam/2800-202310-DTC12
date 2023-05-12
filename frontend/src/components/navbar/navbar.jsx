@@ -13,11 +13,11 @@ import navlogo from '../../navlogo.png';
 export const CustomNavbar = ({loggedIn, setLoggedIn}) => {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         console.log('Logging out');
         try {
             // Destroy session on server
-            axios.post('http://localhost:4000/logout');
+            await axios.post('http://localhost:4000/logout');
 
             // Remove loggedIn from localStorage
             localStorage.removeItem('loggedIn');

@@ -26,9 +26,6 @@ const userCollection = database.db(mongodb_database).collection('users');
 
 var mongoStore = MongoStore.create({
     mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
-    crypto: {
-        secret: mongodb_session_secret
-    }
 })
 
 app.use(express.urlencoded({ extended: false }));
@@ -37,10 +34,12 @@ app.use(cors());
 app.use(session({
     secret: node_session_secret,
     store: mongoStore,
-    saveUninitialized: false,
-    resave: true
 }
 ));
+
+app.get('/', (req, res) => {
+    res.send("Hello World!");
+});
 
 app.post('/signup', async (req, res) => {
     // Get the user information
@@ -79,7 +78,6 @@ app.post('/signup', async (req, res) => {
 
     // Set session
     req.session.authenticated = true;
-    req.session.cookie.maxAge = expireTime;
 
     // Send response
     res.json("Success");
@@ -108,7 +106,6 @@ app.post('/login', async (req, res) => {
 
     // Set session
     req.session.authenticated = true;
-    req.session.cookie.maxAge = expireTime;
 
     // Send response
     res.json("Success");
@@ -116,6 +113,7 @@ app.post('/login', async (req, res) => {
 
 app.post('/logout', (req, res) => {
     req.session.destroy();
+    res.send('ok');
 });
 
 app.listen(port, () => {
