@@ -121,6 +121,22 @@ app.post('/reset-password', async (req, res) => {
     });
 });
 
+app.post('/reset-password/:token', async (req, res) => {
+    const { token } = req.params;
+    console.log(token)
+    const { password } = req.body;
+
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    await userCollection.updateOne(
+        { resetPasswordToken: token },
+        { $set: { password: hashedPassword, resetPasswordToken: null } }
+    );
+
+    // Return a success response
+    return res.status(200).json({ message: 'Password reset successfully' });
+});
+
+
 
 
 app.listen(port, () => {
