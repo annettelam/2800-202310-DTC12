@@ -45,8 +45,8 @@ app.get('/', (req, res) => {
 
 app.post('/signup', async (req, res) => {
     // Get the user information
-    const { email, username, password } = req.body;
-    console.log(`backend: ${email}, ${username}, ${password}`);
+    const { email, username, password, firstName, lastName, city } = req.body;
+    console.log(`backend: ${email}, ${username}, ${password}, ${firstName}, ${lastName}, ${city}`);
 
     // Check if username or email already exists
     const result = await userCollection.find({
@@ -76,13 +76,25 @@ app.post('/signup', async (req, res) => {
     const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
     // Add user to database
-    await userCollection.insertOne({ username: username, email: email, password: hashedPassword });
+    await userCollection.insertOne({ username: username, email: email, password: hashedPassword, firstName: firstName, lastName: lastName, city: city });
 
     // Set session
     req.session.authenticated = true;
 
+    // Create user object to send back to client
+    const user = {
+        username: username,
+        'email': email,
+        firstName: firstName,
+        lastName: lastName,
+        city: city,
+    }
+
     // Send response
-    res.json("Success");
+    res.json({
+        message: "Success",
+        user: user,
+    });
 });
 
 app.post('/login', async (req, res) => {
@@ -113,6 +125,9 @@ app.post('/login', async (req, res) => {
     const user = {
         username: result[0].username,
         email: result[0].email,
+        firstName: result[0].firstName,
+        lastName: result[0].lastName,
+        city: result[0].city,
     }
 
     // Send response

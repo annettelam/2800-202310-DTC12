@@ -17,7 +17,7 @@ export const Flights = () => {
 
     return (
         <div style={{ backgroundColor: '#E6F7FF', fontFamily: 'Questrial' }}>
-            <h1> Welcome {user.username} </h1>
+            <h1> Welcome {user.firstName} {user.lastName} </h1>
             <div className="text-center my-5"> This is the flights page </div>
             <Footer />
         </div >

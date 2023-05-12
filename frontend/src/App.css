@@ -32,7 +32,7 @@
     /* Center and adjust the size of the form section */
     .text-center.my-5 form {
         margin: 0 auto;
-        max-width: 50%;
+        max-width: 300px;
     }
 
     /* Adjust the margin and font size of the form fields */
@@ -43,6 +43,9 @@
     .text-center.my-5 form input[type=email],
     .text-center.my-5 form input[type=password],
     .text-center.my-5 form input[type=username],
+    .text-center.my-5 form input[type=city],
+    .text-center.my-5 form input[type=firstName],
+    .text-center.my-5 form input[type=lastName],
     .text-center.my-5 form button[type=submit] {
         margin-bottom: 1rem;
     }
@@ -60,6 +63,27 @@
 
     .form-inline .btn {
         margin-left: 1rem;
+    }
+
+    /* Center and adjust the size of the form section */
+    .text-center.my-5 form {
+        margin: 0 auto;
+        max-width: 500px;
+    }
+
+    /* Adjust the margin and font size of the form fields */
+    .text-center.my-5 form label {
+        font-size: 1rem;
+    }
+
+    .text-center.my-5 form input[type=email],
+    .text-center.my-5 form input[type=password],
+    .text-center.my-5 form input[type=username],
+    .text-center.my-5 form input[type=city],
+    .text-center.my-5 form input[type=firstName],
+    .text-center.my-5 form input[type=lastName],
+    .text-center.my-5 form button[type=submit] {
+        margin-bottom: 1rem;
     }
 }
 
@@ -91,6 +115,9 @@
     .text-center.my-5 form input[type=email],
     .text-center.my-5 form input[type=password],
     .text-center.my-5 form input[type=username],
+    .text-center.my-5 form input[type=city],
+    .text-center.my-5 form input[type=firstName],
+    .text-center.my-5 form input[type=lastName],
     .text-center.my-5 form button[type=submit] {
         margin-bottom: 1rem;
     }
