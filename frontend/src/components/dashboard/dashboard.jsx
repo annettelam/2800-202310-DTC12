@@ -6,12 +6,13 @@ import '../../fonts.css';
 import { Footer } from '../footer/footer';
 import dashBackground from '../../dashbkg.jpg';
 import { Container } from 'react-bootstrap';
-
+import './dashboard.css';
 
 export const Dashboard = (props) => {
     return (
         <ChakraProvider>
             <div
+                className="dashboard-container"
                 style={{
                     backgroundImage: `url(${dashBackground})`,
                     backgroundRepeat: 'no-repeat',
@@ -26,17 +27,26 @@ export const Dashboard = (props) => {
                 <Container>
                     <Box p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
                         <Heading align="center">Welcome, username!</Heading>
-                        <Text align="center" mt="2">This is where you can view your trip details.</Text>
+                        <Text align="center" mt="2">
+                            This is where you can view your trip details.
+                        </Text>
                     </Box>
                 </Container>
                 <Flex justifyContent="center" alignItems="center" minHeight="25vh">
-                    <SimpleGrid spacing={8} templateColumns="repeat(4, 1fr)" justifyItems="center">
+                    <SimpleGrid
+                        spacing={8}
+                        templateColumns="repeat(4, 1fr)"
+                        justifyItems="center"
+                        className="simple-grid"
+                    >
                         <Card>
                             <CardHeader>
                                 <Heading size="md">User dashboard</Heading>
                             </CardHeader>
                             <CardBody>
-                                <Text>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, illum.</Text>
+                                <Text>
+                                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, illum.
+                                </Text>
                             </CardBody>
                             <CardFooter>
                                 <Button>View here</Button>
@@ -47,7 +57,9 @@ export const Dashboard = (props) => {
                                 <Heading size="md">User dashboard</Heading>
                             </CardHeader>
                             <CardBody>
-                                <Text>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, illum.</Text>
+                                <Text>
+                                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, illum.
+                                </Text>
                             </CardBody>
                             <CardFooter>
                                 <Button>View here</Button>
@@ -58,7 +70,9 @@ export const Dashboard = (props) => {
                                 <Heading size="md">User dashboard</Heading>
                             </CardHeader>
                             <CardBody>
-                                <Text>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, illum.</Text>
+                                <Text>
+                                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, illum.
+                                </Text>
                             </CardBody>
                             <CardFooter>
                                 <Button>View here</Button>
@@ -69,7 +83,9 @@ export const Dashboard = (props) => {
                                 <Heading size="md">User dashboard</Heading>
                             </CardHeader>
                             <CardBody>
-                                <Text>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, illum.</Text>
+                                <Text>
+                                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, illum.
+                                </Text>
                             </CardBody>
                             <CardFooter>
                                 <Button>View here</Button>

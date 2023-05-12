@@ -4,10 +4,12 @@
     background-size: cover;
     min-height: 100vh;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
-    /* Align cards to the top */
+    flex-direction: column;
+    /* Display cards in a column */
+    align-items: center;
+    /* Center cards horizontally */
+    padding: 20px;
+    /* Add padding for spacing */
 }
 
 @media (max-width: 768px) {
@@ -21,5 +23,10 @@
         /* Take full width of the container */
         margin: 10px 0;
         /* Adjust vertical margin as needed */
+    }
+
+    .simple-grid {
+        grid-template-columns: 1fr;
+        /* Change grid columns to 1fr for vertical stacking */
     }
 }
