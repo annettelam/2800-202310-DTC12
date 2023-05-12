@@ -26,6 +26,8 @@ const speedLimiter = slowDown({
 // Apply the rate limiter and request throttling middleware to all routes
 app.use(limiter);
 app.use(speedLimiter);
+app.use(express.static('public'));
+
 
 app.get('/', (req, res) => {
     res.render('search');
@@ -58,7 +60,8 @@ app.get('/search', async (req, res) => {
         tripAdvisorData.data.forEach((attraction) => {
             attractions.push({
                 name: attraction.name,
-                location_id: attraction.location_id
+                location_id: attraction.location_id,
+                photoUrl: '',
             });
         })   
     }
@@ -71,20 +74,23 @@ app.get('/search', async (req, res) => {
     // Handle request throttling
     await new Promise((resolve) => setTimeout(resolve, req.slowDown.delay));
 
+    
     // Get image for each attraction
     for (let i = 0; i < attractions.length; i ++) {
         const attraction = attractions[i];
         const locationId = attraction.location_id;
-        const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(locationId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`
+        const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(locationId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`;
 
         const tripAdvisorImgResponse = await fetch(tripAdvisorImgUrl);
         const tripAdvisorImgData = await tripAdvisorImgResponse.json();
+
         if (!tripAdvisorImgData.data
             || !Array.isArray(tripAdvisorImgData.data)
             || tripAdvisorImgData.data.length === 0
         ) {
-            console.log("inside image if");
-            attraction.photoUrl = "https://i.etsystatic.com/21654192/r/il/ede702/3942995056/il_1588xN.3942995056_48ro.jpg";
+            // console.log(noPhotoUrl, "no photo url");
+            // console.log(attraction.photoUrl, "photo url");
+            attraction.photoUrl = 'frontend/public/alicelogo.png';
         } else {
             const photoUrl = tripAdvisorImgData.data[0].images.large.url;
             attraction.photoUrl = photoUrl;
