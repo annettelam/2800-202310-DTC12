@@ -4,7 +4,6 @@ import { Box, Container, Heading, Text } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
-import { Footer } from '../footer/footer';
 import dashBackground from '../../dashbkg.jpg';
 
 export const Flights = () => {
@@ -42,7 +41,6 @@ export const Flights = () => {
                     </Box>
                 </Container>
             </div>
-            <Footer />
         </ChakraProvider>
     );
 };

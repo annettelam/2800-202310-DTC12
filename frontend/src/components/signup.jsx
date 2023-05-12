@@ -88,7 +88,6 @@ export const SignUp = ({ onLogin }) => {
                     }
                 </Form>
             </div>
-            <Footer />
         </div>
     );
 };
