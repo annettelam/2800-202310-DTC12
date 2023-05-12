@@ -8,7 +8,6 @@ import '../../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import navlogo from '../../navlogo.png';
-import { Avatar } from '@chakra-ui/react';
 
 export const CustomNavbar = ({ loggedIn, setLoggedIn }) => {
     const navigate = useNavigate();
