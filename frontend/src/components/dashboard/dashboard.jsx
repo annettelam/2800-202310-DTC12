@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChakraProvider, Box, Heading, Text, Card, CardHeader, CardBody, CardFooter, Flex, SimpleGrid, Button } from '@chakra-ui/react';
 import '../home/home.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,6 +10,14 @@ import { Container } from 'react-bootstrap';
 import './dashboard.css';
 
 export const Dashboard = (props) => {
+    const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    useEffect(() => {
+        if (localStorage.getItem('loggedIn') !== 'true') {
+            navigate('/login');
+        }
+    }, [navigate]);
     return (
         <ChakraProvider>
             <div
@@ -26,7 +35,7 @@ export const Dashboard = (props) => {
                 <br></br>
                 <Container>
                     <Box p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
-                        <Heading align="center">Welcome, username!</Heading>
+                        <Heading align="center">Welcome, {user.firstName} {user.lastName}!</Heading>
                         <Text align="center" mt="2">
                             This is where you can view your trip details.
                         </Text>
