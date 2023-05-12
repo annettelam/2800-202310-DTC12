@@ -5,14 +5,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import { Footer } from '../footer/footer';
 
-export const Flights = ({loggedIn}) => {
+export const Flights = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
             navigate('/login');
         }
-    }, [loggedIn, navigate]);
+    }, [navigate]);
 
     return (
         <div style={{ backgroundColor: '#E6F7FF', fontFamily: 'Questrial' }}>

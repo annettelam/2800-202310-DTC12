@@ -37,7 +37,6 @@ export const Login = ({onLogin}) => {
         } catch (err) {
             console.log(err);
         }
-
     };
 
     return (
@@ -48,14 +47,25 @@ export const Login = ({onLogin}) => {
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Email Address</Form.Label>
-                        <Form.Control type="email" name="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                        <Form.Text className="text-muted">
-                        </Form.Text>
+                        <Form.Control
+                            type="email"
+                            name="email"
+                            placeholder="Enter email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <Form.Text className="text-muted"></Form.Text>
                     </Form.Group>
 
                     <Form.Group controlId="formBasicPassword">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                        <Form.Control
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
                     </Form.Group>
                     <Button variant="primary" type="submit" style={{ width: '100%' }}>
                         Submit

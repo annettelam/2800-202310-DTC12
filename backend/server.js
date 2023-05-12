@@ -11,6 +11,7 @@ const cors = require('cors');
 
 const saltRounds = 10;
 const port = 4000;
+const expireTime = 1000 * 60 * 60; // 1 hour
 
 /* secret information section */
 const mongodb_database = process.env.MONGODB_DATABASE;
@@ -80,6 +81,7 @@ app.post('/signup', async (req, res) => {
 
     // Set session
     req.session.authenticated = true;
+    req.session.cookie.maxAge = expireTime;
 
     // Send response
     res.json("Success");
@@ -108,6 +110,7 @@ app.post('/login', async (req, res) => {
 
     // Set session
     req.session.authenticated = true;
+    req.session.cookie.maxAge = expireTime;
 
     // Send response
     res.json("Success");
@@ -186,6 +189,10 @@ app.post('/reset-password/:token', async (req, res) => {
 
 
 
+
+app.post('/logout', (req, res) => {
+    req.session.destroy();
+});
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);

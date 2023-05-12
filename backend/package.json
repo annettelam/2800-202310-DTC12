@@ -8,6 +8,7 @@
     "express-session": "^1.17.3",
     "mongodb": "^5.4.0",
     "mongoose": "^7.1.1",
-    "nodemailer": "^6.9.2"
+    "nodemailer": "^6.9.2",
+    "react-router": "^6.11.1"
   }
 }
