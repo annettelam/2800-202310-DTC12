@@ -1,0 +1,28 @@
+.not-found-container {
+    position: relative;
+    text-align: center;
+    padding: 0;
+    overflow: hidden;
+}
+
+.not-found-image {
+    min-width: 900px;
+    object-fit: cover;
+    filter: brightness(0.6);
+}
+
+.not-found-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+/* Small devices (phones) */
+@media only screen and (max-width: 767px) {
+    .not-found-content {
+        width: 90%;
+    }
+}
+

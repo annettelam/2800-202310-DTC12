@@ -1,0 +1,129 @@
+/* Global font family */
+* {
+    font-family: "Questrial", sans-serif;
+}
+
+/* Small devices (phones) */
+@media only screen and (max-width: 767px) {
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+
+    .navbar-toggler {
+        font-size: 1.2rem;
+    }
+
+    .navbar-nav {
+        margin-top: 0.5rem;
+    }
+
+    .form-inline {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-inline .btn {
+        margin-top: 0.5rem;
+    }
+
+    .my-5 {
+        margin-top: 2rem;
+    }
+
+    .App-logo {
+        width: 50%;
+    }
+
+    /* Center and adjust the size of the form section */
+    .text-center.my-5 form {
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    /* Adjust the margin and font size of the form fields */
+    .text-center.my-5 form label {
+        font-size: 1rem;
+    }
+
+    .text-center.my-5 form input[type=email],
+    .text-center.my-5 form input[type=password],
+    .text-center.my-5 form input[type=username],
+    .text-center.my-5 form input[type=city],
+    .text-center.my-5 form input[type=firstName],
+    .text-center.my-5 form input[type=lastName],
+    .text-center.my-5 form button[type=submit] {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Medium devices (tablets) */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .navbar-brand {
+        font-size: 1.8rem;
+    }
+
+    .navbar-toggler {
+        font-size: 1.4rem;
+    }
+
+    .form-inline .btn {
+        margin-left: 1rem;
+    }
+
+    /* Center and adjust the size of the form section */
+    .text-center.my-5 form {
+        margin: 0 auto;
+        max-width: 500px;
+    }
+
+    /* Adjust the margin and font size of the form fields */
+    .text-center.my-5 form label {
+        font-size: 1rem;
+    }
+
+    .text-center.my-5 form input[type=email],
+    .text-center.my-5 form input[type=password],
+    .text-center.my-5 form input[type=username],
+    .text-center.my-5 form input[type=city],
+    .text-center.my-5 form input[type=firstName],
+    .text-center.my-5 form input[type=lastName],
+    .text-center.my-5 form button[type=submit] {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Large devices (desktops) */
+@media only screen and (min-width: 992px) {
+    .navbar-brand {
+        font-size: 2rem;
+    }
+
+    .navbar-toggler {
+        font-size: 1.6rem;
+    }
+
+    .form-inline .btn {
+        margin-left: 1.5rem;
+    }
+
+    /* Center and adjust the size of the form section */
+    .text-center.my-5 form {
+        margin: 0 auto;
+        max-width: 50%;
+    }
+
+    /* Adjust the margin and font size of the form fields */
+    .text-center.my-5 form label {
+        font-size: 1rem;
+    }
+
+    .text-center.my-5 form input[type=email],
+    .text-center.my-5 form input[type=password],
+    .text-center.my-5 form input[type=username],
+    .text-center.my-5 form input[type=city],
+    .text-center.my-5 form input[type=firstName],
+    .text-center.my-5 form input[type=lastName],
+    .text-center.my-5 form button[type=submit] {
+        margin-bottom: 1rem;
+    }
+}
