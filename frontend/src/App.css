@@ -1,3 +1,8 @@
+/* Global font family */
+* {
+    font-family: "Questrial", sans-serif;
+}
+
 /* Small devices (phones) */
 @media only screen and (max-width: 767px) {
     .navbar-brand {
