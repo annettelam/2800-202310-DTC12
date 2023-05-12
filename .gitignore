@@ -13,3 +13,4 @@ node_modules/
 *.tmp
 *.bak
 *.swp
+node_modules

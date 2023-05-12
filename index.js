@@ -1,5 +1,7 @@
 const express = require('express');
 const fetch = require('node-fetch');
+const rateLimit = require('express-rate-limit');
+const slowDown = require('express-slow-down');
 const app = express();
 const path = require('path');
 const port = 3000;
@@ -7,6 +9,23 @@ const googleMapsApiKey = 'AIzaSyAidVELYsMX22Ztp4SKJ0TzF15TX0Kqoss';
 const tripAdvisorApiKey = 'EB348A0AB91544309BA148014BE4F02B';
 
 app.set('view engine', 'ejs');
+
+// Define rate limiter options
+const limiter = rateLimit({
+    windowMs: 24 * 60 * 60 * 1000, // 24 hours
+    max: 1000, // 1000 requests per day
+});
+  
+// Define request throttling options
+const speedLimiter = slowDown({
+    windowMs: 1000, // 1 second
+    delayAfter: 50, // Start delaying after the 50th request
+    delayMs: 100, // Delay each subsequent request by 100ms
+  });
+  
+// Apply the rate limiter and request throttling middleware to all routes
+app.use(limiter);
+app.use(speedLimiter);
 
 app.get('/', (req, res) => {
     res.render('search');
@@ -44,6 +63,15 @@ app.get('/search', async (req, res) => {
         })   
     }
 
+    // Handle rate limit exceeded error
+    if (req.rateLimit.remaining === 0) {
+    return res.status(429).send('Rate limit exceeded. Please try again later.');
+    }
+
+    // Handle request throttling
+    await new Promise((resolve) => setTimeout(resolve, req.slowDown.delay));
+
+    // Get image for each attraction
     for (let i = 0; i < attractions.length; i ++) {
         const attraction = attractions[i];
         const locationId = attraction.location_id;
