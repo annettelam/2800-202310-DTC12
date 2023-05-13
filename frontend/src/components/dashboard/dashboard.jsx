@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     ChakraProvider,
@@ -23,12 +23,13 @@ import './dashboard.css';
 
 export const Dashboard = (props) => {
     const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem('user'));
+    const [user, setUser] = useState({});
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
             navigate('/login');
         }
+        setUser(JSON.parse(localStorage.getItem('user')));
     }, [navigate]);
 
     return (
