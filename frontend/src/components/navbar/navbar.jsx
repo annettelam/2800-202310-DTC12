@@ -31,7 +31,7 @@ export const CustomNavbar = ({ loggedIn, setLoggedIn }) => {
     }
 
     return (
-        <Navbar bg="light" expand="lg">
+        <Navbar bg="light" expand="lg" className="mb-0">
             <Container>
                 <Navbar.Brand href="#home"><img src={navlogo} alt="logo" className="App-logo" style={{ width: '75px' }} />
                 </Navbar.Brand>
