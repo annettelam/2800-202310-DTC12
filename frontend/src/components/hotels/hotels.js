@@ -34,22 +34,18 @@ app.get('/hotels', (req, res) => {
             <label for="guests">Number of Adults</label>
             <input type="number" id="guests" name="guests" min="1" max="10" required>
             <br>
-            <label for="rooms">Number of Rooms</label>
-            <input type="number" id="rooms" name="rooms" min="1" max="10" required>
-            <br>
             <input type="submit" value="Submit">
             </form>
             `);
 });
 
 app.post('/hotels', async (req, res) => {
-    const { city, checkin, checkout, guests, rooms } = req.body;
+    const { city, checkin, checkout, guests } = req.body;
 
     console.log(`City: ${city}`);
     console.log(`Check In: ${checkin}`);
     console.log(`Check Out: ${checkout}`);
     console.log(`Guests: ${guests}`);
-    console.log(`Rooms: ${rooms}`);
 
     try {
         const result = await hotelAPI.get('/locations', {
@@ -74,32 +70,17 @@ app.post('/hotels', async (req, res) => {
                 dest_id: dest_id,
                 filter_by_currency: 'CAD',
                 locale: 'en-gb',
-                room_number: rooms
+                room_number: 1
             }
         });
 
-        list_of_hotels = hotels.data.result.map(hotel => {
-            if (hotel.review_score == null) {
-                hotel.review_score = "No reviews yet";
-            } else {
-                hotel.review_score = hotel.review_score + "/10";
-            }
-            return `
-            <div>
-                <h2>${hotel.hotel_name}</h2>
-                <img src="${hotel.main_photo_url}" alt="Hotel Image">
-                <p>Price: ${hotel.min_total_price}</p>
-                <p>Address: ${hotel.address}</p>
-                <p>Rating: ${hotel.review_score}</p>
-            </div>
-            `;
-        });
-
-        res.send(list_of_hotels.join(''));
+        res.json(hotels.data.result);
 
     } catch (error) {
         console.log(error);
     }
+
+
 });
 
 app.listen(port, () => {

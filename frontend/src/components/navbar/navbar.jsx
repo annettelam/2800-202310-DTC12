@@ -43,7 +43,7 @@ export const CustomNavbar = ({ loggedIn, setLoggedIn }) => {
                         <Nav.Link href="/">Home</Nav.Link>
                         <Nav.Link href="/dashboard">Dashboard</Nav.Link>
                         <Nav.Link href="/flights">Find Flights</Nav.Link>
-                        <Nav.Link href="#hotels">Find Hotels</Nav.Link>
+                        <Nav.Link href="/hotels">Find Hotels</Nav.Link>
                     </Nav>
                     <Form className="d-flex align-items-center">
                         {loggedIn ? (

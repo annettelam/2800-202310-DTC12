@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Container, Heading, Text } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
@@ -8,13 +8,12 @@ import dashBackground from '../../dashbkg.jpg';
 
 export const Flights = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useState({});
+    const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
             navigate('/login');
         }
-        setUser(JSON.parse(localStorage.getItem('user')));
     }, [navigate]);
 
     return (
