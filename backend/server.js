@@ -27,7 +27,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
 
 var { database } = include('databaseConnection');
-const userCollection = database.db(mongodb_database).collection('users');
+const userCollection = database.db(mongodb_database).collection('planetpass/users');
 module.exports.mongodb_database = mongodb_database;
 
 var mongoStore = MongoStore.create({
@@ -83,7 +83,7 @@ app.post('/signup', async (req, res) => {
     const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
     // Add user to database
-    await userCollection.insertOne({ username: username, email: email, password: hashedPassword, firstName: firstName, lastName: lastName, city: city });
+    await userCollection.insertOne({ username: username, email: email, password: hashedPassword, firstName: firstName, lastName: lastName, city: city, destination: destination, departureDate: departureDate, returnDate: returnDate });
 
     // Set session
     req.session.authenticated = true;
@@ -95,6 +95,9 @@ app.post('/signup', async (req, res) => {
         firstName: firstName,
         lastName: lastName,
         city: city,
+        destination: destination,
+        departureDate: departureDate,
+        returnDate: returnDate
     }
 
     // Send response
@@ -133,6 +136,9 @@ app.post('/login', async (req, res) => {
         firstName: result[0].firstName,
         lastName: result[0].lastName,
         city: result[0].city,
+        destination: result[0].destination,
+        departureDate: result[0].departureDate,
+        returnDate: result[0].returnDate
     };
 
     // Send response

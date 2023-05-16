@@ -121,7 +121,6 @@ router.post('/flightResults', async (req, res) => {
       params.returnDate = returnDate
     }
 
-
     const results = await searchFlights(params);
     console.log(results)
     const filteredResults = results.data.data.filter((flight) => {
@@ -140,13 +139,25 @@ router.post('/flightResults', async (req, res) => {
         }
       }
       return matchFlight;
-    }
+    });
+
+    // Save search data to user's document in the users collection
+    const user = req.session.user;
+    await userCollection.updateOne(
+      { username: user.username },
+      {
+        $set: {
+          destination: destinationDisplayCode,
+          departureDate: departureDate,
+          returnDate: tripType === 'roundTrip' ? returnDate : null
+        }
+      }
     );
 
-    const attractions = await fetchAttractions(destinationDisplayCode);
-    const html = flightInformation(filteredResults, tripType, returnDate);
+    // const attractions = await fetchAttractions(destinationDisplayCode);
+    var html = flightInformation(filteredResults, tripType, returnDate);
     const attractionsHtml = attractionsInformation(attractions);
-    res.send(html + attractionsHtml);
+    res.send(html);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal server error');
