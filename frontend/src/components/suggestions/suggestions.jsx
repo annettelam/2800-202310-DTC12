@@ -27,7 +27,7 @@ export const Suggestions = () => {
     useEffect(() => {
         const fetchAttractions = async () => {
           try {
-            const attractionsResponse = await axios.get(`/search?location=${cityName}`);
+            const attractionsResponse = await axios.get(`http://localhost:3001/suggestions/search?location=${cityName}`);
             if (attractionsResponse.data) {
               setAttractions(attractionsResponse.data.attractions);
             }
