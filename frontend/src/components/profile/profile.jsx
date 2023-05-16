@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     ChakraProvider, Heading, Container, Box, Card,
-    Divider, Avatar, Text, Flex
+    Divider, Text
 } from '@chakra-ui/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../App.css';

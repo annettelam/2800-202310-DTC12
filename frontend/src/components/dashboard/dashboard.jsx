@@ -16,7 +16,6 @@ import {
 import '../home/home.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
-import { Footer } from '../footer/footer';
 import dashBackground from '../../dashbkg.jpg';
 import { Container } from 'react-bootstrap';
 import './dashboard.css';
