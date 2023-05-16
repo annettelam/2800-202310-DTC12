@@ -14,6 +14,8 @@ import { NotFoundPage } from "./components/404/404";
 import { Profile } from "./components/profile/profile";
 
 
+
+
 const Planetpass = () => {
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem('loggedIn'));
 
@@ -38,6 +40,7 @@ const Planetpass = () => {
           <Route path="/flights" element={<Flights />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/flights" element={<Flights />} />
         </Routes >
       </div >
       <Footer />
