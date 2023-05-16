@@ -83,6 +83,7 @@ export const Flights = () => {
                                     <option value="BOS">Boston - Logan International Airport (BOS)</option>
                                     <option value="ORD">Chicago - O'Hare International Airport (ORD)</option>
                                     <option value="DFW">Dallas - Dallas/Fort Worth International Airport (DFW)</option>
+                                    <option value="HNL">Hawaii - Daniel K. Inouye International Airport (HNL)</option>
                                     <option value="IAH">Houston - George Bush Intercontinental Airport (IAH)</option>
                                     <option value="JFK">New York - John F. Kennedy International Airport (JFK)</option>
                                     <option value="LAX">Los Angeles - Los Angeles International Airport (LAX)</option>
@@ -106,11 +107,12 @@ export const Flights = () => {
                                     onChange={(e) => setDestination(e.target.value)}
                                     required
                                 >
-                                    <option value="">Select origin</option>
+                                    <option value="">Select Destination</option>
                                     <option value="ATL">Atlanta - Hartsfield-Jackson Atlanta International Airport (ATL)</option>
                                     <option value="BOS">Boston - Logan International Airport (BOS)</option>
                                     <option value="ORD">Chicago - O'Hare International Airport (ORD)</option>
                                     <option value="DFW">Dallas - Dallas/Fort Worth International Airport (DFW)</option>
+                                    <option value="HNL">Hawaii - Daniel K. Inouye International Airport (HNL)</option>
                                     <option value="IAH">Houston - George Bush Intercontinental Airport (IAH)</option>
                                     <option value="JFK">New York - John F. Kennedy International Airport (JFK)</option>
                                     <option value="LAX">Los Angeles - Los Angeles International Airport (LAX)</option>
