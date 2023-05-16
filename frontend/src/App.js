@@ -4,7 +4,6 @@ import './App.css';
 import { CustomNavbar } from "./components/navbar/navbar";
 import { Footer } from "./components/footer/footer";
 import { Home } from "./components/home/home";
-import { Flights } from "./components/flights/flights";
 import { Login } from "./components/login";
 import { SignUp } from "./components/signup";
 import { ForgotPassword } from "./components/forgotpassword";
@@ -12,6 +11,7 @@ import { ResetPassword } from "./components/resetpassword";
 import { Dashboard } from "./components/dashboard/dashboard";
 import { NotFoundPage } from "./components/404/404";
 import { Profile } from "./components/profile/profile";
+import { Recommendations } from "./components/reco/reco";
 
 
 
@@ -37,10 +37,9 @@ const Planetpass = () => {
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/flights" element={<Flights />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/flights" element={<Flights />} />
+          <Route path="/recommendations" element={<Recommendations />} />
         </Routes >
       </div >
       <Footer />
