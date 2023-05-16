@@ -1,10 +1,18 @@
 const express = require('express');
 const { searchFlights } = require('./skyscanner');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const port = 3000;
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 100, // 100 requests per minute
+});
+
+app.use(limiter);
 
 
 app.get('/', (req, res) => {
@@ -61,7 +69,6 @@ app.get('/flights', (req, res) => {
     </script>
   `);
 });
-
 
 
 app.post('/flightResults', async (req, res) => {
@@ -164,8 +171,6 @@ const flightInformation = (flights, tripType, returnDate) => {
       }
     }
 
-    // if (tripType === 'roundTrip') {
-    //   matchFlight = flights[i].legs.length === 2 && flights[i].legs[1].departure.slice(0, 10) === returnDate;
     if (tripType === 'roundTrip' && flights[i].legs[1].departure.slice(0, 10) === returnDate) {
       const returnFlightOriginName = flights[i].legs[1].origin.name
       const returnFlightOriginDisplayCode = flights[i].legs[1].origin.display_code
@@ -209,15 +214,6 @@ const flightInformation = (flights, tripType, returnDate) => {
   return html;
 }
 
-
-// for testing sample data
-// const sampleSearchFlights = (originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType) => {
-//   return new Promise((resolve, reject) => {
-//     setTimeout(() => {
-//       resolve(sampleData);
-//     }, 1000);
-//   });
-// };
 
 
 app.listen(port, () => {
