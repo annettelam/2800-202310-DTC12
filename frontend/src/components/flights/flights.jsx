@@ -20,7 +20,7 @@ export const Flights = () => {
     const [tripType, setTripType] = useState('oneWay');
     const [adults, setAdults] = useState(1);
     const [cabinClass, setCabinClass] = useState('economy');
-    const [msg, setMsg] = useState('');
+    const [flights, setFlights] = useState({});
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
@@ -39,23 +39,9 @@ export const Flights = () => {
             }).then((res) => {
                 console.log(res.data);
                 if (res.data) {
-                    if (res.data.message === 'Success') {
-                        navigate('/flightResults', {
-                            state: {
-                                origin: originDisplayCode,
-                                destination: destinationDisplayCode,
-                                departureDate: departureDate,
-                                returnDate: returnDate,
-                                tripType: tripType,
-                                adults: adults,
-                                cabinClass: cabinClass
-                            }
-                        });
-                    } else {
-                        setMsg(res.data);
-                    }
+                    setFlights(res.data);
                 }
-            })
+            });
         } catch (err) {
             console.log(err);
         }
@@ -81,7 +67,7 @@ export const Flights = () => {
 
                     <div className="text-center my-5">
                         <Form className="text-center my-5" onSubmit={handleSubmit}>
-                
+
                             <Form.Group controlId="formOrigin" style={{ width: '100%' }}>
                                 <Form.Label>Origin</Form.Label>
                                 <Form.Control
@@ -106,7 +92,7 @@ export const Flights = () => {
                                     <option value="SEA">Seattle - Seattle-Tacoma International Airport (SEA)</option>
                                     <option value="YYZ">Toronto - Toronto Pearson International Airport (YYZ)</option>
                                     <option value="YVR">Vancouver - Vancouver International Airport (YVR)</option>
-                                   
+
                                 </Form.Control>
                             </Form.Group>
 
@@ -134,7 +120,7 @@ export const Flights = () => {
                                     <option value="SEA">Seattle - Seattle-Tacoma International Airport (SEA)</option>
                                     <option value="YYZ">Toronto - Toronto Pearson International Airport (YYZ)</option>
                                     <option value="YVR">Vancouver - Vancouver International Airport (YVR)</option>
-                                   
+
                                 </Form.Control>
                             </Form.Group>
 
@@ -218,23 +204,120 @@ export const Flights = () => {
                             <Button variant="primary" type="submit" style={{ width: '100%' }}>
                                 Submit
                             </Button>
-                            {msg && (
-                                <p className="text-danger fw-bold" style={{ textAlign: 'left' }}>
-                                    {msg}
-                                </p>
-                            )}
+
+
+
                         </Form>
 
                     </div>
 
-
-
                 </Card>
 
-                <Container maxWidth="sm">
-                    <Card bg="aliceblue" p="4" boxShadow="lg" rounded="md" mb="4">
+                <Container maxWidth="6xl">
+                    {Object.keys(flights).map((key) => (
+                        <Box key={key} p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
+                            <Heading align="center">{flights[key].price.amount}</Heading>
+                            <Text align="center" mt="2">
+                                <b>Origin:</b> {flights[key].legs[0].origin.name}
+                            </Text>
+                            <Text align="center" mt="2">
+                                <b>OriginCode:</b> {flights[key].legs[0].origin.display_code}
+                            </Text>
+                            <Text align="center" mt="2">
+                                <b>Destination:</b> {flights[key].legs[0].destination.name}
+                            </Text>
+                            <Text align="center" mt="2">
+                                <b>Destination:</b> {flights[key].legs[0].destination.display_code}
+                            </Text>
+                            <Text align="center" mt="2">
+                                <b>Departure Time:</b> {flights[key].legs[0].departure}
+                            </Text>
+                            <Text align="center" mt="2">
+                                <b>Arrival Time:</b> {flights[key].legs[0].arrival}
+                            </Text>
+                            <Text align="center" mt="2">
+                                <b>Carrier:</b> {flights[key].legs[0].carriers[0].name}
+                            </Text>
+                            <Text align="center" mt="2">
+                                <b>Stops:</b> {flights[key].legs[0].stop_count}
+                            </Text>
+                            {flights[key].legs[0].stop_count > 0 ? (
+                                <div>
+                                    {flights[key].legs[0].stops.map((stop, index) => (
+                                        <Text align="center" mt="2" key={index}>
+                                            <b>Stop:</b> {stop.name}
+                                            <b>Stop:</b> {stop.display_code}
+                                        </Text>
+                                    ))}
+                                </div>
+                            ) : (
+                                <Text align="center" mt="2">
+                                    <b>Stop:</b> No stops
+                                </Text>
+                            )}
 
-                    </Card>
+
+                            {tripType === 'roundTrip' && flights[key].legs[1].departure.slice(0, 10) === returnDate && (
+                                <div>
+                                    <Text align="center" mt="2">
+                                        <b>ReturnOrigin:</b> {flights[key].legs[1].origin.name}
+                                    </Text>
+                                    <Text align="center" mt="2">
+                                        <b>Return OriginCode:</b> {flights[key].legs[1].origin.display_code}
+                                    </Text>
+                                    <Text align="center" mt="2">
+                                        <b>Return Destination:</b> {flights[key].legs[1].destination.name}
+                                    </Text>
+                                    <Text align="center" mt="2">
+                                        <b>Return Destination:</b> {flights[key].legs[1].destination.display_code}
+                                    </Text>
+                                    <Text align="center" mt="2">
+                                        <b>Return Departure Time:</b> {flights[key].legs[1].departure}
+                                    </Text>
+                                    <Text align="center" mt="2">
+                                        <b>Return Arrival Time:</b> {flights[key].legs[1].arrival}
+                                    </Text>
+                                    <Text align="center" mt="2">
+                                        <b>Return Carrier:</b> {flights[key].legs[1].carriers[0].name}
+                                    </Text>
+                                    <Text align="center" mt="2">
+                                        <b>Return Stops:</b> {flights[key].legs[1].stop_count}
+                                    </Text>
+                                    {flights[key].legs[1].stop_count > 0 ? (
+                                        <div>
+                                            {flights[key].legs[1].stops.map((stop, index) => (
+                                                <Text align="center" mt="2" key={index}>
+                                                    <b>Return Stop:</b> {stop.name}
+                                                    <b>Return Stop:</b> {stop.display_code}
+                                                </Text>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <Text align="center" mt="2">
+                                            <b>Stop:</b> No stops
+                                        </Text>
+                                    )}
+
+                                </div>
+                            )}
+
+                            {flights[key].is_eco_contender && (
+                                <Text align="center" mt="2">
+                                    <b>Eco contender delta:</b> {Math.round(Math.abs(flights[key].eco_contender_delta))}%
+                                </Text>
+                            )}
+
+
+
+
+
+
+
+
+
+                        </Box>
+                    ))}
+
                 </Container>
 
             </div>

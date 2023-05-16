@@ -212,10 +212,8 @@ app.post('/flights', async (req, res) => {
       }
       );
   
-      // console.log(results.data)
-      var html = flightInformation(filteredResults, tripType, returnDate);
-      console.log(html)
-      res.send(html);
+      console.log(filteredResults)
+      res.json(filteredResults);
     } catch (error) {
       console.error(error);
       res.status(500).send('Internal server error');
