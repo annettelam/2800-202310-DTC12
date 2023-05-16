@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton } from '@chakra-ui/react';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton } from '@chakra-ui/react';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import dashBackground from '../../dashbkg.jpg';
+import cities from './cities';
 
 export const Hotels = () => {
     const navigate = useNavigate();
@@ -14,22 +15,7 @@ export const Hotels = () => {
     const [checkOutDate, setCheckOutDate] = useState('');
     const [numAdults, setNumAdults] = useState('');
     const [numRooms, setNumRooms] = useState('');
-
-    const cities = {
-        'New York City, New York': 20088325,
-        'Los Angeles, California': 20014181,
-        'Chicago, Illinois': 20033173,
-        'Toronto, Ontario': -574890,
-        'Mexico City, Mexico': -1658079,
-        'Vancouver, British Columbia': -575268,
-        'Houston, Texas': 20128761,
-        'Quebec City, Quebec': -571851,
-        'Atlanta, Georgia': 20024809,
-        'Miami, Florida': 20023181,
-        'Dallas, Texas': 20127504,
-        'Seattle, Washington': 20144883,
-        'Boston, Massachusetts': 20061717
-    };
+    const [hotels, setHotels] = useState({});
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
@@ -37,10 +23,23 @@ export const Hotels = () => {
         }
     }, [navigate]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
         console.log(city, checkInDate, checkOutDate, numAdults, numRooms);
+
+        try {
+            const response = await axios.post('http://localhost:4000/hotels', {
+                city,
+                checkInDate,
+                checkOutDate,
+                numAdults,
+                numRooms
+            });
+            console.log(response.data);
+            setHotels(response.data);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -57,7 +56,7 @@ export const Hotels = () => {
                     minHeight: '100vh',
                 }}
             >
-                <Container maxWidth="sm">
+                <Container maxWidth="md">
                     <Box p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
                         <Heading align="center">Hotels</Heading>
                         <Text align="center" mt="2">
@@ -147,8 +146,29 @@ export const Hotels = () => {
                         </form>
                     </Box>
                 </Container>
-                
-                <Container className='hotel-results' maxWidth="sm"></Container>
+                <Container className='hotel-results' maxWidth="6xl">
+                    {Object.keys(hotels).map((hotelId) => (
+                        <Box key={hotelId} p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
+                            <Heading align="center">{hotels[hotelId].hotel_name}</Heading>
+                            <img src={hotels[hotelId].main_photo_url} alt={hotels[hotelId].hotel_name} style={{ width: '15%', height: 'auto' }} />
+                            <Text align="center" mt="2">
+                                <b>Price:</b> ${hotels[hotelId].min_total_price}
+                            </Text>
+                            <Text align="center" mt="2">
+                                <b>Address:</b> {hotels[hotelId].address}
+                            </Text>
+                            {hotels[hotelId].review_score !== null ? (
+                                <Text align="center" mt="2">
+                                    <b>Rating:</b> {hotels[hotelId].review_score} / 10
+                                </Text>
+                            ) : (
+                                <Text align="center" mt="2">
+                                    <b>Rating:</b> No reviews yet
+                                </Text>
+                            )}
+                        </Box>
+                    ))}
+                </Container>
             </div>
         </ChakraProvider>
     );
