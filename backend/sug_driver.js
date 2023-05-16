@@ -35,7 +35,7 @@ app.use(express.static('public'));
 
 
 app.get('/', (req, res) => {
-    res.render('search');
+    res.json({ status: 'OK' });
 });
 
 app.get('/search', async (req, res) => {
@@ -60,7 +60,8 @@ app.get('/search', async (req, res) => {
     ) {
         // Not good
         console.log('not good')
-        res.render('results', {location, attractions: []});
+        res.json({ location, attractions });
+
     } else {
         tripAdvisorData.data.forEach((attraction) => {
             attractions.push({
@@ -101,8 +102,7 @@ app.get('/search', async (req, res) => {
             attraction.photoUrl = photoUrl;
         }
     }
-
-    res.render('results', {location, attractions})
+    res.json({ location, attractions });
 });
   
 

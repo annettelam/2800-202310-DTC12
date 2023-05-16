@@ -1,4 +1,16 @@
 {
+  "name": "suggestions-page",
+  "version": "1.0.0",
+  "description": "Suggestions page with attractions and packing list",
+  "main": "sug_driver.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "node server.js"
+  },
+  "proxy": "http://localhost:3005",
   "dependencies": {
     "@chakra-ui/react": "^2.6.1",
     "@emotion/react": "^11.11.0",
@@ -11,5 +23,8 @@
     "express-slow-down": "^1.6.0",
     "framer-motion": "^10.12.11",
     "node-fetch": "^2.6.11"
+  },
+  "devDependencies": {
+    "react-scripts": "4.0.3"
   }
 }
