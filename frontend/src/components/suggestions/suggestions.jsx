@@ -72,7 +72,7 @@ export const Suggestions = () => {
                     Attractions
                 </Heading>
                 {attractions.length === 0 ? (
-                    <Text>No attractions found</Text>
+                    <Text>No attractions found. Please find a flight first.</Text>
                 ) : (
                     <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={10}>
                     {attractions.map((attraction) => (
