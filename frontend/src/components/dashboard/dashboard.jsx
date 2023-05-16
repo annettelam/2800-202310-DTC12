@@ -115,7 +115,6 @@ export const Dashboard = (props) => {
                     </Stack>
                 </Flex>
             </div>
-            <Footer />
         </ChakraProvider>
     );
 };
