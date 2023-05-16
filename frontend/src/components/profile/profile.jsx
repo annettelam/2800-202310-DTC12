@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     ChakraProvider, Heading, Container, Box, Card,
-    Divider, Avatar, Text, Flex
+    Divider, Text
 } from '@chakra-ui/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../App.css';
@@ -35,7 +35,7 @@ export const Profile = () => {
             >
                 <Container>
                     <Box p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
-                        <Heading align="center">Welcome, {user.firstName} {user.lastName}!</Heading>
+                        <Heading align="center" fontFamily="Questrial">Welcome, {user.firstName} {user.lastName}!</Heading>
                         <Text align="center" mt="2">
                             Here are your account details.
                         </Text>
@@ -43,12 +43,6 @@ export const Profile = () => {
 
                     <Card maxWidth="500px" mx="auto">
                         <Box p="5" textAlign="center">
-                            <Flex justify="center" align="center" mb="4">
-                                <Box>
-                                    <Avatar size="md" />
-                                </Box>
-                            </Flex>
-                            <Divider my="2" />
                             <Box display="flex" flexDirection="column" alignItems="center">
                                 <Box>
                                     <strong>Username:</strong> {user.username}
