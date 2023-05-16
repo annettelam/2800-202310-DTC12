@@ -5,8 +5,13 @@ const slowDown = require('express-slow-down');
 const app = express();
 const path = require('path');
 const port = 3000;
-const googleMapsApiKey = 'AIzaSyAidVELYsMX22Ztp4SKJ0TzF15TX0Kqoss';
-const tripAdvisorApiKey = 'EB348A0AB91544309BA148014BE4F02B';
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
+const tripAdvisorApiKey = process.env.TRIP_ADVISOR_API_KEY;
+
 
 app.set('view engine', 'ejs');
 
