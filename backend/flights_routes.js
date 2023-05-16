@@ -91,21 +91,6 @@ router.post('/flightResults', async (req, res) => {
   console.log(cabinClass)
   req.session.destinationDisplayCode = destinationDisplayCode;
 
-  // Store the search data in the searchCollection
-  const userSearchData = {
-    destinationDisplayCode: destinationDisplayCode,
-    departureDate: departureDate,
-    returnDate: tripType === 'roundTrip' ? returnDate : null
-  };
-
-  try {
-    await searchCollection.deleteMany({});
-    await searchCollection.insertOne(userSearchData);
-    console.log('User search data inserted into the database');
-  } catch (error) {
-    console.error('Error inserting user search data into the database', error);
-  }
-
   try {
     let params = {
       origin: originDisplayCode,
@@ -124,7 +109,7 @@ router.post('/flightResults', async (req, res) => {
     const results = await searchFlights(params);
     console.log(results)
     const filteredResults = results.data.data.filter((flight) => {
-      var matchFlight = false;
+      let matchFlight = false;
 
       if (tripType === 'roundTrip') {
         console.log(flight.legs.length)
@@ -132,16 +117,16 @@ router.post('/flightResults', async (req, res) => {
           matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
           console.log("yes")
         }
-      }
-      if (tripType === 'oneWay') {
+      } else if (tripType === 'oneWay') {
         if (flight.legs.length === 1) {
           matchFlight = true;
         }
       }
+
       return matchFlight;
     });
 
-    // Save search data to user's document in the users collection
+    // Update user's document in the users collection with the search data
     const user = req.session.user;
     await userCollection.updateOne(
       { username: user.username },
@@ -155,8 +140,8 @@ router.post('/flightResults', async (req, res) => {
     );
 
     // const attractions = await fetchAttractions(destinationDisplayCode);
-    var html = flightInformation(filteredResults, tripType, returnDate);
-    const attractionsHtml = attractionsInformation(attractions);
+    const html = flightInformation(filteredResults, tripType, returnDate);
+    // const attractionsHtml = attractionsInformation(attractions);
     res.send(html);
   } catch (error) {
     console.error(error);
