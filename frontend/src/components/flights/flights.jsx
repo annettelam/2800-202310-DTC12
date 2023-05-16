@@ -28,9 +28,30 @@ export const Flights = () => {
         }
     }, [navigate]);
 
+    const getCityName = (airportCode) => {
+        const airports = {
+          ATL: 'Atlanta',
+          BOS: 'Boston',
+          ORD: 'Chicago',
+          DFW: 'Dallas',
+          IAH: 'Houston',
+          JFK: 'New York',
+          LAX: 'Los Angeles',
+          MEX: 'Mexico City',
+          MIA: 'Miami',
+          YQB: 'Quebec City',
+          SEA: 'Seattle',
+          YYZ: 'Toronto',
+          YVR: 'Vancouver',
+        };
+      
+        return airports[airportCode] || '';
+      };
+      
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("hello")
+        const cityName = getCityName(destinationDisplayCode);
         console.log(originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass);
 
         try {
@@ -48,7 +69,8 @@ export const Flights = () => {
                                 returnDate: returnDate,
                                 tripType: tripType,
                                 adults: adults,
-                                cabinClass: cabinClass
+                                cabinClass: cabinClass,
+                                cityName: cityName,
                             }
                         });
                     } else {

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   ChakraProvider,
   Heading,
@@ -20,25 +19,28 @@ import dashBackground from '../../dashbkg.jpg';
 import './suggestions.css';
 import axios from 'axios';
 
-const Attractions = () => {
-  const [destinationDisplayCode, setDestinationDisplayCode] = useState('');
-  const [attractions, setAttractions] = useState([]);
+import { useLocation } from 'react-router-dom';
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    // You can add any logic you want here when the form is submitted.
+export const Suggestions = () => {
+    const location = useLocation();
+    const initialCityName = location.state?.cityName || '';
+    const [cityName, setCityName] = useState(initialCityName);
+    const [attractions, setAttractions] = useState([]);
 
-    try {
-        const attractionsResponse = await axios.get(`/search?location=${destinationDisplayCode}`);
-      if (attractionsResponse.data) {
-        setAttractions(attractionsResponse.data.attractions);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-  return (
+        try {
+            const attractionsResponse = await axios.get(`/search?location=${cityName}`);
+            if (attractionsResponse.data) {
+                setAttractions(attractionsResponse.data.attractions);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    return (
     <ChakraProvider>
       <Box
         minHeight="100vh"
@@ -70,10 +72,10 @@ const Attractions = () => {
                   justifyContent="center"
                 >
                   <input
-                    placeholder="Enter your destination"
-                    value={destinationDisplayCode}
+                    placeholder="Enter your city"
+                    value={cityName}
                     onChange={(e) =>
-                      setDestinationDisplayCode(e.target.value)
+                      setCityName(e.target.value)
                     }
                     required
                   />
@@ -120,4 +122,4 @@ const Attractions = () => {
   );
 };
 
-export default Attractions;
+
