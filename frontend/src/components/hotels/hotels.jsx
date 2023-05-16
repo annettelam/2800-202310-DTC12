@@ -39,6 +39,18 @@ export const Hotels = () => {
             const newSavedHotels = savedHotels.filter((savedHotelId) => savedHotelId !== hotelId);
             setSavedHotels(newSavedHotels);
         }
+
+        // Save hotel to database
+        const hotel = hotels.find((hotel) => hotel.hotel_id === hotelId);
+        console.log(hotel);
+        try {
+            const response = await axios.post('http://localhost:4000/save-hotel', {
+                hotel
+            });
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
     };
     
     const handleSubmit = async (e) => {

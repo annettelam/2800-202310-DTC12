@@ -33,6 +33,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 
 var { database } = include('databaseConnection');
 const userCollection = database.db(mongodb_database).collection('users');
+const hotelCollection = database.db(mongodb_database).collection('hotels');
 
 var mongoStore = MongoStore.create({
     mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
@@ -117,6 +118,7 @@ app.post('/signup', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     console.log(`backend: ${email}, ${password}`);
+    console.log(req);
 
     // Find user in database
     const result = await userCollection.find({ email: email }).toArray();
@@ -269,9 +271,18 @@ app.post('/hotels', async (req, res) => {
     res.json(hotels.data.result);
 });
 
+app.post('/save-hotel', async (req, res) => {
+    const { hotel } = req.body;
+    console.log(`backend: ${hotel}`);
+
+    res.send('ok');
+});
+
+
 ///////////////////////////////////////////////////////////////////////////////////////
 
 app.post('/logout', (req, res) => {
+    console.log(req);
     req.session.destroy();
     res.send('ok');
 });
