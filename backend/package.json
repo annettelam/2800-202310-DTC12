@@ -10,6 +10,7 @@
     "mongoose": "^7.1.1",
     "nodemailer": "^6.9.2",
     "openai": "^3.2.1",
+    "react-datepicker": "^4.11.0",
     "react-router": "^6.11.1"
   }
 }

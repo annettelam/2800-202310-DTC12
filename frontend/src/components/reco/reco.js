@@ -1,47 +1,26 @@
-// Recommendations.js
-import React, { useState, useEffect } from 'react';
+// frontend/reco.js
+import React, { useState } from 'react';
 import axios from 'axios';
 
-const YOUR_API_KEY = ''; // Replace with your actual OpenAI API key
-
-export const Recommendations = () => {
+export const Recommendation = () => {
     const [country, setCountry] = useState('');
     const [dates, setDates] = useState('');
-    const [packingList, setPackingList] = useState('');
+    const [recommendations, setRecommendations] = useState([]);
 
-    const handleGeneratePackingList = async () => {
+    const fetchRecommendations = async () => {
         try {
-            const prompt = `I am traveling to ${country} from ${dates}. What environmentally friendly items should I pack?`;
+            const response = await axios.post('http://localhost:3001/recommendations', {
+                country,
+                dates,
+            });
 
-            const response = await axios.post(
-                'https://api.openai.com/v1/engines/davinci-codex/completions',
-                {
-                    prompt,
-                    max_tokens: 100,
-                    temperature: 0.7,
-                    top_p: 1,
-                    n: 1,
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${YOUR_API_KEY}`,
-                    },
-                }
-            );
+            const { recommendations } = response.data;
 
-            const generatedText = response.data.choices[0].text.trim();
-            setPackingList(generatedText);
+            setRecommendations(recommendations);
         } catch (error) {
-            console.error('Error generating packing list:', error);
+            console.error('Error fetching recommendations:', error);
         }
     };
-
-    useEffect(() => {
-        if (country && dates) {
-            handleGeneratePackingList();
-        }
-    }, [country, dates]);
 
     return (
         <div>
@@ -49,16 +28,24 @@ export const Recommendations = () => {
                 type="text"
                 placeholder="Country"
                 value={country}
-                onChange={(e) => setCountry(e.target.value)}
+                onChange={e => setCountry(e.target.value)}
             />
             <input
                 type="text"
                 placeholder="Dates"
                 value={dates}
-                onChange={(e) => setDates(e.target.value)}
+                onChange={e => setDates(e.target.value)}
             />
-            <button onClick={handleGeneratePackingList}>Generate Packing List</button>
-            <div>{packingList}</div>
+
+            <button onClick={fetchRecommendations}>Get Recommendations</button>
+
+            {recommendations.length > 0 && (
+                <ul>
+                    {recommendations.map((recommendation, index) => (
+                        <li key={index}>{recommendation}</li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };

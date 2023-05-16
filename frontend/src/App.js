@@ -11,7 +11,7 @@ import { ResetPassword } from "./components/resetpassword";
 import { Dashboard } from "./components/dashboard/dashboard";
 import { NotFoundPage } from "./components/404/404";
 import { Profile } from "./components/profile/profile";
-import { Recommendations } from "./components/reco/reco";
+import { Recommendation } from "./components/reco/reco";
 
 
 
@@ -39,7 +39,7 @@ const Planetpass = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/recommendations" element={<Recommendations />} />
+          <Route path="/recommendation" element={<Recommendation />} />
         </Routes >
       </div >
       <Footer />
