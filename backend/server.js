@@ -10,7 +10,7 @@ const MongoStore = require('connect-mongo');
 const app = express();
 const cors = require('cors');
 const suggRoutes = require('./sugg_routes.js');
-
+const flightsRoutes = require('./flights_routes.js');
 
 const saltRounds = 10;
 const port = 4000;
@@ -28,6 +28,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 
 var { database } = include('databaseConnection');
 const userCollection = database.db(mongodb_database).collection('users');
+module.exports.mongodb_database = mongodb_database;
 
 var mongoStore = MongoStore.create({
     mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
@@ -39,9 +40,11 @@ app.use(cors());
 app.use(session({
     secret: node_session_secret,
     store: mongoStore,
+    resave: false,
+    saveUninitialized: true,
 }));
 app.use('/suggestions', suggRoutes);
-
+app.use('/flights', flightsRoutes);
 
 app.get('/', (req, res) => {
     res.send("Hello World!");

@@ -1,11 +1,15 @@
 const express = require('express');
-const { searchFlights } = require('./skyscanner');
+const { searchFlights } = require('../skyscanner');
 const rateLimit = require('express-rate-limit');
-
-const app = express();
-const port = 3000;
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+const session = require('express-session');
+const router = express.Router();
+const mongoose = require('mongoose');
+const crypto = require('crypto');
+const sessionSecret = crypto.randomBytes(32).toString('hex');
+const { database, mongodb_database } = require('./server');
+const { userCollection } = require('./databaseConnection');
+const app = require('express')();
+const port = 3100;
 
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
@@ -14,12 +18,17 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
+app.use(session({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: true
+}));
 
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.get('/flights', (req, res) => {
+router.get('/flights', (req, res) => {
   res.send(`
     <h1>Search Flight</h1>
     <form action="/flightResults" method="POST">
@@ -71,7 +80,7 @@ app.get('/flights', (req, res) => {
 });
 
 
-app.post('/flightResults', async (req, res) => {
+router.post('/flightResults', async (req, res) => {
   const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass } = req.body;
   console.log(req.body)
   console.log(originDisplayCode)
@@ -80,8 +89,22 @@ app.post('/flightResults', async (req, res) => {
   // console.log(returnDate)
   console.log(tripType)
   console.log(cabinClass)
+  req.session.destinationDisplayCode = destinationDisplayCode;
 
+  // Store the search data in the searchCollection
+  const userSearchData = {
+    destinationDisplayCode: destinationDisplayCode,
+    departureDate: departureDate,
+    returnDate: tripType === 'roundTrip' ? returnDate : null
+  };
 
+  try {
+    await searchCollection.deleteMany({});
+    await searchCollection.insertOne(userSearchData);
+    console.log('User search data inserted into the database');
+  } catch (error) {
+    console.error('Error inserting user search data into the database', error);
+  }
 
   try {
     let params = {
@@ -104,7 +127,6 @@ app.post('/flightResults', async (req, res) => {
     const filteredResults = results.data.data.filter((flight) => {
       var matchFlight = false;
 
-
       if (tripType === 'roundTrip') {
         console.log(flight.legs.length)
         if (flight.legs.length === 2) {
@@ -118,13 +140,13 @@ app.post('/flightResults', async (req, res) => {
         }
       }
       return matchFlight;
-
     }
     );
 
-    // console.log(results.data)
-    var html = flightInformation(filteredResults, tripType, returnDate);
-    res.send(html);
+    const attractions = await fetchAttractions(destinationDisplayCode);
+    const html = flightInformation(filteredResults, tripType, returnDate);
+    const attractionsHtml = attractionsInformation(attractions);
+    res.send(html + attractionsHtml);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal server error');
@@ -214,7 +236,7 @@ const flightInformation = (flights, tripType, returnDate) => {
   return html;
 }
 
-
+module.exports = router;
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);

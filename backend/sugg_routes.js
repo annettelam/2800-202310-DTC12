@@ -1,12 +1,26 @@
-// sugg_driver_routes.js
 const express = require('express');
 const fetch = require('node-fetch');
 const rateLimit = require('express-rate-limit');
 const slowDown = require('express-slow-down');
 const router = express.Router();
 const dotenv = require('dotenv');
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
+const { ObjectID } = require('mongodb');
+require('dotenv').config();
 
-dotenv.config();
+const MONGODB_URI = process.env.MONGODB_URI;
+const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+let usersCollection;
+
+client.connect((err) => {
+    assert.strictEqual(null, err);
+    console.log('Connected successfully to MongoDB server');
+    const db = client.db('PlanetPass'); 
+    usersCollection = db.collection('users');
+});
+
 
 const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 const tripAdvisorApiKey = process.env.TRIP_ADVISOR_API_KEY;
@@ -28,12 +42,9 @@ const speedLimiter = slowDown({
 router.use(limiter);
 router.use(speedLimiter);
 
-router.get('/', (req, res) => {
-    res.json({ status: 'OK' });
-});
-
-router.get('/search', async (req, res) => {
-    const location = req.query.location;
+router.get('/suggestions', async (req, res) => {
+    const { location, departureDate, returnDate } = req.query;
+    console.log('Search route called');
     console.log(location, "location inside get search");
     const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=${googleMapsApiKey}`;
     
@@ -68,13 +79,12 @@ router.get('/search', async (req, res) => {
 
     // Handle rate limit exceeded error
     if (req.rateLimit.remaining === 0) {
-    return res.status(429).send('Rate limit exceeded. Please try again later.');
+        return res.status(429).send('Rate limit exceeded. Please try again later.');
     }
 
     // Handle request throttling
     await new Promise((resolve) => setTimeout(resolve, req.slowDown.delay));
 
-    
     // Get image for each attraction
     for (let i = 0; i < attractions.length; i ++) {
         const attraction = attractions[i];
@@ -88,15 +98,45 @@ router.get('/search', async (req, res) => {
             || !Array.isArray(tripAdvisorImgData.data)
             || tripAdvisorImgData.data.length === 0
         ) {
-            // console.log(noPhotoUrl, "no photo url");
-            // console.log(attraction.photoUrl, "photo url");
             attraction.photoUrl = 'frontend/public/alicelogo.png';
         } else {
             const photoUrl = tripAdvisorImgData.data[0].images.large.url;
             attraction.photoUrl = photoUrl;
         }
     }
+
+    const destinationDisplayCode = {
+        location,
+        attractions,
+        timestamp: new Date()
+    };
+    
+    try {
+        const result = await usersCollection.insertOne(destinationDisplayCode);
+        console.log(`Destination display code added with _id: ${result.insertedId}`);
+    } catch (err) {
+        console.error(`Failed to insert destination display code: ${err}`);
+    }
+
     res.json({ location, attractions });
 });
+
+router.get('/suggestions/:id', async (req, res) => {
+    const id = req.params.id;
+    
+    try {
+        const destinationDisplayCode = await usersCollection.findOne({ _id: new ObjectID(id) });
+        
+        if (destinationDisplayCode) {
+            res.json(destinationDisplayCode);
+        } else {
+            res.status(404).send('Destination display code not found');
+        }
+    } catch (err) {
+        console.error(`Failed to retrieve destination display code: ${err}`);
+        res.status(500).send('Internal server error');
+    }
+});
+
 
 module.exports = router;

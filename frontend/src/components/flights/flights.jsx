@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Heading, Text } from '@chakra-ui/react';
+import { Container } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Form, Button, Card } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import dashBackground from '../../dashbkg.jpg';
-
 
 
 export const Flights = () => {
@@ -44,9 +43,8 @@ export const Flights = () => {
           YYZ: 'Toronto',
           YVR: 'Vancouver',
         };
-      
         return airports[airportCode] || '';
-      };
+    };    
       
     const handleSubmit = async (e) => {
         e.preventDefault();
