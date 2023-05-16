@@ -9,8 +9,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const app = express();
 const cors = require('cors');
-
-
+const suggRoutes = require('./sugg_routes.js');
 
 
 const saltRounds = 10;
@@ -40,8 +39,9 @@ app.use(cors());
 app.use(session({
     secret: node_session_secret,
     store: mongoStore,
-}
-));
+}));
+app.use('/suggestions', suggRoutes);
+
 
 app.get('/', (req, res) => {
     res.send("Hello World!");
