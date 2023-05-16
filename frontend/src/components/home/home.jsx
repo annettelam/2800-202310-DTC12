@@ -1,44 +1,122 @@
-import React from 'react';
-import { ChakraProvider, Box, Heading, Text, Button } from '@chakra-ui/react';
-import { Container, Row, Col, Image } from 'react-bootstrap';
-import './home.css';
+import React, { useState } from 'react';
+import { ChakraProvider, Box, Heading, Text, Button, Container, SimpleGrid, Flex, Image, Divider, Collapse } from '@chakra-ui/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
-import wireframe from '../../wireframe.png';
+import navlogo from '../../navlogo.png';
 
 export const Home = (props) => {
+    const [isOpen1, setIsOpen1] = useState(false);
+    const [isOpen2, setIsOpen2] = useState(false);
+    const [isOpen3, setIsOpen3] = useState(false);
+
+    const onToggle1 = () => {
+        setIsOpen1(!isOpen1);
+    };
+
+    const onToggle2 = () => {
+        setIsOpen2(!isOpen2);
+    };
+
+    const onToggle3 = () => {
+        setIsOpen3(!isOpen3);
+    };
+
     return (
         <ChakraProvider>
-            <br></br>
-            <br></br>
-            <div
-                style={{
-                    background: 'linear-gradient(to top, #0CBAA6, white)',
-                    fontFamily: 'Questrial',
-                    minHeight: '100vh',
-                }}
-            >
-                <Container fluid>
-                    <Row>
-                        <Col className="p-0" xs={6} md={6}>
-                            <div className="h-100 d-flex align-items-center justify-content-center">
-                                <Box maxW="32rem" textAlign="center">
-                                    <Heading mb={4}>LET'S BEGIN YOUR JOURNEY</Heading>
-                                    <Text fontSize="xl">Lorem ipsum dolor sit amet.</Text>
-                                    <Button size="lg" colorScheme="green" mt="24px">
-                                        Lorem ipsum.
-                                    </Button>
-                                </Box>
-                            </div>
-                        </Col>
-                        <Col className="p-0" xs={6} md={6}>
-                            <div className="h-100 d-flex align-items-center justify-content-center">
-                                <Image src={wireframe} alt="main2" fluid />
-                            </div>
-                        </Col>
-                    </Row>
+            <Box bgGradient="linear(to bottom right, aliceblue, teal)" fontFamily="Questrial" minHeight="100vh">
+                <Container maxWidth="container.xl">
+                    <Flex direction="column" align="center" justify="center" minHeight="50vh">
+                        <Box bg="aliceblue.500" color="white" py="8" px="12" borderRadius="xl" textAlign="center">
+                            <Flex justify="center">
+                                <Image src={navlogo} alt="Planetpass Logo" boxSize="250px" objectFit="contain" />
+                            </Flex>
+                            <Heading as="h1" size="2xl" mb="4">
+                                Welcome to Planetpass.
+                            </Heading>
+                            <Text fontSize="xl" mb="4">
+                                Explore the world with ease.
+                            </Text>
+                            <Button colorScheme="whiteAlpha" size="lg">
+                                Get Started
+                            </Button>
+                        </Box>
+                    </Flex>
+                    <Divider />
+                    <br></br>
+                    <Box>
+                        {/* Features Section */}
+                        <SimpleGrid columns={[1, 2, 3]} spacing="8" align="center">
+                            {/* Feature 1 */}
+                            <Box>
+                                {/* Add icon */}
+                                <Heading as="h3" size="lg" mb="2">
+                                    Feature 1
+                                </Heading>
+                                <>
+                                    <Button onClick={onToggle1}>Discover</Button>
+                                    <Collapse in={isOpen1} animateOpacity>
+                                        <Box
+                                            p="40px"
+                                            color="white"
+                                            mt="4"
+                                            bg="teal.500"
+                                            rounded="md"
+                                            shadow="md"
+                                        >
+                                            Placeholder content for Feature 1.
+                                        </Box>
+                                    </Collapse>
+                                </>
+                            </Box>
+                            {/* Feature 2 */}
+                            <Box>
+                                {/* Add icon */}
+                                <Heading as="h3" size="lg" mb="2">
+                                    Feature 2
+                                </Heading>
+                                <>
+                                    <Button onClick={onToggle2}>Discover</Button>
+                                    <Collapse in={isOpen2} animateOpacity>
+                                        <Box
+                                            p="40px"
+                                            color="white"
+                                            mt="4"
+                                            bg="teal.500"
+                                            rounded="md"
+                                            shadow="md"
+                                        >
+                                            Placeholder content for Feature 2.
+                                        </Box>
+                                    </Collapse>
+                                </>
+                            </Box>
+                            {/* Feature 3 */}
+                            <Box>
+                                {/* Add icon */}
+                                <Heading as="h3" size="lg" mb="2">
+                                    Feature 3
+                                </Heading>
+                                <>
+                                    <Button onClick={onToggle3}>Discover</Button>
+                                    <Collapse in={isOpen3} animateOpacity>
+                                        <Box
+                                            p="40px"
+                                            color="white"
+                                            mt="4"
+                                            bg="teal.500"
+                                            rounded="md"
+                                            shadow="md"
+                                        >
+                                            Placeholder content for Feature 3.
+                                        </Box>
+                                    </Collapse>
+                                </>
+                            </Box>
+                        </SimpleGrid>
+                    </Box>
+                    <br></br>
                 </Container>
-            </div>
+            </Box>
         </ChakraProvider>
     );
 };

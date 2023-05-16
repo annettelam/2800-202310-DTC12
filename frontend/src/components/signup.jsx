@@ -6,7 +6,6 @@ import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../fonts.css';
 import alicelogo from '../alicelogo.png';
-import { Footer } from './footer/footer';
 
 export const SignUp = ({ onLogin }) => {
     const navigate = useNavigate();
