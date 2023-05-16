@@ -4,8 +4,6 @@ import {
   Heading,
   Text,
   Flex,
-  Button,
-  Stack,
   VStack,
   Image,
   SimpleGrid,
@@ -23,22 +21,26 @@ import { useLocation } from 'react-router-dom';
 
 export const Suggestions = () => {
     const location = useLocation();
-    const initialCityName = location.state?.cityName || '';
-    const [cityName, setCityName] = useState(initialCityName);
+    const cityName = location.state?.cityName || '';
     const [attractions, setAttractions] = useState([]);
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        try {
+    useEffect(() => {
+        const fetchAttractions = async () => {
+          try {
             const attractionsResponse = await axios.get(`/search?location=${cityName}`);
             if (attractionsResponse.data) {
-                setAttractions(attractionsResponse.data.attractions);
+              setAttractions(attractionsResponse.data.attractions);
             }
-        } catch (err) {
+          } catch (err) {
             console.log(err);
+          }
+        };
+    
+        if (cityName) {
+          fetchAttractions();
         }
-    };
+      }, [cityName]);
+    
 
     return (
     <ChakraProvider>
@@ -49,72 +51,57 @@ export const Suggestions = () => {
         backgroundPosition="center"
       >
         <VStack minHeight="100vh" justifyContent="space-between">
-          <Box>
-            <Flex
-              flexDirection="column"
-              justifyContent="center"
-              alignItems="center"
-              mt="100px"
-            >
-              <Heading
-                mb="30px"
-                fontSize={{ base: '3xl', md: '6xl' }}
-                fontWeight="bold"
-                color="white"
-              >
-                Suggested Attractions
-              </Heading>
-              <form onSubmit={handleSubmit}>
-                <Stack
-                  spacing={4}
-                  direction={{ base: 'column', md: 'row' }}
-                  alignItems="center"
-                  justifyContent="center"
+            <Box>
+                <Flex
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    mt="100px"
                 >
-                  <input
-                    placeholder="Enter your city"
-                    value={cityName}
-                    onChange={(e) =>
-                      setCityName(e.target.value)
-                    }
-                    required
-                  />
-                  <Button type="submit" colorScheme="teal" size="lg">
-                    Search
-                  </Button>
-                </Stack>
-              </form>
-            </Flex>
-            <Box mt={6}>
-              <Heading as="h3" size="lg" mb={4}>
-                Suggested Attractions
-              </Heading>
-              {attractions.length === 0 ? (
-                <Text>No attractions found</Text>
-              ) : (
-                <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={10}>
-                  {attractions.map((attraction) => (
-                    <Box
-                      key={attraction.location_id}
-                      boxShadow="lg"
-                      rounded="md"
-                      overflow="hidden"
-                    >
-                      <Image
-                        src={attraction.photoUrl}
-                        h="250px"
-                        objectFit="cover"
-                        alt={attraction.name}
-                      />
-                      <VStack p="4" alignItems="start" spacing={2}>
-                        <Heading size="md">{attraction.name}</Heading>
-                      </VStack>
-                    </Box>
-                  ))}
-                </SimpleGrid>
-              )}
-            </Box>
-          </Box>
+                <Heading
+                    mb="30px"
+                    fontSize={{ base: '3xl', md: '6xl' }}
+                    fontWeight="bold"
+                    color="white"
+                >
+                    Let us help you plan your trip
+                </Heading>
+                </Flex>
+                <Box mt={6}>
+                <Heading as="h3" size="lg" mb={4}>
+                    Attractions
+                </Heading>
+                {attractions.length === 0 ? (
+                    <Text>No attractions found</Text>
+                ) : (
+                    <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={10}>
+                    {attractions.map((attraction) => (
+                        <Box
+                        key={attraction.location_id}
+                        boxShadow="lg"
+                        rounded="md"
+                        overflow="hidden"
+                        >
+                        <Image
+                            src={attraction.photoUrl}
+                            h="250px"
+                            objectFit="cover"
+                            alt={attraction.name}
+                        />
+                        <VStack p="4" alignItems="start" spacing={2}>
+                            <Heading size="md">{attraction.name}</Heading>
+                        </VStack>
+                        </Box>
+                    ))}
+                    </SimpleGrid>
+                )}
+                </Box>
+                </Box>
+                <Box>
+                    <Heading as="h3" size="lg" mb={4}>
+                        Packing List
+                    </Heading>
+                </Box>
           <Footer />
         </VStack>
       </Box>
