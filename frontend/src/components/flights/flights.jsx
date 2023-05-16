@@ -26,7 +26,6 @@ export const Flights = () => {
         if (localStorage.getItem('loggedIn') !== 'true') {
             navigate('/login');
         }
-        setUser(JSON.parse(localStorage.getItem('user')));
     }, [navigate]);
 
     const handleSubmit = async (e) => {
