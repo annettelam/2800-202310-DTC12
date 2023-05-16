@@ -15,7 +15,21 @@ export const Hotels = () => {
     const [numAdults, setNumAdults] = useState('');
     const [numRooms, setNumRooms] = useState('');
 
-    const cities = ['City 1', 'City 2', 'City 3'];
+    const cities = {
+        'New York City, New York': 20088325,
+        'Los Angeles, California': 20014181,
+        'Chicago, Illinois': 20033173,
+        'Toronto, Ontario': -574890,
+        'Mexico City, Mexico': -1658079,
+        'Vancouver, British Columbia': -575268,
+        'Houston, Texas': 20128761,
+        'Quebec City, Quebec': -571851,
+        'Atlanta, Georgia': 20024809,
+        'Miami, Florida': 20023181,
+        'Dallas, Texas': 20127504,
+        'Seattle, Washington': 20144883,
+        'Boston, Massachusetts': 20061717
+    };
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
@@ -25,7 +39,8 @@ export const Hotels = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Handle form submission here
+        
+        console.log(city, checkInDate, checkOutDate, numAdults, numRooms);
     };
 
     return (
@@ -59,9 +74,10 @@ export const Hotels = () => {
                                     color="gray.800"
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                    required
                                 >
-                                    <option value="">Select a city</option>
-                                    {cities.map((cityOption) => (
+                                    <option value="" style={{color:'grey'}}>Select a city</option>
+                                    {Object.keys(cities).map((cityOption) => (
                                         <option key={cityOption} value={cityOption}>
                                             {cityOption}
                                         </option>
@@ -79,6 +95,7 @@ export const Hotels = () => {
                                     color="gray.800"
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                    required
                                 />
                             </FormControl>
 
@@ -92,11 +109,11 @@ export const Hotels = () => {
                                     color="gray.800"
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                    required
                                 />
                             </FormControl>
 
                             <FormControl mt="4">
-
                                 <FormLabel>Number of Adults</FormLabel>
                                 <Input
                                     type="number"
@@ -106,6 +123,7 @@ export const Hotels = () => {
                                     color="gray.800"
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                    required
                                 />
                             </FormControl>
 
@@ -119,6 +137,7 @@ export const Hotels = () => {
                                     color="gray.800"
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                    required
                                 />
                             </FormControl>
 
