@@ -41,7 +41,7 @@ var mongoStore = MongoStore.create({
 
 // Booking.com API
 const hotelAPI = axios.create({
-    baseURL: 'https://booking-com.p.rapidapi.com/v1/hotels',
+    baseURL: 'https://booking-com.p.rapidapi.com',
     headers: {
         'X-RapidAPI-Key': '756c633279msh0fadc5ba4579eefp126c2fjsn7844ff44c751',
         'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
@@ -262,7 +262,7 @@ app.post('/hotels', async (req, res) => {
     // Get city id
     const cityId = cities[city];
 
-    const hotels = await hotelAPI.get('/search', {
+    const hotels = await hotelAPI.get('/v1/hotels/search', {
         params: {
             checkin_date: checkInDate,
             dest_type: 'city',
