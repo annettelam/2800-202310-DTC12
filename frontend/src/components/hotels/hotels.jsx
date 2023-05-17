@@ -11,6 +11,7 @@ import { FaHeart } from 'react-icons/fa';
 
 export const Hotels = () => {
     const navigate = useNavigate();
+    const [user, setUser] = useState({});
 
     const [city, setCity] = useState('');
     const [checkInDate, setCheckInDate] = useState('');
@@ -24,6 +25,7 @@ export const Hotels = () => {
         if (localStorage.getItem('loggedIn') !== 'true') {
             navigate('/login');
         }
+        setUser(JSON.parse(localStorage.getItem('user')));
     }, [navigate]);
 
     const isHotelSaved = (hotelId) => {
@@ -39,13 +41,13 @@ export const Hotels = () => {
             const newSavedHotels = savedHotels.filter((savedHotelId) => savedHotelId !== hotelId);
             setSavedHotels(newSavedHotels);
         }
-
+        
         // Save hotel to database
         const hotel = hotels.find((hotel) => hotel.hotel_id === hotelId);
         console.log(hotel);
         try {
             const response = await axios.post('http://localhost:4000/save-hotel', {
-                hotel
+                hotel, user
             });
             console.log(response);
         } catch (error) {

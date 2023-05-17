@@ -12,6 +12,7 @@ const MongoStore = require('connect-mongo');
 const app = express();
 const cors = require('cors');
 const axios = require('axios');
+const { ObjectId } = require('mongodb');
 
 // API files
 const cities = require('../frontend/src/components/hotels/cities');
@@ -67,7 +68,7 @@ app.post('/signup', async (req, res) => {
     console.log(`backend: ${email}, ${username}, ${password}, ${firstName}, ${lastName}, ${city}`);
 
     // Check if username or email already exists
-    const result = await userCollection.find({
+    var result = await userCollection.find({
         $or: [{ username: username }, { email: email }]
     }).toArray();
 
@@ -94,18 +95,28 @@ app.post('/signup', async (req, res) => {
     const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
     // Add user to database
-    await userCollection.insertOne({ username: username, email: email, password: hashedPassword, firstName: firstName, lastName: lastName, city: city });
+    result = await userCollection.insertOne({ 
+            username: username, 
+            email: email, 
+            password: hashedPassword, 
+            firstName: firstName, 
+            lastName: lastName, 
+            city: city, 
+            savedHotels: [] 
+        });
 
     // Set session
     req.session.authenticated = true;
 
     // Create user object to send back to client
     const user = {
+        userId: result.insertedId,
         username: username,
         'email': email,
         firstName: firstName,
         lastName: lastName,
         city: city,
+        savedHotels: [],
     }
 
     // Send response
@@ -118,7 +129,6 @@ app.post('/signup', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     console.log(`backend: ${email}, ${password}`);
-    console.log(req);
 
     // Find user in database
     const result = await userCollection.find({ email: email }).toArray();
@@ -140,11 +150,13 @@ app.post('/login', async (req, res) => {
     // Set session
     req.session.authenticated = true;
     req.session.user = {
+        userId: result[0]._id,
         username: result[0].username,
         email: result[0].email,
         firstName: result[0].firstName,
         lastName: result[0].lastName,
         city: result[0].city,
+        savedHotels: result[0].savedHotels,
     };
 
     // Send response
@@ -272,10 +284,23 @@ app.post('/hotels', async (req, res) => {
 });
 
 app.post('/save-hotel', async (req, res) => {
-    const { hotel } = req.body;
-    console.log(`backend: ${hotel}`);
+    const { hotel, user } = req.body;
+    const userId = new ObjectId(user.userId);
+    console.log(`backend: ${hotel}, ${userId}`);
 
-    res.send('ok');
+    try {
+        // Save hotel to user's document in the database
+        const result = await userCollection.findOneAndUpdate(
+            { _id: userId },
+            { $push: { savedHotels: hotel } },
+            { returnOriginal: false }
+        );
+        console.log(result);
+        res.send("Hotel saved");
+    } catch (error) {
+        console.log(error);
+        res.send("Error saving hotel");
+    }
 });
 
 
