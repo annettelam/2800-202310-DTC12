@@ -11,6 +11,8 @@ const { userCollection } = require('./databaseConnection');
 const app = require('express')();
 const port = 3100;
 
+app.use(express.json());
+
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 100, // 100 requests per minute

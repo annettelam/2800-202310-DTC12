@@ -18,7 +18,6 @@ const expireTime = 1000 * 60 * 60; // 1 hour
 
 /* secret information section */
 const mongodb_database = process.env.MONGODB_DATABASE;
-
 const mongodb_host = process.env.MONGODB_HOST
 const mongodb_user = process.env.MONGODB_USER;
 const mongodb_password = process.env.MONGODB_PASSWORD;
@@ -27,7 +26,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
 
 var { database } = include('databaseConnection');
-const userCollection = database.db(mongodb_database).collection('planetpass/users');
+const userCollection = database.db(mongodb_database).collection('users');
 module.exports.mongodb_database = mongodb_database;
 
 var mongoStore = MongoStore.create({
@@ -52,7 +51,7 @@ app.get('/', (req, res) => {
 
 app.post('/signup', async (req, res) => {
     // Get the user information
-    const { email, username, password, firstName, lastName, city } = req.body;
+    const { email, username, password, firstName, lastName, city, destination, departureDate, returnDate } = req.body;
     console.log(`backend: ${email}, ${username}, ${password}, ${firstName}, ${lastName}, ${city}`);
 
     // Check if username or email already exists
