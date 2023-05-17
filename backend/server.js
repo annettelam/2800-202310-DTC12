@@ -262,6 +262,7 @@ app.post('/hotels', async (req, res) => {
     // Get city id
     const cityId = cities[city];
 
+    // Get Hotel list
     const hotels = await hotelAPI.get('/v1/hotels/search', {
         params: {
             checkin_date: checkInDate,
@@ -276,12 +277,33 @@ app.post('/hotels', async (req, res) => {
             room_number: numRooms,
         }
     });
-
+    
     // Slice the array to get the hotels for the current batch
     const batchSize = 4;
     const startIndex = (page - 1) * batchSize;
     const endIndex = page * batchSize;
     const hotelsData = hotels.data.result.slice(startIndex, endIndex);
+    
+    // Get hotel details for sliced hotels
+    const hotelDetailsPromises = hotelsData.map(hotel => {
+        return hotelAPI.get('/v2/hotels/details', {
+            params: {
+                hotel_id: hotel.hotel_id,
+                currency: 'CAD',
+                locale: 'en-gb',
+                checkout_date: checkOutDate,
+                checkin_date: checkInDate,
+            }
+        });
+    });
+
+    // Wait for all promises to resolve
+    const hotelDetails = await Promise.all(hotelDetailsPromises);
+
+    // Add hotel details to hotelsData
+    hotelDetails.forEach((hotel, index) => {
+        hotelsData[index].details = hotel.data;
+    });
 
     res.json({
         hotels: hotelsData, 
