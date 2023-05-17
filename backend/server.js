@@ -289,14 +289,32 @@ app.post('/save-hotel', async (req, res) => {
     console.log(`backend: ${hotel}, ${userId}`);
 
     try {
-        // Save hotel to user's document in the database
-        const result = await userCollection.findOneAndUpdate(
-            { _id: userId },
-            { $push: { savedHotels: hotel } },
-            { returnOriginal: false }
+        // Find hotel in user's saved hotels
+        const hotelExists = await userCollection.findOne(
+            { _id: userId, savedHotels: { $elemMatch: { hotel_id: hotel.hotel_id } } }
         );
-        console.log(result);
-        res.send("Hotel saved");
+
+        if (hotelExists) {
+            // Remove hotel if match found
+            const result = await userCollection.findOneAndUpdate(
+                { _id: userId },
+                { $pull: { savedHotels: { hotel_id: hotel.hotel_id } } },
+                { returnOriginal: false }
+            );
+            console.log(result);
+
+            res.send("Hotel removed");
+        } else {
+            // Save hotel if no match found
+            const result = await userCollection.findOneAndUpdate(
+                { _id: userId },
+                { $push: { savedHotels: hotel } },
+                { returnOriginal: false }
+            );
+            console.log(result);
+
+            res.send("Hotel saved");
+        }
     } catch (error) {
         console.log(error);
         res.send("Error saving hotel");
