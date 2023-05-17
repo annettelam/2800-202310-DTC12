@@ -18,8 +18,9 @@ export const CustomNavbar = ({ loggedIn, setLoggedIn }) => {
             // Destroy session on server
             await axios.post('http://localhost:4000/logout');
 
-            // Remove loggedIn from localStorage
+            // Remove items from localStorage
             localStorage.removeItem('loggedIn');
+            localStorage.removeItem('user');
 
             // Update loggedIn state
             setLoggedIn(false);
