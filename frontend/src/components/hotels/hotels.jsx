@@ -273,9 +273,9 @@ export const Hotels = () => {
                 </Container>
                 {hasNextPage && (
                     <Flex justify="center" mt="4">
-                        <Button onClick={loadMoreHotels} colorScheme="blue">
+                        <ChakraButton onClick={loadMoreHotels} colorScheme="blue">
                             Load More
-                        </Button>
+                        </ChakraButton>
                     </Flex>
                 )}
             </div>
