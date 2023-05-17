@@ -235,11 +235,14 @@ export const Hotels = () => {
                         const hotel = hotels[hotelId];
                         const roundedPrice = hotel.min_total_price.toFixed(2);
 
+                        // Check if hotel details exist and if the sustainability field is present
+                        const sustainability = hotel.details?.sustainability;
+
                         return (
                             <Box key={hotelId} p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative">
                                 <Flex direction="column" align="center">
                                     <Box position="absolute" top="15px" right="15px" onClick={() => handleSaveHotel(hotel.hotel_id)}>
-                                        <FaHeart 
+                                        <FaHeart
                                             size={30}
                                             color={isHotelSaved(hotel.hotel_id) ? 'red' : 'black'}
                                             fill={isHotelSaved(hotel.hotel_id) ? 'red' : 'none'}
@@ -247,10 +250,10 @@ export const Hotels = () => {
                                             strokeWidth="10"
                                             style={{ cursor: 'pointer' }} />
                                     </Box>
-                                    <Heading size={{base:'md', lg:'lg'}} w='75%' textAlign="center" mb="4">
+                                    <Heading size={{ base: 'md', lg: 'lg' }} w='75%' textAlign="center" mb="4">
                                         {hotel.hotel_name}
                                     </Heading>
-                                    <Image src={hotel.max_photo_url} alt={hotel.hotel_name} w={{base: '80%', sm: '65%', md: '55%', lg: '40%' }} h="auto" rounded="md" mb="4" />
+                                    <Image src={hotel.max_photo_url} alt={hotel.hotel_name} w={{ base: '80%', sm: '65%', md: '55%', lg: '40%' }} h="auto" rounded="md" mb="4" />
                                     <Text fontSize="lg" textAlign="center" mb="2">
                                         <b>Price:</b> ${roundedPrice} CAD
                                     </Text>
@@ -260,6 +263,22 @@ export const Hotels = () => {
                                     <Text fontSize="lg" textAlign="center" mb="4">
                                         <b>Rating:</b> {hotel.review_score !== null ? `${hotel.review_score} / 10` : 'No reviews yet'}
                                     </Text>
+
+                                    {sustainability && (
+                                        <Box textAlign="center" mb="4">
+                                            <Text fontSize="lg" mb="2">
+                                                <b>Sustainability Initiatives:</b>
+                                            </Text>
+                                            <ul>
+                                                {sustainability.sustainability_page.efforts.map((effort) => (
+                                                    effort.steps.map((step) => (
+                                                        <li key={step}>{step}</li>
+                                                    ))
+                                                ))}
+                                            </ul>
+                                        </Box>
+                                    )}
+
                                     <Button
                                         size="md"
                                         onClick={() => window.location.href = hotel.url}
