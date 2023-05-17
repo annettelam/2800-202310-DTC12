@@ -7,6 +7,7 @@ import { Form, Button, Card } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import dashBackground from '../../dashbkg.jpg';
+import './flights.css';
 
 
 
@@ -21,6 +22,9 @@ export const Flights = () => {
     const [adults, setAdults] = useState(1);
     const [cabinClass, setCabinClass] = useState('economy');
     const [flights, setFlights] = useState({});
+    const [isLeafAnimationEnabled, setLeafAnimationEnabled] = useState(false);
+
+
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
@@ -28,10 +32,27 @@ export const Flights = () => {
         }
     }, [navigate]);
 
+    console.log("isLeafAnimationEnabled:", isLeafAnimationEnabled);
+
+    
+
+    const handleDestinationChange = (e) => {
+        setDestination(e.target.value);
+        if (e.target.value === 'Earth') {
+            setLeafAnimationEnabled(true);
+            console.log(isLeafAnimationEnabled)
+        } else {
+            setLeafAnimationEnabled(false);
+        }
+    };
+
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("hello")
         console.log(originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass);
+
 
         try {
             await axios.post('http://localhost:4000/flights', {
@@ -49,6 +70,7 @@ export const Flights = () => {
 
 
     return (
+
         <ChakraProvider>
             <div
                 className="dashboard-container"
@@ -104,7 +126,22 @@ export const Flights = () => {
                                     name="destinationDisplayCode"
                                     placeholder="Choose destination"
                                     value={destinationDisplayCode}
-                                    onChange={(e) => setDestination(e.target.value)}
+                                    onChange={handleDestinationChange}
+                        
+
+                                    // onChange={(e) => {
+                                    //     setDestination(e.target.value);
+                                    //     if (e.target.value === 'Earth') {
+                                    //         // Enable leaf animation
+                                    //         setLeafAnimationEnabled(true);
+                                    //         console.log(isLeafAnimationEnabled)
+                                    //     } else {
+                                    //         // Disable leaf animation
+                                    //         setLeafAnimationEnabled(false);
+
+                                    //     }
+
+                                    // }}
                                     required
                                 >
                                     <option value="">Select Destination</option>
@@ -122,6 +159,7 @@ export const Flights = () => {
                                     <option value="SEA">Seattle - Seattle-Tacoma International Airport (SEA)</option>
                                     <option value="YYZ">Toronto - Toronto Pearson International Airport (YYZ)</option>
                                     <option value="YVR">Vancouver - Vancouver International Airport (YVR)</option>
+                                    <option value="Earth"> Earth</option>
 
                                 </Form.Control>
                             </Form.Group>
@@ -214,6 +252,16 @@ export const Flights = () => {
                     </div>
 
                 </Card>
+                {isLeafAnimationEnabled && (
+                    <div>
+                        <div className="paper-airplane falling"></div>
+                        <div className="paper-airplane falling"></div>
+                        <div className="paper-airplane falling"></div>
+                    </div>
+                )}
+
+
+
 
                 <Container maxWidth="6xl">
                     {Object.keys(flights).map((key) => (
@@ -309,20 +357,14 @@ export const Flights = () => {
                                 </Text>
                             )}
 
-
-
-
-
-
-
-
-
                         </Box>
                     ))}
 
                 </Container>
 
             </div>
+
+
         </ChakraProvider>
     );
 };
