@@ -257,6 +257,14 @@ export const Flights = () => {
                         <div className="paper-airplane falling"></div>
                         <div className="paper-airplane falling"></div>
                         <div className="paper-airplane falling"></div>
+                        <div className="paper-airplane falling"></div>
+                        <div className="paper-airplane falling"></div>
+                        <div className="paper-airplane falling"></div>
+                        <div className="paper-airplane falling"></div>
+                        <div className="paper-airplane falling"></div>
+                       
+                        
+                        
                     </div>
                 )}
 
@@ -266,7 +274,7 @@ export const Flights = () => {
                 <Container maxWidth="6xl">
                     {Object.keys(flights).map((key) => (
                         <Box key={key} p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
-                            <Heading align="center">{flights[key].price.amount}</Heading>
+                            <Heading align="center">${flights[key].price.amount}</Heading>
                             <Text align="center" mt="2">
                                 <b>Origin:</b> {flights[key].legs[0].origin.name}
                             </Text>
