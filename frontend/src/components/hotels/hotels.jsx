@@ -11,16 +11,22 @@ import { FaHeart } from 'react-icons/fa';
 
 export const Hotels = () => {
     const navigate = useNavigate();
+    // User
     const [user, setUser] = useState({});
 
+    // Search form
     const [city, setCity] = useState('');
     const [checkInDate, setCheckInDate] = useState('');
     const [checkOutDate, setCheckOutDate] = useState('');
     const [numAdults, setNumAdults] = useState('');
     const [numRooms, setNumRooms] = useState('');
+
+    // Hotels
     const [hotels, setHotels] = useState({});
     const [savedHotels, setSavedHotels] = useState([]);
+    const [hasNextPage, setHasNextPage] = useState(false);
 
+    // Execute on page load
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
             navigate('/login');
@@ -35,10 +41,12 @@ export const Hotels = () => {
         setSavedHotels(savedHotelIds);
     }, [navigate]);
 
+    // Check if hotel is saved
     const isHotelSaved = (hotelId) => {
         return savedHotels.includes(hotelId);
     };
 
+    // Save hotel
     const handleSaveHotel = async (hotelId) => {
         console.log(hotelId);
         console.log(isHotelSaved(hotelId));
@@ -74,6 +82,7 @@ export const Hotels = () => {
         }
     };
     
+    // Get hotels on form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(city, checkInDate, checkOutDate, numAdults, numRooms);
@@ -84,10 +93,34 @@ export const Hotels = () => {
                 checkInDate,
                 checkOutDate,
                 numAdults,
-                numRooms
+                numRooms,
+                page: 1 // Start on page 1 (First 4 hotels)
             });
             console.log(response.data);
-            setHotels(response.data);
+
+            // Update useState
+            setHotels(response.data.hotels);
+            setHasNextPage(response.data.hasNextPage);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // Load more hotels
+    const loadMoreHotels = async () => {
+        try {
+            const response = await axios.post('http://localhost:4000/hotels', {
+                city,
+                checkInDate,
+                checkOutDate,
+                numAdults,
+                numRooms,
+                page: Math.ceil(hotels.length / 4) + 1 // Calculate the next page based on the current number of hotels
+            });
+            console.log(response.data);
+
+            setHotels((prevHotels) => [...prevHotels, ...response.data.hotels]);
+            setHasNextPage(response.data.hasNextPage);
         } catch (error) {
             console.log(error);
         }
@@ -238,6 +271,13 @@ export const Hotels = () => {
                         );
                     })}
                 </Container>
+                {hasNextPage && (
+                    <Flex justify="center" mt="4">
+                        <Button onClick={loadMoreHotels} colorScheme="blue">
+                            Load More
+                        </Button>
+                    </Flex>
+                )}
             </div>
         </ChakraProvider>
     );

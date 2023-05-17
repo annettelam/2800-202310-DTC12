@@ -257,8 +257,8 @@ app.post('/reset-password/:token', async (req, res) => {
 });
 
 app.post('/hotels', async (req, res) => {
-    const { city, checkInDate, checkOutDate, numAdults, numRooms } = req.body;
-    console.log(`backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}`);
+    const { city, checkInDate, checkOutDate, numAdults, numRooms, page } = req.body;
+    console.log(`backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}, ${page}`);
 
     // Get city id
     const cityId = cities[city];
@@ -278,9 +278,16 @@ app.post('/hotels', async (req, res) => {
         }
     });
 
-    console.log(hotels.data.result);
+    // Slice the array to get the hotels for the current batch
+    const batchSize = 4;
+    const startIndex = (page - 1) * batchSize;
+    const endIndex = page * batchSize;
+    const hotelsData = hotels.data.result.slice(startIndex, endIndex);
 
-    res.json(hotels.data.result);
+    res.json({
+        hotels: hotelsData, 
+        hasNextPage: endIndex < hotels.data.result.length,
+    });
 });
 
 app.post('/save-hotel', async (req, res) => {
