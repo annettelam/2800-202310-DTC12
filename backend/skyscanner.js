@@ -1,7 +1,6 @@
 const axios = require('axios');
 const { response } = require('express');
 
-
 const searchFlights = async (params) => {
     try {
         const options = {
