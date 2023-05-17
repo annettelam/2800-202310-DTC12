@@ -44,6 +44,10 @@ app.use(session({
     secret: node_session_secret,
     store: mongoStore,
     resave: false,
+    cookie: {
+        secure: false, // Change this to true if using HTTPS
+        maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+      },
     saveUninitialized: true,
 }));
 app.use('/suggestions', suggRoutes);
@@ -170,10 +174,18 @@ app.get('/profile', (req, res) => {
     });
 });
 
-
+function ensureAuthenticated(req, res, next) {
+    if (req.session.authenticated) {
+      return next();
+    } else {
+      console.log("User not authenticated.");
+      res.status(401).send("User not authenticated");
+    }
+}  
 
 //flight results
-app.post('/flights', async (req, res) => {
+app.post('/flights', ensureAuthenticated, async (req, res) => {
+    console.log("req.session:", req.session);
     const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass } = req.body;
     console.log(req.body)
     console.log(originDisplayCode)
@@ -198,22 +210,24 @@ app.post('/flights', async (req, res) => {
         params.returnDate = returnDate
       }
   
-    if (req.session.authenticated) {
-        await userCollection.updateOne(
-            { email: req.session.user.email }, // Match the user based on their email stored in the session
-            {
-                $set: {
-                    destination: destinationDisplayCode,
-                    departureDate: departureDate,
-                    returnDate: returnDate,
-                }
+    
+    console.log("Updating user's destination, departure date, and return date in the database...");
+    const updateResult = await userCollection.updateOne(
+        { email: req.session.user.email }, // Match the user based on their email stored in the session
+        {
+            $set: {
+                destination: destinationDisplayCode,
+                departureDate: departureDate,
+                returnDate: returnDate,
             }
-        )
-    };
+        }
+    );
+    console.log("Update result:", updateResult);
+    
 
     const results = await searchFlights(params);
-    //  console.log(results)
-      const filteredResults = results.data.data.filter((flight) => {
+    console.log('Results:', results);
+    const filteredResults = results.data.data.filter((flight) => {
         var matchFlight = false;
   
   
