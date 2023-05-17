@@ -171,7 +171,6 @@ app.get('/profile', (req, res) => {
 
 //flight results
 app.post('/flights', async (req, res) => {
-
     const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass } = req.body;
     console.log(req.body)
     console.log(originDisplayCode)
@@ -196,8 +195,20 @@ app.post('/flights', async (req, res) => {
         params.returnDate = returnDate
       }
   
-  
-      const results = await searchFlights(params);
+    if (req.session.authenticated) {
+        await userCollection.updateOne(
+            { email: req.session.user.email }, // Match the user based on their email stored in the session
+            {
+                $set: {
+                    destination: destinationDisplayCode,
+                    departureDate: departureDate,
+                    returnDate: returnDate,
+                }
+            }
+        )
+    };
+
+    const results = await searchFlights(params);
     //  console.log(results)
       const filteredResults = results.data.data.filter((flight) => {
         var matchFlight = false;
@@ -226,7 +237,7 @@ app.post('/flights', async (req, res) => {
       console.error(error);
       res.status(500).send('Internal server error');
     }
-  });
+});
   
 
 //password reset
