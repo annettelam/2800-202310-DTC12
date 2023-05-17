@@ -4,22 +4,10 @@ const rateLimit = require('express-rate-limit');
 const slowDown = require('express-slow-down');
 const router = express.Router();
 const dotenv = require('dotenv');
-const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
+const { userCollection } = require('./server');
 const { ObjectID } = require('mongodb');
 require('dotenv').config();
-
-const MONGODB_URI = process.env.MONGODB_URI;
-const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-
-let usersCollection;
-
-client.connect((err) => {
-    assert.strictEqual(null, err);
-    console.log('Connected successfully to MongoDB server');
-    const db = client.db('PlanetPass'); 
-    usersCollection = db.collection('users');
-});
 
 
 const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
@@ -59,7 +47,8 @@ router.get('/suggestions', async (req, res) => {
     const tripAdvisorResponse = await fetch(tripAdvisorApiUrl);
     const tripAdvisorData = await tripAdvisorResponse.json();
 
-    if (!tripAdvisorData.data
+    if (
+        !tripAdvisorData.data
         || !Array.isArray(tripAdvisorData.data)
         || tripAdvisorData.data.length === 0
     ) {
@@ -112,7 +101,7 @@ router.get('/suggestions', async (req, res) => {
     };
     
     try {
-        const result = await usersCollection.insertOne(destinationDisplayCode);
+        const result = await userCollection.insertOne(destinationDisplayCode);
         console.log(`Destination display code added with _id: ${result.insertedId}`);
     } catch (err) {
         console.error(`Failed to insert destination display code: ${err}`);
@@ -125,7 +114,7 @@ router.get('/suggestions/:id', async (req, res) => {
     const id = req.params.id;
     
     try {
-        const destinationDisplayCode = await usersCollection.findOne({ _id: new ObjectID(id) });
+        const destinationDisplayCode = await userCollection.findOne({ _id: new ObjectID(id) });
         
         if (destinationDisplayCode) {
             res.json(destinationDisplayCode);
