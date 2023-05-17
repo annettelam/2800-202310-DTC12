@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Container } from '@chakra-ui/react';
+import { Box, Container, Heading, Text } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Form, Button, Card } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import dashBackground from '../../dashbkg.jpg';
-
+import './flights.css';
 
 
 export const Flights = () => {
@@ -88,7 +88,6 @@ export const Flights = () => {
 
 
     return (
-
         <ChakraProvider>
             <div
                 className="dashboard-container"
@@ -104,7 +103,6 @@ export const Flights = () => {
             >
 
                 <Card bg="aliceblue" p="4" boxshadow="lg" rounded="md">
-
                     <div className="text-center my-5">
                         <Form className="text-center my-5" onSubmit={handleSubmit}>
 
@@ -145,21 +143,7 @@ export const Flights = () => {
                                     placeholder="Choose destination"
                                     value={destinationDisplayCode}
                                     onChange={handleDestinationChange}
-                        
-
-                                    // onChange={(e) => {
-                                    //     setDestination(e.target.value);
-                                    //     if (e.target.value === 'Earth') {
-                                    //         // Enable leaf animation
-                                    //         setLeafAnimationEnabled(true);
-                                    //         console.log(isLeafAnimationEnabled)
-                                    //     } else {
-                                    //         // Disable leaf animation
-                                    //         setLeafAnimationEnabled(false);
-
-                                    //     }
-
-                                    // }}
+                    
                                     required
                                 >
                                     <option value="">Select Destination</option>
@@ -181,7 +165,6 @@ export const Flights = () => {
 
                                 </Form.Control>
                             </Form.Group>
-
 
                             <Form.Group controlId="formDepartureDate" style={{ width: '100%' }}>
                                 <Form.Label>Departure Date</Form.Label>
@@ -286,9 +269,6 @@ export const Flights = () => {
                     </div>
                 )}
 
-
-
-
                 <Container maxWidth="6xl">
                     {Object.keys(flights).map((key) => (
                         <Box key={key} p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
@@ -382,15 +362,10 @@ export const Flights = () => {
                                     <b>Eco contender delta:</b> {Math.round(Math.abs(flights[key].eco_contender_delta))}%
                                 </Text>
                             )}
-
                         </Box>
                     ))}
-
                 </Container>
-
             </div>
-
-
         </ChakraProvider>
     );
 };

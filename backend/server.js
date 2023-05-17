@@ -39,7 +39,10 @@ var mongoStore = MongoStore.create({
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000', // or your frontend URL
+    credentials: true
+  }));
 app.use(session({
     secret: node_session_secret,
     store: mongoStore,
@@ -50,6 +53,13 @@ app.use(session({
       },
     saveUninitialized: true,
 }));
+
+app.use((req, res, next) => {
+    console.log('Session:', req.session);
+    next();
+  });
+
+  
 app.use('/suggestions', suggRoutes);
 
 app.get('/', (req, res) => {
@@ -146,6 +156,9 @@ app.post('/login', async (req, res) => {
         departureDate: result[0].departureDate,
         returnDate: result[0].returnDate
     };
+
+    // Log the session after setting the user data
+    console.log('Session after login:', req.session);
 
     // Send response
     res.json({
