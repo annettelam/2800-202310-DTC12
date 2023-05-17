@@ -48,7 +48,6 @@ export const Flights = () => {
       
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("hello")
         const cityName = getCityName(destinationDisplayCode);
         console.log(originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass);
 
