@@ -25,7 +25,14 @@ export const Hotels = () => {
         if (localStorage.getItem('loggedIn') !== 'true') {
             navigate('/login');
         }
+
+        // Save user from localStorage
         setUser(JSON.parse(localStorage.getItem('user')));
+
+        // Get saved hotels from localStorage
+        const savedHotels = JSON.parse(localStorage.getItem('user')).savedHotels;
+        const savedHotelIds = savedHotels.map((savedHotel) => savedHotel.hotel_id);
+        setSavedHotels(savedHotelIds);
     }, [navigate]);
 
     const isHotelSaved = (hotelId) => {
@@ -36,20 +43,32 @@ export const Hotels = () => {
         console.log(hotelId);
         console.log(isHotelSaved(hotelId));
         if (!isHotelSaved(hotelId)) {
+            // Update useState
             setSavedHotels([...savedHotels, hotelId]);
         } else {
+            // Update useState
             const newSavedHotels = savedHotels.filter((savedHotelId) => savedHotelId !== hotelId);
             setSavedHotels(newSavedHotels);
         }
         
-        // Save hotel to database
+        // Find hotel object
         const hotel = hotels.find((hotel) => hotel.hotel_id === hotelId);
+        // Update database
         console.log(hotel);
         try {
             const response = await axios.post('http://localhost:4000/save-hotel', {
                 hotel, user
             });
-            console.log(response);
+            console.log(response.data);
+
+            // Update localStorage
+            if (response.data === "Hotel saved") {
+                user.savedHotels.push(hotel);
+                localStorage.setItem('user', JSON.stringify(user));
+            } else {
+                user.savedHotels = user.savedHotels.filter((savedHotel) => savedHotel.hotel_id !== hotelId);
+                localStorage.setItem('user', JSON.stringify(user));
+            }
         } catch (error) {
             console.log(error);
         }
