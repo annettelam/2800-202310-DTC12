@@ -5,7 +5,7 @@ const slowDown = require('express-slow-down');
 const router = express.Router();
 const dotenv = require('dotenv');
 const assert = require('assert');
-const { userCollection } = require('./server');
+const { getUserCollection } = require('./databaseConnection');
 const { ObjectID } = require('mongodb');
 require('dotenv').config();
 

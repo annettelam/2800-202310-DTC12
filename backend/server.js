@@ -1,16 +1,14 @@
-const { searchFlights } = require('./skyscanner.js');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-require("./utils.js");
-require('dotenv').config();
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const app = express();
 const cors = require('cors');
 const suggRoutes = require('./sugg_routes.js');
-const flightsRoutes = require('./flights_routes.js');
+const { searchFlights } = require('./skyscanner.js');
+require('dotenv').config();
 
 const saltRounds = 10;
 const port = 4000;
@@ -25,10 +23,16 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
 
-var { database } = include('databaseConnection');
-const userCollection = database.db(mongodb_database).collection('users');
-module.exports.mongodb_database = mongodb_database;
-
+const { database, getUserCollection } = require('./databaseConnection');
+const userCollection = getUserCollection();
+database.connect((err) => {
+    if (err) {
+      console.error("Error connecting to MongoDB:", err);
+    } else {
+      console.log("Connected to MongoDB");
+    }
+  });
+  
 var mongoStore = MongoStore.create({
     mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
 })
@@ -43,7 +47,6 @@ app.use(session({
     saveUninitialized: true,
 }));
 app.use('/suggestions', suggRoutes);
-app.use('/flights', flightsRoutes);
 
 app.get('/', (req, res) => {
     res.send("Hello World!");
@@ -217,7 +220,7 @@ app.post('/flights', async (req, res) => {
         if (tripType === 'roundTrip') {
           console.log(flight.legs.length)
           if (flight.legs.length === 2) {
-            matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
+           matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
             console.log("yes")
           }
         }
