@@ -43,7 +43,7 @@ var mongoStore = MongoStore.create({
 const hotelAPI = axios.create({
     baseURL: 'https://booking-com.p.rapidapi.com',
     headers: {
-        'X-RapidAPI-Key': '756c633279msh0fadc5ba4579eefp126c2fjsn7844ff44c751',
+        'X-RapidAPI-Key': '71646a7300msh8677bb088d2904ep189d22jsn7575f3cd5641',
         'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
     }
 });
@@ -255,60 +255,65 @@ app.post('/reset-password/:token', async (req, res) => {
     return res.status(200).json({ message: 'Password reset successfully' });
 });
 
-app.post('/hotels', async (req, res) => {
-    const { city, checkInDate, checkOutDate, numAdults, numRooms, page } = req.body;
-    console.log(`backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}, ${page}`);
-
-    // Get city id
-    const cityId = cities[city];
-
-    // Get Hotel list
-    const hotels = await hotelAPI.get('/v1/hotels/search', {
-        params: {
-            checkin_date: checkInDate,
-            dest_type: 'city',
-            units: 'metric',
-            checkout_date: checkOutDate,
-            adults_number: numAdults,
-            order_by: 'price',
-            dest_id: cityId,
-            filter_by_currency: 'CAD',
-            locale: 'en-gb',
-            room_number: numRooms,
-        }
-    });
-    
-    // Slice the array to get the hotels for the current batch
-    const batchSize = 4;
-    const startIndex = (page - 1) * batchSize;
-    const endIndex = page * batchSize;
-    const hotelsData = hotels.data.result.slice(startIndex, endIndex);
-    
-    // Get hotel details for sliced hotels
-    const hotelDetailsPromises = hotelsData.map(hotel => {
-        return hotelAPI.get('/v2/hotels/details', {
+app.post("/hotels", async (req, res) => {
+    try {
+        const { city, checkInDate, checkOutDate, numAdults, numRooms, page } = req.body;
+        console.log(`backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}, ${page}`);
+        // Get city id
+        const cityId = cities[city];
+        // Get Hotel list
+        const hotels = await hotelAPI.get("/v1/hotels/search", {
             params: {
-                hotel_id: hotel.hotel_id,
-                currency: 'CAD',
-                locale: 'en-gb',
-                checkout_date: checkOutDate,
                 checkin_date: checkInDate,
-            }
+                dest_type: "city",
+                units: "metric",
+                checkout_date: checkOutDate,
+                adults_number: numAdults,
+                order_by: "price",
+                dest_id: cityId,
+                filter_by_currency: "CAD",
+                locale: "en-gb",
+                room_number: numRooms,
+            },
         });
-    });
-
-    // Wait for all promises to resolve
-    const hotelDetails = await Promise.all(hotelDetailsPromises);
-
-    // Add hotel details to hotelsData
-    hotelDetails.forEach((hotel, index) => {
-        hotelsData[index].details = hotel.data;
-    });
-
-    res.json({
-        hotels: hotelsData, 
-        hasNextPage: endIndex < hotels.data.result.length,
-    });
+        // Slice the array to get the hotels for the current batch
+        const batchSize = 4;
+        const startIndex = (page - 1) * batchSize;
+        const endIndex = page * batchSize;
+        const hotelsData = hotels.data.result.slice(startIndex, endIndex);
+        // Get hotel details for sliced hotels with a delay between each call
+        const hotelDetails = hotelsData.map((hotel, index) => {
+            return new Promise((resolve, reject) => {
+                setTimeout(async () => {
+                    try {
+                        const response = await hotelAPI.get('/v2/hotels/details', {
+                            params: {
+                                hotel_id: hotel.hotel_id,
+                                currency: 'CAD',
+                                locale: 'en-gb',
+                                checkout_date: checkOutDate,
+                                checkin_date: checkInDate,
+                            },
+                        });
+                        resolve(response);
+                    } catch (error) {
+                        reject(error);
+                    }
+                }, index * 200); // Delay each API call by 1 second (adjust the delay as needed)
+            });
+        });
+        // Add hotel details to hotelsData
+        hotelDetails.forEach((hotel, index) => {
+            hotelsData[index].details = hotel.data;
+        });
+        res.json({
+            hotels: hotelsData,
+            hasNextPage: endIndex < hotels.data.result.length,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal server error");
+    }
 });
 
 app.post('/save-hotel', async (req, res) => {
