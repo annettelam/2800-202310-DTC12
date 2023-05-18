@@ -112,9 +112,9 @@ export const Home = (props) => {
                                     </Collapse>
                                 </>
                             </Box>
+                            <br></br>
                         </SimpleGrid>
                     </Box>
-                    <br></br>
                 </Container>
             </Box>
         </ChakraProvider>
