@@ -178,6 +178,8 @@ export const Hotels = () => {
                                     color="gray.800"
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                    min={new Date().toISOString().split('T')[0]} // Set min date to today
+                                    max={checkOutDate} // Set max date to checkOutDate
                                     required
                                 />
                             </FormControl>
@@ -192,6 +194,7 @@ export const Hotels = () => {
                                     color="gray.800"
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                    min={checkInDate} // Set min date to checkInDate
                                     required
                                 />
                             </FormControl>
