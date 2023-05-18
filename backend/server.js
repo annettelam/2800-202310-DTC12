@@ -1,18 +1,23 @@
 const { searchFlights } = require('./skyscanner.js');
+// Requiring files
+require("./utils.js");
+require('dotenv').config();
+
+// Imports
 const express = require('express');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-require("./utils.js");
-require('dotenv').config();
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const app = express();
 const cors = require('cors');
+const axios = require('axios');
 
+// API files
+const cities = require('../frontend/src/components/hotels/cities');
 
-
-
+// Constants
 const saltRounds = 10;
 const port = 4000;
 const expireTime = 1000 * 60 * 60; // 1 hour
@@ -33,6 +38,15 @@ const userCollection = database.db(mongodb_database).collection('users');
 var mongoStore = MongoStore.create({
     mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
 })
+
+// Booking.com API
+const hotelAPI = axios.create({
+    baseURL: 'https://booking-com.p.rapidapi.com/v1/hotels',
+    headers: {
+        'X-RapidAPI-Key': '756c633279msh0fadc5ba4579eefp126c2fjsn7844ff44c751',
+        'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
+    }
+});
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -290,6 +304,33 @@ app.post('/reset-password/:token', async (req, res) => {
 
     // Return a success response
     return res.status(200).json({ message: 'Password reset successfully' });
+});
+
+app.post('/hotels', async (req, res) => {
+    const { city, checkInDate, checkOutDate, numAdults, numRooms } = req.body;
+    console.log(`backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}`);
+
+    // Get city id
+    const cityId = cities[city];
+
+    const hotels = await hotelAPI.get('/search', {
+        params: {
+            checkin_date: checkInDate,
+            dest_type: 'city',
+            units: 'metric',
+            checkout_date: checkOutDate,
+            adults_number: numAdults,
+            order_by: 'price',
+            dest_id: cityId,
+            filter_by_currency: 'CAD',
+            locale: 'en-gb',
+            room_number: numRooms,
+        }
+    });
+
+    console.log(hotels.data.result);
+
+    res.json(hotels.data.result);
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////
