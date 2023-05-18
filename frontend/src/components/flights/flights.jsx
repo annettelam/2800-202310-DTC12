@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Heading, Text, Flex, Button as ChakraButton} from '@chakra-ui/react';
+import { Box, Container, Heading, Text, Flex, Button as ChakraButton } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Form, Button, Card } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import dashBackground from '../../dashbkg.jpg';
 import './flights.css';
+import { FaHeart } from 'react-icons/fa';
 
 
 
@@ -16,6 +17,8 @@ export const Flights = () => {
 
     const navigate = useNavigate();
     //const user = JSON.parse(localStorage.getItem('user'));
+    // User
+    const [user, setUser] = useState({});
     const [originDisplayCode, setOrigin] = useState('');
     const [destinationDisplayCode, setDestination] = useState('');
     const [departureDate, setDepartureDate] = useState('');
@@ -26,19 +29,71 @@ export const Flights = () => {
     const [flights, setFlights] = useState({});
     const [isLeafAnimationEnabled, setLeafAnimationEnabled] = useState(false);
     const [hasNextPage, setHasNextPage] = useState(false);
+    const [savedFlights, setSavedFlights] = useState([]);
 
-    const [displayResultsCount, setDisplayResultsCount]  = useState(batchCount);
+    const [displayResultsCount, setDisplayResultsCount] = useState(batchCount);
 
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
             navigate('/login');
         }
+        // Save user from localStorage
+        setUser(JSON.parse(localStorage.getItem('user')));
+
+        // Get saved flights from localStorage
+        const savedFlights = JSON.parse(localStorage.getItem('user')).savedFlights;
+        const savedFlightIds = savedFlights.map((savedFlight) => savedFlights.id);
+        setSavedFlights(savedFlightIds);
+
     }, [navigate]);
+
+    // Check if flight is saved
+    const isFlightSaved = (flightId) => {
+        console.log("Flight id for saved:", flightId);
+        return savedFlights.includes(flightId);
+    };
+
+    // Save flight
+    const handleSaveFlight = async (flightId) => {
+        console.log(flightId);
+        console.log(isFlightSaved(flightId));
+        if (!isFlightSaved(flightId)) {
+            // Update useState
+            setSavedFlights([...savedFlights, flightId]);
+        } else {
+            // Update useState
+            const newSavedFlights = savedFlights.filter((savedflightId) => savedflightId !== flightId);
+            setSavedFlights(newSavedFlights);
+        }
+
+        // Find flight object
+        const flight = flights.find((flight) => flight.id === flightId);
+        // Update database
+        console.log(flight);
+        try {
+            const response = await axios.post('http://localhost:4000/save-flight', {
+                flight, user
+            });
+            console.log(response.data);
+
+            // Update localStorage
+            if (response.data === "Flight saved") {
+                user.savedFlights.push(flight);
+                localStorage.setItem('user', JSON.stringify(user));
+            } else {
+                user.savedFlights = user.savedFlights.filter((savedFlight) => savedFlight.id !== flightId);
+                localStorage.setItem('user', JSON.stringify(user));
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 
     console.log("isLeafAnimationEnabled:", isLeafAnimationEnabled);
 
-    
+
 
     const handleDestinationChange = (e) => {
         setDestination(e.target.value);
@@ -56,7 +111,6 @@ export const Flights = () => {
         e.preventDefault();
         console.log("hello")
         console.log(originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass);
-
 
         try {
             await axios.post('http://localhost:4000/flights', {
@@ -138,7 +192,7 @@ export const Flights = () => {
                                     placeholder="Choose destination"
                                     value={destinationDisplayCode}
                                     onChange={handleDestinationChange}
-                        
+
 
                                     // onChange={(e) => {
                                     //     setDestination(e.target.value);
@@ -273,9 +327,9 @@ export const Flights = () => {
                         <div className="paper-airplane falling"></div>
                         <div className="paper-airplane falling"></div>
                         <div className="paper-airplane falling"></div>
-                       
-                        
-                        
+
+
+
                     </div>
                 )}
 
@@ -285,6 +339,15 @@ export const Flights = () => {
                 <Container maxWidth="6xl">
                     {Object.keys(flights).slice(0, displayResultsCount).map((key) => (
                         <Box key={key} p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
+                            <Box align="right" onClick={() => handleSaveFlight(flights[key].id)}>
+                                <FaHeart
+                                    size={30}
+                                    color={isFlightSaved(flights[key].id) ? 'red' : 'black'}
+                                    fill={isFlightSaved(flights[key].id) ? 'red' : 'none'}
+                                    stroke={isFlightSaved(flights[key].id) ? 'none' : 'currentColor'}
+                                    strokeWidth="10"
+                                    style={{ cursor: 'pointer' }} />
+                            </Box>
                             <Heading align="center">${flights[key].price.amount}</Heading>
                             <Text align="center" mt="2">
                                 <b>Origin:</b> {flights[key].legs[0].origin.name}

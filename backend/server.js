@@ -17,6 +17,7 @@ const { ObjectId } = require('mongodb');
 
 // API files
 const cities = require('../frontend/src/components/hotels/cities');
+const { application } = require('express');
 
 // Constants
 const saltRounds = 10;
@@ -95,15 +96,16 @@ app.post('/signup', async (req, res) => {
     const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
     // Add user to database
-    result = await userCollection.insertOne({ 
-            username: username, 
-            email: email, 
-            password: hashedPassword, 
-            firstName: firstName, 
-            lastName: lastName, 
-            city: city, 
-            savedHotels: [] 
-        });
+    result = await userCollection.insertOne({
+        username: username,
+        email: email,
+        password: hashedPassword,
+        firstName: firstName,
+        lastName: lastName,
+        city: city,
+        savedHotels: [],
+        savedFlights: [],
+    });
 
     // Set session
     req.session.authenticated = true;
@@ -117,6 +119,7 @@ app.post('/signup', async (req, res) => {
         lastName: lastName,
         city: city,
         savedHotels: [],
+        savedFlights: [],
     }
 
     // Send response
@@ -157,6 +160,7 @@ app.post('/login', async (req, res) => {
         lastName: result[0].lastName,
         city: result[0].city,
         savedHotels: result[0].savedHotels,
+        savedFlights: result[0].savedFlights,
     };
 
     // Send response
@@ -199,54 +203,57 @@ app.post('/flights', async (req, res) => {
     // console.log(returnDate)
     console.log(tripType)
     console.log(cabinClass)
-  
+
     try {
-      let params = {
-        origin: originDisplayCode,
-        destination: destinationDisplayCode,
-        date: departureDate,
-        adults: adults,
-        cabinClass: cabinClass,
-        currency: 'CAD',
-        countryCode: 'CA'
-      }
-  
-      if (tripType === 'roundTrip') {
-        params.returnDate = returnDate
-      }
-  
-  
-      const results = await searchFlights(params);
-    //  console.log(results)
-      const filteredResults = results.data.data.filter((flight) => {
-        var matchFlight = false;
-  
-  
+        let params = {
+            origin: originDisplayCode,
+            destination: destinationDisplayCode,
+            date: departureDate,
+            adults: adults,
+            cabinClass: cabinClass,
+            currency: 'CAD',
+            countryCode: 'CA'
+        }
+
         if (tripType === 'roundTrip') {
-          console.log(flight.legs.length)
-          if (flight.legs.length === 2) {
-            matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
-            console.log("yes")
-          }
+            params.returnDate = returnDate
         }
-        if (tripType === 'oneWay') {
-          if (flight.legs.length === 1) {
-            matchFlight = true;
-          }
+
+        const results = await new Promise((resolve) => {
+            setTimeout(async () => {
+                resolve(await searchFlights(params));
+            }, 200)
+        })
+
+        const filteredResults = results.data.data.filter((flight) => {
+            var matchFlight = false;
+
+
+            if (tripType === 'roundTrip') {
+                console.log(flight.legs.length)
+                if (flight.legs.length === 2) {
+                    matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
+                    console.log("yes")
+                }
+            }
+            if (tripType === 'oneWay') {
+                if (flight.legs.length === 1) {
+                    matchFlight = true;
+                }
+            }
+            return matchFlight;
+
         }
-        return matchFlight;
-  
-      }
-      );
-  
-      console.log(filteredResults)
-      res.json(filteredResults);
+        );
+
+        console.log(filteredResults)
+        res.json(filteredResults);
     } catch (error) {
-      console.error(error);
-      res.status(500).send('Internal server error');
+        console.error(error);
+        res.status(500).send('Internal server error');
     }
-  });
-  
+});
+
 
 //password reset
 const transporter = nodemailer.createTransport({
@@ -418,6 +425,43 @@ app.post('/save-hotel', async (req, res) => {
     }
 });
 
+app.post('/save-flight', async (req, res) => {
+    const { flight, user } = req.body;
+    const userId = new ObjectId(user.userId);
+    console.log(`backend: ${flight}, ${userId}`);
+
+    try {
+        // Find flight in user's saved flights
+        const flightExists = await userCollection.findOne(
+            { _id: userId, savedFlights: { $elemMatch: { id: flight.id } } }
+        );
+
+        if (flightExists) {
+            // Remove flight if match found
+            const result = await userCollection.findOneAndUpdate(
+                { _id: userId },
+                { $pull: { savedFlights: { id: flight.id } } },
+                { returnOriginal: false }
+            );
+            console.log(result);
+
+            res.send("Flight removed");
+        } else {
+            // Save flight if no match found
+            const result = await userCollection.findOneAndUpdate(
+                { _id: userId },
+                { $push: { savedFlights: flight } },
+                { returnOriginal: false }
+            );
+            console.log(result);
+
+            res.send("Flight saved");
+        }
+    } catch (error) {
+        console.log(error);
+        res.send("Error saving flight");
+    }
+});
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
