@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Heading, Text } from '@chakra-ui/react';
+import { Box, Container, Heading, Text, Flex, Button as ChakraButton} from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Form, Button, Card } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,6 +12,8 @@ import './flights.css';
 
 
 export const Flights = () => {
+    const batchCount = 4;
+
     const navigate = useNavigate();
     //const user = JSON.parse(localStorage.getItem('user'));
     const [originDisplayCode, setOrigin] = useState('');
@@ -23,7 +25,9 @@ export const Flights = () => {
     const [cabinClass, setCabinClass] = useState('economy');
     const [flights, setFlights] = useState({});
     const [isLeafAnimationEnabled, setLeafAnimationEnabled] = useState(false);
+    const [hasNextPage, setHasNextPage] = useState(false);
 
+    const [displayResultsCount, setDisplayResultsCount]  = useState(batchCount);
 
 
     useEffect(() => {
@@ -61,12 +65,19 @@ export const Flights = () => {
                 console.log(res.data);
                 if (res.data) {
                     setFlights(res.data);
+                    setHasNextPage(displayResultsCount < res.data.length);
+
                 }
             });
         } catch (err) {
             console.log(err);
         }
     };
+
+    const loadMoreFlights = () => {
+        setDisplayResultsCount(displayResultsCount + batchCount);
+        setHasNextPage(displayResultsCount < flights.length);
+    }
 
 
     return (
@@ -272,7 +283,7 @@ export const Flights = () => {
 
 
                 <Container maxWidth="6xl">
-                    {Object.keys(flights).map((key) => (
+                    {Object.keys(flights).slice(0, displayResultsCount).map((key) => (
                         <Box key={key} p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
                             <Heading align="center">${flights[key].price.amount}</Heading>
                             <Text align="center" mt="2">
@@ -369,7 +380,13 @@ export const Flights = () => {
                     ))}
 
                 </Container>
-
+                {hasNextPage && (
+                    <Flex justify="center" mt="4">
+                        <ChakraButton onClick={loadMoreFlights} colorScheme="blue">
+                            Load More
+                        </ChakraButton>
+                    </Flex>
+                )}
             </div>
 
 
