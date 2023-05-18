@@ -49,7 +49,7 @@ export const Home = (props) => {
                             {/* Feature 1 */}
                             <Box>
                                 {/* Add icon */}
-                                <Heading as="h3" size="lg" mb="2">
+                                <Heading as="h3" size="md" mb="2" color="white">
                                     Feature 1
                                 </Heading>
                                 <>
@@ -71,7 +71,7 @@ export const Home = (props) => {
                             {/* Feature 2 */}
                             <Box>
                                 {/* Add icon */}
-                                <Heading as="h3" size="lg" mb="2">
+                                <Heading as="h3" size="md" mb="2" color="white">
                                     Feature 2
                                 </Heading>
                                 <>
@@ -93,7 +93,7 @@ export const Home = (props) => {
                             {/* Feature 3 */}
                             <Box>
                                 {/* Add icon */}
-                                <Heading as="h3" size="lg" mb="2">
+                                <Heading as="h3" size="md" mb="2" color="white">
                                     Feature 3
                                 </Heading>
                                 <>
