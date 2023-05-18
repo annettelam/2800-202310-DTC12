@@ -32,7 +32,7 @@ router.use(limiter);
 router.use(speedLimiter);
 
 router.get('/suggestions', async (req, res) => {
-    const { location, departureDate, returnDate } = req.query;
+    const { departureDate, returnDate } = req.query;
     const user = await userCollection.findOne({ _id: new ObjectID(id) }); // get the user using the user's id
     const userDestinationDisplayCode = user.destination; 
 
