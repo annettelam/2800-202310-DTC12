@@ -36,9 +36,9 @@ export const Home = (props) => {
                             <Text fontSize="xl" mb="4">
                                 Explore the world with ease.
                             </Text>
-                            <Button colorScheme="whiteAlpha" size="lg">
+                            {/* <Button colorScheme="whiteAlpha" size="lg">
                                 Get Started
-                            </Button>
+                            </Button> */}
                         </Box>
                     </Flex>
                     <Divider />
