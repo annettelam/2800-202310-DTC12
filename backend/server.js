@@ -13,6 +13,7 @@ const MongoStore = require('connect-mongo');
 const app = express();
 const cors = require('cors');
 const axios = require('axios');
+const { ObjectId } = require('mongodb');
 
 // API files
 const cities = require('../frontend/src/components/hotels/cities');
@@ -41,9 +42,9 @@ var mongoStore = MongoStore.create({
 
 // Booking.com API
 const hotelAPI = axios.create({
-    baseURL: 'https://booking-com.p.rapidapi.com/v1/hotels',
+    baseURL: 'https://booking-com.p.rapidapi.com',
     headers: {
-        'X-RapidAPI-Key': '756c633279msh0fadc5ba4579eefp126c2fjsn7844ff44c751',
+        'X-RapidAPI-Key': '71646a7300msh8677bb088d2904ep189d22jsn7575f3cd5641',
         'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
     }
 });
@@ -67,7 +68,7 @@ app.post('/signup', async (req, res) => {
     console.log(`backend: ${email}, ${username}, ${password}, ${firstName}, ${lastName}, ${city}`);
 
     // Check if username or email already exists
-    const result = await userCollection.find({
+    var result = await userCollection.find({
         $or: [{ username: username }, { email: email }]
     }).toArray();
 
@@ -94,18 +95,28 @@ app.post('/signup', async (req, res) => {
     const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
     // Add user to database
-    await userCollection.insertOne({ username: username, email: email, password: hashedPassword, firstName: firstName, lastName: lastName, city: city });
+    result = await userCollection.insertOne({ 
+            username: username, 
+            email: email, 
+            password: hashedPassword, 
+            firstName: firstName, 
+            lastName: lastName, 
+            city: city, 
+            savedHotels: [] 
+        });
 
     // Set session
     req.session.authenticated = true;
 
     // Create user object to send back to client
     const user = {
+        userId: result.insertedId,
         username: username,
         'email': email,
         firstName: firstName,
         lastName: lastName,
         city: city,
+        savedHotels: [],
     }
 
     // Send response
@@ -139,11 +150,13 @@ app.post('/login', async (req, res) => {
     // Set session
     req.session.authenticated = true;
     req.session.user = {
+        userId: result[0]._id,
         username: result[0].username,
         email: result[0].email,
         firstName: result[0].firstName,
         lastName: result[0].lastName,
         city: result[0].city,
+        savedHotels: result[0].savedHotels,
     };
 
     // Send response
@@ -306,36 +319,110 @@ app.post('/reset-password/:token', async (req, res) => {
     return res.status(200).json({ message: 'Password reset successfully' });
 });
 
-app.post('/hotels', async (req, res) => {
-    const { city, checkInDate, checkOutDate, numAdults, numRooms } = req.body;
-    console.log(`backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}`);
-
-    // Get city id
-    const cityId = cities[city];
-
-    const hotels = await hotelAPI.get('/search', {
-        params: {
-            checkin_date: checkInDate,
-            dest_type: 'city',
-            units: 'metric',
-            checkout_date: checkOutDate,
-            adults_number: numAdults,
-            order_by: 'price',
-            dest_id: cityId,
-            filter_by_currency: 'CAD',
-            locale: 'en-gb',
-            room_number: numRooms,
-        }
-    });
-
-    console.log(hotels.data.result);
-
-    res.json(hotels.data.result);
+app.post("/hotels", async (req, res) => {
+    try {
+        const { city, checkInDate, checkOutDate, numAdults, numRooms, page } = req.body;
+        console.log(`backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}, ${page}`);
+        // Get city id
+        const cityId = cities[city];
+        // Get Hotel list
+        const hotels = await hotelAPI.get("/v1/hotels/search", {
+            params: {
+                checkin_date: checkInDate,
+                dest_type: "city",
+                units: "metric",
+                checkout_date: checkOutDate,
+                adults_number: numAdults,
+                order_by: "price",
+                dest_id: cityId,
+                filter_by_currency: "CAD",
+                locale: "en-gb",
+                room_number: numRooms,
+            },
+        });
+        // Slice the array to get the hotels for the current batch
+        const batchSize = 4;
+        const startIndex = (page - 1) * batchSize;
+        const endIndex = page * batchSize;
+        const hotelsData = hotels.data.result.slice(startIndex, endIndex);
+        // Get hotel details for sliced hotels with a delay between each call
+        const hotelDetails = hotelsData.map((hotel, index) => {
+            return new Promise((resolve, reject) => {
+                setTimeout(async () => {
+                    try {
+                        const response = await hotelAPI.get('/v2/hotels/details', {
+                            params: {
+                                hotel_id: hotel.hotel_id,
+                                currency: 'CAD',
+                                locale: 'en-gb',
+                                checkout_date: checkOutDate,
+                                checkin_date: checkInDate,
+                            },
+                        });
+                        resolve(response);
+                    } catch (error) {
+                        reject(error);
+                    }
+                }, index * 200); // Delay each API call by 1 second (adjust the delay as needed)
+            });
+        });
+        // Add hotel details to hotelsData
+        hotelDetails.forEach((hotel, index) => {
+            hotelsData[index].details = hotel.data;
+        });
+        res.json({
+            hotels: hotelsData,
+            hasNextPage: endIndex < hotels.data.result.length,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal server error");
+    }
 });
+
+app.post('/save-hotel', async (req, res) => {
+    const { hotel, user } = req.body;
+    const userId = new ObjectId(user.userId);
+    console.log(`backend: ${hotel}, ${userId}`);
+
+    try {
+        // Find hotel in user's saved hotels
+        const hotelExists = await userCollection.findOne(
+            { _id: userId, savedHotels: { $elemMatch: { hotel_id: hotel.hotel_id } } }
+        );
+
+        if (hotelExists) {
+            // Remove hotel if match found
+            const result = await userCollection.findOneAndUpdate(
+                { _id: userId },
+                { $pull: { savedHotels: { hotel_id: hotel.hotel_id } } },
+                { returnOriginal: false }
+            );
+            console.log(result);
+
+            res.send("Hotel removed");
+        } else {
+            // Save hotel if no match found
+            const result = await userCollection.findOneAndUpdate(
+                { _id: userId },
+                { $push: { savedHotels: hotel } },
+                { returnOriginal: false }
+            );
+            console.log(result);
+
+            res.send("Hotel saved");
+        }
+    } catch (error) {
+        console.log(error);
+        res.send("Error saving hotel");
+    }
+});
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 app.post('/logout', (req, res) => {
+    console.log(req);
     req.session.destroy();
     res.send('ok');
 });
