@@ -254,13 +254,20 @@ export const Hotels = () => {
                                         {hotel.hotel_name}
                                     </Heading>
                                     <Image src={hotel.max_photo_url} alt={hotel.hotel_name} w={{ base: '80%', sm: '65%', md: '55%', lg: '40%' }} h="auto" rounded="md" mb="4" />
+                                    <Button
+                                        size="md"
+                                        onClick={() => window.location.href = hotel.url}
+                                        className='mb-3'
+                                    >
+                                        Book at Booking.com
+                                    </Button>
                                     <Text fontSize="lg" textAlign="center" mb="2">
                                         <b>Price:</b> ${roundedPrice} CAD
                                     </Text>
                                     <Text fontSize="lg" textAlign="center" mb="2">
                                         <b>Address:</b> {hotel.address}
                                     </Text>
-                                    <Text fontSize="lg" textAlign="center" mb="4">
+                                    <Text fontSize="lg" textAlign="center" mb="2">
                                         <b>Rating:</b> {hotel.review_score !== null ? `${hotel.review_score} / 10` : 'No reviews yet'}
                                     </Text>
 
@@ -279,12 +286,6 @@ export const Hotels = () => {
                                         </Box>
                                     )}
 
-                                    <Button
-                                        size="md"
-                                        onClick={() => window.location.href = hotel.url}
-                                    >
-                                        Book at Booking.com
-                                    </Button>
                                 </Flex>
                             </Box>
                         );
