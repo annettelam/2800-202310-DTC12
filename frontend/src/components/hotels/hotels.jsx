@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image } from '@chakra-ui/react';
+import { ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image, HStack, useNumberInput } from '@chakra-ui/react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
@@ -18,8 +18,35 @@ export const Hotels = () => {
     const [city, setCity] = useState('');
     const [checkInDate, setCheckInDate] = useState('');
     const [checkOutDate, setCheckOutDate] = useState('');
-    const [numAdults, setNumAdults] = useState('');
-    const [numRooms, setNumRooms] = useState('');
+    const [numAdults, setNumAdults] = useState(1);
+    const [numRooms, setNumRooms] = useState(1);
+    const {
+        getInputProps: getAdultsInputProps,
+        getIncrementButtonProps: getAdultsIncProps,
+        getDecrementButtonProps: getAdultsDecProps,
+    } = useNumberInput({
+        step: 1,
+        defaultValue: 1,
+        min: 1,
+        max: 29,
+    });
+    const adultsInput = getAdultsInputProps();
+    const adultsInc = getAdultsIncProps();
+    const adultsDec = getAdultsDecProps();
+
+    const {
+        getInputProps: getRoomsInputProps,
+        getIncrementButtonProps: getRoomsIncProps,
+        getDecrementButtonProps: getRoomsDecProps,
+    } = useNumberInput({
+        step: 1,
+        defaultValue: 1,
+        min: 1,
+        max: 29,
+    });
+    const roomsInput = getRoomsInputProps();
+    const roomsInc = getRoomsIncProps();
+    const roomsDec = getRoomsDecProps();
 
     // Hotels
     const [hotels, setHotels] = useState({});
@@ -201,30 +228,42 @@ export const Hotels = () => {
 
                             <FormControl mt="4">
                                 <FormLabel>Number of Adults</FormLabel>
-                                <Input
-                                    type="number"
-                                    value={numAdults}
-                                    onChange={(e) => setNumAdults(e.target.value)}
-                                    bg="white"
-                                    color="gray.800"
-                                    borderColor="gray.300"
-                                    _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
-                                    required
-                                />
+                                <HStack maxW='250px' className='m-auto'>
+                                    <Button {...adultsDec} >-</Button>
+                                    <Input
+                                        type="number"
+                                        value={numAdults}
+                                        onChange={(e) => setNumAdults(e.target.value)}
+                                        bg="white"
+                                        color="gray.800"
+                                        borderColor="gray.300"
+                                        _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                        textAlign="center"
+                                        {...adultsInput}
+                                        required
+                                    />
+                                    <Button {...adultsInc} >+</Button>
+                                </HStack>
                             </FormControl>
 
                             <FormControl mt="4">
                                 <FormLabel>Number of Rooms</FormLabel>
-                                <Input
-                                    type="number"
-                                    value={numRooms}
-                                    onChange={(e) => setNumRooms(e.target.value)}
-                                    bg="white"
-                                    color="gray.800"
-                                    borderColor="gray.300"
-                                    _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
-                                    required
-                                />
+                                <HStack maxW='250px' className='m-auto'>
+                                    <Button {...roomsDec} >-</Button>
+                                    <Input
+                                        type="number"
+                                        value={numRooms}
+                                        onChange={(e) => setNumRooms(e.target.value)}
+                                        bg="white"
+                                        color="gray.800"
+                                        borderColor="gray.300"
+                                        _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                        textAlign="center"
+                                        {...roomsInput}
+                                        required
+                                    />
+                                    <Button {...roomsInc} >+</Button>
+                                </HStack>
                             </FormControl>
 
                             <ChakraButton type="submit" colorScheme="blue" mt="4">
