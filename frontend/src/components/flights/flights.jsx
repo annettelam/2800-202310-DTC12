@@ -39,13 +39,16 @@ export const Flights = () => {
             navigate('/login');
         }
         // Save user from localStorage
+        const userFromLocalStorage = JSON.parse(localStorage.getItem('user'));
         setUser(JSON.parse(localStorage.getItem('user')));
 
         // Get saved flights from localStorage
-        const savedFlights = JSON.parse(localStorage.getItem('user')).savedFlights;
-        const savedFlightIds = savedFlights.map((savedFlight) => savedFlights.id);
-        setSavedFlights(savedFlightIds);
-
+        if (userFromLocalStorage && userFromLocalStorage.savedFlights) {
+            // Get saved flights from localStorage
+            const savedFlights = JSON.parse(localStorage.getItem('user')).savedFlights;
+            const savedFlightIds = savedFlights.map((savedFlight) => savedFlights.id);
+            setSavedFlights(savedFlightIds);
+        }
     }, [navigate]);
 
     // Check if flight is saved

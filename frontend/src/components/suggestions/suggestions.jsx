@@ -50,7 +50,7 @@ export const Suggestions = () => {
     useEffect(() => {
         const fetchAttractions = async () => {
           try {
-            const attractionsResponse = await axios.get(`http://localhost:3001/suggestions/search?location=${cityName}`);
+            const attractionsResponse = await axios.get(`http://localhost:3000/suggestions`, {params: {departureDate: 'your_departure_date', returnDate: 'your_return_date'}});
             console.log('Attractions Response: ', attractionsResponse);
             if (attractionsResponse.data) {
               setAttractions(attractionsResponse.data.attractions);

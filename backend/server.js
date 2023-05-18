@@ -13,6 +13,7 @@ const app = express();
 const cors = require('cors');
 const axios = require('axios');
 const { ObjectId } = require('mongodb');
+const suggRoutes = require('./sugg_routes.js');
 
 // API files
 const cities = require('../frontend/src/components/hotels/cities');
@@ -69,11 +70,10 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
-    console.log('Session:', req.session);
+    // console.log('Session:', req.session);
     next();
-  });
+});
 
-  
 app.use('/suggestions', suggRoutes);
 
 app.get('/', (req, res) => {
@@ -122,7 +122,9 @@ app.post('/signup', async (req, res) => {
         city: city,
         savedHotels: [],
         savedFlights: [],
-   , destination: destination, departureDate: departureDate, returnDate: returnDate });
+        destination: destination, 
+        departureDate: departureDate, 
+        returnDate: returnDate });
 
     // Set session
     req.session.authenticated = true;
@@ -191,7 +193,7 @@ app.post('/login', async (req, res) => {
     req.session.cookie.maxAge = expireTime;
 
     // Log the session after setting the user data
-    console.log('Session after login:', req.session);
+    // console.log('Session after login:', req.session);
 
     // Send response
     res.json({
@@ -231,15 +233,28 @@ function ensureAuthenticated(req, res, next) {
 
 //flight results
 app.post('/flights', ensureAuthenticated, async (req, res) => {
-    console.log("req.session:", req.session);
+    // console.log("req.session:", req.session);
     const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass } = req.body;
-    console.log(req.body)
-    console.log(originDisplayCode)
-    console.log(destinationDisplayCode)
-    console.log(departureDate)
-    // console.log(returnDate)
-    console.log(tripType)
-    console.log(cabinClass)
+    // console.log(req.body)
+    // console.log(originDisplayCode)
+    // console.log(destinationDisplayCode)
+    // console.log(departureDate)
+    // // console.log(returnDate)
+    // console.log(tripType)
+    // console.log(cabinClass)
+
+    console.log("Updating user's destination, departure date, and return date in the database...");
+    const updateResult = await userCollection.updateOne(
+        { email: req.session.user.email }, // Match the user based on their email stored in the session
+        {
+            $set: {
+                destination: destinationDisplayCode,
+                departureDate: departureDate,
+                returnDate: returnDate,
+            }
+        }
+    );
+    console.log("Update result:", updateResult);
 
     try {
         let params = {
@@ -267,10 +282,10 @@ app.post('/flights', ensureAuthenticated, async (req, res) => {
 
 
             if (tripType === 'roundTrip') {
-                console.log(flight.legs.length)
+                // console.log(flight.legs.length)
                 if (flight.legs.length === 2) {
                     matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
-                    console.log("yes")
+                    // console.log("yes")
                 }
             }
             if (tripType === 'oneWay') {
@@ -283,7 +298,7 @@ app.post('/flights', ensureAuthenticated, async (req, res) => {
         }
         );
 
-        console.log(filteredResults)
+        // console.log(filteredResults)
         res.json(filteredResults);
     } catch (error) {
         console.error(error);
@@ -309,7 +324,7 @@ const transporter = nodemailer.createTransport({
 
 app.post('/reset-password', async (req, res) => {
     const { email } = req.body;
-    console.log(`backend: Reset password requested for ${email}`);
+    // console.log(`backend: Reset password requested for ${email}`);
 
     // Check if email exists in database
     const user = await userCollection.findOne({ email: email });
@@ -503,7 +518,7 @@ app.post('/save-flight', async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////
 
 app.post('/logout', (req, res) => {
-    console.log(req);
+    // console.log(req);
     req.session.destroy();
     res.send('ok');
 });
