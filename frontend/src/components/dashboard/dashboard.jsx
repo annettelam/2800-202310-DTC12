@@ -16,7 +16,7 @@ import {
 import '../home/home.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
-import dashBackground from '../../dashbkg.jpg';
+import bkg2 from '../../bkg2.jpg';
 import { Container } from 'react-bootstrap';
 import './dashboard.css';
 
@@ -35,7 +35,7 @@ export const Dashboard = (props) => {
             <div
                 className="dashboard-container"
                 style={{
-                    backgroundImage: `url(${dashBackground})`,
+                    backgroundImage: `url(${bkg2})`,
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center top 50px', // Move background down 50 pixels
                     backgroundAttachment: 'fixed',

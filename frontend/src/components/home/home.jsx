@@ -1,8 +1,21 @@
 import React, { useState } from 'react';
-import { ChakraProvider, Box, Heading, Text, Button, Container, SimpleGrid, Flex, Image, Divider, Collapse } from '@chakra-ui/react';
+import {
+    ChakraProvider,
+    Box,
+    Heading,
+    Text,
+    Button,
+    Container,
+    SimpleGrid,
+    Flex,
+    Image,
+    Divider,
+    Collapse,
+} from '@chakra-ui/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import navlogo from '../../navlogo.png';
+import bkg5 from '../../bkg5.jpg';
 
 export const Home = (props) => {
     const [isOpen1, setIsOpen1] = useState(false);
@@ -23,24 +36,34 @@ export const Home = (props) => {
 
     return (
         <ChakraProvider>
-            <Box bgGradient="linear(to bottom right, aliceblue, teal)" fontFamily="Questrial" minHeight="100vh">
-                <Container maxWidth="container.xl">
-                    <Flex direction="column" align="center" justify="center" minHeight="50vh">
-                        <Box bg="aliceblue.500" color="white" py="8" px="12" borderRadius="xl" textAlign="center">
-                            <Flex justify="center">
-                                <Image src={navlogo} alt="Planetpass Logo" boxSize="250px" objectFit="contain" />
-                            </Flex>
-                            <Heading as="h1" size="2xl" mb="4">
-                                Welcome to Planetpass.
-                            </Heading>
-                            <Text fontSize="xl" mb="4">
-                                Explore the world with ease.
-                            </Text>
-                            <Button colorScheme="whiteAlpha" size="lg">
-                                Get Started
-                            </Button>
-                        </Box>
+            <div
+                className="dashboard-container"
+                style={{
+                    backgroundImage: `url(${bkg5})`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center top 50px',
+                    backgroundAttachment: 'fixed',
+                    backgroundSize: 'cover',
+                    fontFamily: 'Questrial',
+                    minHeight: '100vh',
+                    textAlign: 'center', // Center the text
+                }}
+            >
+                <Container>
+                    <Flex justify="center">
+                        <Image
+                            src={navlogo}
+                            alt="Planetpass Logo"
+                            boxSize="250px"
+                            objectFit="contain"
+                        />
                     </Flex>
+                    <Heading as="h1" size="1xl" mb="4" textAlign="center"> {/* Center the heading */}
+                        Welcome to Planetpass.
+                    </Heading>
+                    <Text fontSize="xl" mb="4" textAlign="center"> {/* Center the text */}
+                        Explore the world with ease.
+                    </Text>
                     <Divider />
                     <br></br>
                     <Box>
@@ -57,7 +80,7 @@ export const Home = (props) => {
                                     <Collapse in={isOpen1} animateOpacity>
                                         <Box
                                             p="40px"
-                                            color="white"
+                                            color="aliceblue"
                                             mt="4"
                                             bg="teal.500"
                                             rounded="md"
@@ -116,7 +139,7 @@ export const Home = (props) => {
                     </Box>
                     <br></br>
                 </Container>
-            </Box>
+            </div>
         </ChakraProvider>
     );
 };
