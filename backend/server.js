@@ -290,11 +290,11 @@ app.post("/flights", async (req, res) => {
       params.returnDate = returnDate;
     }
 
-    const results = await new Promise((resolve) => {
-      setTimeout(async () => {
-        resolve(await searchFlights(params));
-      }, 200);
-    });
+        const results = await new Promise((resolve) => {
+            setTimeout(async () => {
+                resolve(await searchFlights(params));
+            }, 600)
+        })
 
     const filteredResults = results.data.data.filter((flight) => {
       var matchFlight = false;
