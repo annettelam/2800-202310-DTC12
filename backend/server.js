@@ -299,11 +299,14 @@ app.post("/hotels", async (req, res) => {
                     } catch (error) {
                         reject(error);
                     }
-                }, index * 200); // Delay each API call by 1 second (adjust the delay as needed)
+                }, index * 100);
             });
         });
+        // Wait for all API calls to finish
+        const hotelDetailsData = await Promise.all(hotelDetails);
         // Add hotel details to hotelsData
-        hotelDetails.forEach((hotel, index) => {
+        hotelDetailsData.forEach((hotel, index) => {
+            console.log(hotel.data);
             hotelsData[index].details = hotel.data;
         });
         res.json({
