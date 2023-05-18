@@ -1,4 +1,5 @@
 const axios = require('axios');
+axios.defaults.withCredentials = true
 const { response } = require('express');
 
 const searchFlights = async (params) => {

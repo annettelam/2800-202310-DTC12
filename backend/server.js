@@ -46,12 +46,8 @@ app.use(cors({
 app.use(session({
     secret: node_session_secret,
     store: mongoStore,
-    resave: false,
-    cookie: {
-        secure: false, // Change this to true if using HTTPS
-        maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
-      },
-    saveUninitialized: true,
+    resave: true,
+    saveUninitialized: false,
 }));
 
 app.use((req, res, next) => {
@@ -116,6 +112,8 @@ app.post('/signup', async (req, res) => {
         returnDate: returnDate
     }
 
+    req.session.cookie.maxAge = expireTime;
+
     // Send response
     res.json({
         message: "Success",
@@ -156,6 +154,8 @@ app.post('/login', async (req, res) => {
         departureDate: result[0].departureDate,
         returnDate: result[0].returnDate
     };
+
+    req.session.cookie.maxAge = expireTime;
 
     // Log the session after setting the user data
     console.log('Session after login:', req.session);
@@ -245,10 +245,10 @@ app.post('/flights', ensureAuthenticated, async (req, res) => {
   
   
         if (tripType === 'roundTrip') {
-          console.log(flight.legs.length)
+        //   console.log(flight.legs.length)
           if (flight.legs.length === 2) {
            matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
-            console.log("yes")
+            // console.log("yes")
           }
         }
         if (tripType === 'oneWay') {
@@ -257,7 +257,6 @@ app.post('/flights', ensureAuthenticated, async (req, res) => {
           }
         }
         return matchFlight;
-  
       }
       );
   
@@ -299,7 +298,7 @@ app.post('/reset-password', async (req, res) => {
 
     // Generate a password reset token
     const token = crypto.randomBytes(20).toString('hex');
-    console.log(token);
+    // console.log(token);
 
     // Save the token to the user's document in the database
     await userCollection.updateOne(

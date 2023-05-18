@@ -9,9 +9,10 @@ const { getUserCollection } = require('./databaseConnection');
 const { ObjectID } = require('mongodb');
 require('dotenv').config();
 
-
 const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 const tripAdvisorApiKey = process.env.TRIP_ADVISOR_API_KEY;
+
+const userCollection = getUserCollection();
 
 // Define rate limiter options
 const limiter = rateLimit({
@@ -32,9 +33,39 @@ router.use(speedLimiter);
 
 router.get('/suggestions', async (req, res) => {
     const { location, departureDate, returnDate } = req.query;
+    const user = await userCollection.findOne({ _id: new ObjectID(id) }); // get the user using the user's id
+    const userDestinationDisplayCode = user.destination; 
+
+    const getCityName = (airportCode) => {
+        const airports = {
+        ATL: 'Atlanta',
+        BOS: 'Boston',
+        ORD: 'Chicago',
+        DFW: 'Dallas',
+        HNL: 'Hawaii',
+        IAH: 'Houston',
+        JFK: 'New York',
+        LAX: 'Los Angeles',
+        MEX: 'Mexico City',
+        MIA: 'Miami',
+        YQB: 'Quebec City',
+        SEA: 'Seattle',
+        YYZ: 'Toronto',
+        YVR: 'Vancouver',
+        };
+        return airports[airportCode] || '';
+    }; 
+
+    const cityName = getCityName(userDestinationDisplayCode);
+
+    if (!cityName) {
+        // If the destinationDisplayCode is not found in the airports object
+        console.error(`Unknown destinationDisplayCode: ${destinationDisplayCode}`);
+        return;
+    }
     console.log('Search route called');
-    console.log(location, "location inside get search");
-    const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=${googleMapsApiKey}`;
+    console.log(cityName, "cityName inside get search");
+    const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(cityName)}&key=${googleMapsApiKey}`;
     
     const attractions = [];
 
