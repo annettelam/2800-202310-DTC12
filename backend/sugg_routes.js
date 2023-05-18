@@ -34,9 +34,10 @@ router.use(speedLimiter);
 
 router.get('/suggestions', async (req, res) => {
     console.log('Search route called');
-    const { departureDate, returnDate } = req.query;
     const user = await userCollection.findOne({ email: req.session.user.email }); // get the user using the user's id
     const userDestinationDisplayCode = user.destination; 
+    const departureDate = user.departureDate;
+    const returnDate = user.returnDate;
 
     try {
         const getCityName = (airportCode) => {
