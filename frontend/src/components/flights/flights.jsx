@@ -50,7 +50,7 @@ export const Flights = () => {
 
     // Check if flight is saved
     const isFlightSaved = (flightId) => {
-        console.log("Flight id for saved:", flightId);
+        //console.log("Flight id for saved:", flightId);
         return savedFlights.includes(flightId);
     };
 
@@ -191,23 +191,7 @@ export const Flights = () => {
                                     name="destinationDisplayCode"
                                     placeholder="Choose destination"
                                     value={destinationDisplayCode}
-                                    onChange={handleDestinationChange}
-
-
-                                    // onChange={(e) => {
-                                    //     setDestination(e.target.value);
-                                    //     if (e.target.value === 'Earth') {
-                                    //         // Enable leaf animation
-                                    //         setLeafAnimationEnabled(true);
-                                    //         console.log(isLeafAnimationEnabled)
-                                    //     } else {
-                                    //         // Disable leaf animation
-                                    //         setLeafAnimationEnabled(false);
-
-                                    //     }
-
-                                    // }}
-                                    required
+                                    onChange={handleDestinationChange} required
                                 >
                                     <option value="">Select Destination</option>
                                     <option value="ATL">Atlanta - Hartsfield-Jackson Atlanta International Airport (ATL)</option>
@@ -433,11 +417,75 @@ export const Flights = () => {
                                 </div>
                             )}
 
+
                             {flights[key].is_eco_contender && (
-                                <Text align="center" mt="2">
-                                    <b>Eco contender delta:</b> {Math.round(Math.abs(flights[key].eco_contender_delta))}%
-                                </Text>
+                                <>
+                                    <Text align="center" mt="2">
+                                        <span style={{ color: 'green' }}>
+                                            <b>Eco flight:</b> {flights[key].is_eco_contender ? 'Yes' : 'No'}
+                                        </span>
+
+                                    </Text>
+                                    <Text align="center" mt="2">
+                                        <span style={{ color: 'green' }}>
+                                            This flight emits
+                                            <b> {Math.round(Math.abs(flights[key].eco_contender_delta))}% </b>
+                                            less CO2 than other flights flying the same route</span>
+
+                                    </Text>
+                                </>
                             )}
+
+                            {/* SVG element for flight route */}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                                {/* Line connecting origin and destination */}
+                                <line
+                                    x1="10%"
+                                    y1="50%"
+                                    x2="90%"
+                                    y2="50%"
+                                    stroke="black"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    fill="none"
+                                />
+
+                                {/* Dots for stops */}
+                                {flights[key].legs[0].stop_count > 0 && (
+                                    flights[key].legs[0].stops.map((stop, index) => (
+                                        <g key={index}>
+                                            {/* Dot for stop */}
+                                            <circle
+                                                cx={`${((index + 1) / (flights[key].legs[0].stop_count + 1)) * 80 + 10}%`}
+                                                cy="50%"
+                                                r="4"
+                                                fill="black"
+                                            />
+
+                                            {/* Display code for the stop */}
+                                            <text
+                                                x={`${((index + 1) / (flights[key].legs[0].stop_count + 1)) * 80 + 10}%`}
+                                                y="60%"
+                                                textAnchor="middle"
+                                                fontSize="10"
+                                            >
+                                                {stop.display_code}
+                                            </text>
+                                        </g>
+                                    ))
+                                )}
+
+                                {/* Display code for origin */}
+                                <text x="5%" y="50%" textAnchor="start" alignmentBaseline="middle" fontSize="12" >
+                                    {flights[key].legs[0].origin.display_code}
+                                </text>
+
+                                {/* Display code for destination */}
+                                <text x="95%" y="50%" textAnchor="end" alignmentBaseline="middle" fontSize="12">
+                                    {flights[key].legs[0].destination.display_code}
+                                </text>
+                            </svg>
+
 
                         </Box>
                     ))}

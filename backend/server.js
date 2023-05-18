@@ -222,7 +222,7 @@ app.post('/flights', async (req, res) => {
         const results = await new Promise((resolve) => {
             setTimeout(async () => {
                 resolve(await searchFlights(params));
-            }, 200)
+            }, 600)
         })
 
         const filteredResults = results.data.data.filter((flight) => {
