@@ -43,7 +43,7 @@ var mongoStore = MongoStore.create({
 const hotelAPI = axios.create({
     baseURL: 'https://booking-com.p.rapidapi.com',
     headers: {
-        'X-RapidAPI-Key': '71646a7300msh8677bb088d2904ep189d22jsn7575f3cd5641',
+        'X-RapidAPI-Key': 'ef202a40a1msh84d101d331ea111p199b57jsne3be98f83a9a',
         'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
     }
 });
