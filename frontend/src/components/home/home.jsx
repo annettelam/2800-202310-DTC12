@@ -31,7 +31,7 @@ export const Home = (props) => {
                                 <Image src={navlogo} alt="Planetpass Logo" boxSize="250px" objectFit="contain" />
                             </Flex>
                             <Heading as="h1" size="2xl" mb="4">
-                                Welcome to Planetpass.
+                                Welcome to PlanetPass.
                             </Heading>
                             <Text fontSize="xl" mb="4">
                                 Explore the world with ease.
