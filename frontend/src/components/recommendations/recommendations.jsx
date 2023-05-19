@@ -10,7 +10,8 @@ import {
     Container,
     SimpleGrid,
     VStack,
-    Card
+    Card,
+    Tooltip
 } from '@chakra-ui/react';
 import bkg from '../../bkg.jpg';
 
@@ -65,7 +66,7 @@ export const Recommendations = () => {
             >
                 <Container maxW="md">
                     <Heading mb={4} textAlign="center" color="white">
-                        Recommendations
+                        Enter your travel details.
                     </Heading>
                     <Box bg="white" p={4} rounded="md">
                         <VStack spacing={4} align="stretch">
@@ -76,15 +77,21 @@ export const Recommendations = () => {
                                 onChange={(e) => setCity(e.target.value)}
                                 placeholder="Enter city"
                             />
-                            <Input
-                                type="text"
-                                id="dates"
-                                value={dates}
-                                onChange={(e) => setDates(e.target.value)}
-                                placeholder="Enter dates"
-                            />
+                            <Tooltip
+                                label="Enter a single date (YYYY-MM-DD) or a range of dates (e.g. 'YYYY-MM-DD - YYYY-MM-DD')"
+                                hasArrow
+                                placement="top"
+                            >
+                                <Input
+                                    type="text"
+                                    id="dates"
+                                    value={dates}
+                                    onChange={(e) => setDates(e.target.value)}
+                                    placeholder="Enter dates"
+                                />
+                            </Tooltip>
                             <Button colorScheme="blue" onClick={generateRecommendations}>
-                                Generate Recommendations
+                                Generate List
                             </Button>
                         </VStack>
                     </Box>
@@ -105,6 +112,5 @@ export const Recommendations = () => {
                 )}
             </Box>
         </ChakraProvider>
-
     );
 };
