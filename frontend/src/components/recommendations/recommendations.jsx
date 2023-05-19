@@ -32,7 +32,8 @@ export const Recommendations = () => {
         const headers = {
             'Content-Type': 'application/json',
             Authorization:
-                'Bearer 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',
+                `Bearer ${process.env.REACT_APP_OPENAI}`,
+
         };
 
         try {

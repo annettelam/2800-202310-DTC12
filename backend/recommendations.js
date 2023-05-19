@@ -28,7 +28,7 @@ const generateRecommendations = async (city, dates) => {
     };
     const headers = {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer YOUR_OPENAI_API_KEY',
+        Authorization: `Bearer ${process.env.REACT_APP_OPENAI}`,
     };
 
     const response = await axios.post(url, payload, { headers });
