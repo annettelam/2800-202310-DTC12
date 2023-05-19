@@ -55,68 +55,87 @@ router.post('/', async (req, res) => {
     }
 
     //get user's most recent saved flight from mongodb
-    const airportCode = flightUser.savedFlights[0].legs.destination.display_code;
+    const savedFlightsLength = flightUser.savedFlights.length;
+    const legsLength = flightUser.savedFlights[savedFlightsLength - 1].legs.length;
+    const airportCode = flightUser.savedFlights[savedFlightsLength - 1].legs[legsLength - 1].destination.display_code;
     console.log('airportCode', airportCode);
 
-    // try {
-    //     const getCityName = (airportCode) => {
-    //         const airports = {
-    //             ATL: 'Atlanta',
-    //             BOS: 'Boston',
-    //             ORD: 'Chicago',
-    //             DFW: 'Dallas',
-    //             HNL: 'Hawaii',
-    //             IAH: 'Houston',
-    //             JFK: 'New York',
-    //             LAX: 'Los Angeles',
-    //             MEX: 'Mexico City',
-    //             MIA: 'Miami',
-    //             YQB: 'Quebec City',
-    //             SEA: 'Seattle',
-    //             YYZ: 'Toronto',
-    //             YVR: 'Vancouver',
-    //         };
-    //         return airports[airportCode] || '';
-    //     };
-    
-    //     const cityName = getCityName(airportCode);
-    
-    //     if (!cityName) {
-    //       // If the destinationDisplayCode is not found in the airports object
-    //       console.error(`Unknown destinationDisplayCode: ${userDestinationDisplayCode}`);
-    //       return;
-    //     }
-    
-    //     console.log('City Name:', cityName);
-    
-    //     const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(cityName)}&key=${googleMapsApiKey}`;
-    
-    //     const attractions = [];
+    let cityName = '';
 
-    //     try {
-    //         const googleMapsResponse = await fetch(googleMapsApiUrl);
-    //         const googleMapsData = await googleMapsResponse.json();
-    //         const { lat, lng } = googleMapsData.results[0].geometry.location;
+    try {
+        const getCityName = (airportCode) => {
+            const airports = {
+                ATL: 'Atlanta',
+                BOS: 'Boston',
+                ORD: 'Chicago',
+                DFW: 'Dallas',
+                HNL: 'Hawaii',
+                IAH: 'Houston',
+                JFK: 'New York',
+                LAX: 'Los Angeles',
+                MEX: 'Mexico City',
+                MIA: 'Miami',
+                YQB: 'Quebec City',
+                SEA: 'Seattle',
+                YYZ: 'Toronto',
+                YVR: 'Vancouver',
+            };
+            return airports[airportCode] || '';
+        };
+    
+        cityName = getCityName(airportCode);
+        console.log('City Name:', cityName);
+    } catch (err) {
+        if (!cityName) {
+          // If the destinationDisplayCode is not found in the airports object
+          console.error(`Unknown destinationDisplayCode: ${userDestinationDisplayCode}`);
+          return;
+        }
+    }
+
+    const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(cityName)}&key=${googleMapsApiKey}`;
+    const attractions = [];
+
+    let lat, lng = 0;
+    
+    try {
+        const googleMapsResponse = await fetch(googleMapsApiUrl);
+        const googleMapsData = await googleMapsResponse.json();
+        // console.log('cityName', cityName)
+        // console.log('googleMapsData', googleMapsData);
+        if (googleMapsData.results.length === 0) {
+            console.log('No results found for the provided address');
+            return;
+            }
+
+        const { lat, lng } = googleMapsData.results[0].geometry.location;
+        console.log('lat', lat, 'lng', lng);
+    } catch (err) {
+        console.error(`Failed to fetch Google Maps data: ${err}`);
+    }
       
-    //         const tripAdvisorApiUrl = `https://api.content.tripadvisor.com/api/v1/location/nearby_search?latLong=${lat}%2C%20${lng}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
-      
-    //         try {
-    //             const tripAdvisorResponse = await fetch(tripAdvisorApiUrl);
-    //             const tripAdvisorData = await tripAdvisorResponse.json();
-      
-    //             if (!tripAdvisorData.data || !Array.isArray(tripAdvisorData.data) || tripAdvisorData.data.length === 0) {
-    //                 console.log('No attractions found');
-    //                 res.json({ cityName, attractions });
-    //             } else {
-    //                 tripAdvisorData.data.forEach((attraction) => {
-    //                 attractions.push({
-    //                     name: attraction.name,
-    //                     location_id: attraction.location_id,
-    //                     photoUrl: '',
-    //                 });
-    //                 });
-    //             }
-      
+    const tripAdvisorApiUrl = `https://api.content.tripadvisor.com/api/v1/location/nearby_search?latLong=${lat}%2C%20${lng}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
+
+    try {
+        const tripAdvisorResponse = await fetch(tripAdvisorApiUrl);
+        const tripAdvisorData = await tripAdvisorResponse.json();
+
+        if (!tripAdvisorData.data || !Array.isArray(tripAdvisorData.data) || tripAdvisorData.data.length === 0) {
+            console.log('No attractions found');
+            res.json({ cityName, attractions });
+        } else {
+            tripAdvisorData.data.forEach((attraction) => {
+            attractions.push({
+                name: attraction.name,
+                location_id: attraction.location_id,
+                photoUrl: '',
+            });
+            });
+        }
+    } catch (err) {
+        console.error(`Failed to fetch TripAdvisor data: ${err}`);
+    }
+
     //             // Handle rate limit exceeded error
     //             if (req.rateLimit.remaining === 0) {
     //                 return res.status(429).send('Rate limit exceeded. Please try again later.');
