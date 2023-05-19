@@ -18,8 +18,9 @@ export const CustomNavbar = ({ loggedIn, setLoggedIn }) => {
             // Destroy session on server
             await axios.post('http://localhost:4000/logout');
 
-            // Remove loggedIn from localStorage
+            // Remove items from localStorage
             localStorage.removeItem('loggedIn');
+            localStorage.removeItem('user');
 
             // Update loggedIn state
             setLoggedIn(false);
@@ -43,7 +44,8 @@ export const CustomNavbar = ({ loggedIn, setLoggedIn }) => {
                         <Nav.Link href="/">Home</Nav.Link>
                         <Nav.Link href="/dashboard">Dashboard</Nav.Link>
                         <Nav.Link href="/flights">Find Flights</Nav.Link>
-                        <Nav.Link href="#hotels">Find Hotels</Nav.Link>
+                        <Nav.Link href="/hotels">Find Hotels</Nav.Link>
+                        <Nav.Link href="/suggestions">Suggestions</Nav.Link>
                     </Nav>
                     <Form className="d-flex align-items-center">
                         {loggedIn ? (

@@ -1,16 +1,34 @@
 {
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "node server.js"
+  },
   "dependencies": {
+    "@chakra-ui/react": "^2.6.1",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "connect-mongo": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
+    "ejs": "^3.1.9",
     "dotenv-webpack": "^8.0.1",
     "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
     "express-session": "^1.17.3",
-    "mongodb": "^5.4.0",
+    "express-slow-down": "^1.6.0",
+    "framer-motion": "^10.12.11",
+    "mongodb": "^5.5.0",
     "mongoose": "^7.1.1",
+    "node-fetch": "^2.6.11",
     "nodemailer": "^6.9.2",
     "react-router": "^6.11.1"
+  },
+  "devDependencies": {
+    "react-scripts": "4.0.3"
   }
 }

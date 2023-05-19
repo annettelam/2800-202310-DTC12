@@ -12,7 +12,10 @@ import { ResetPassword } from "./components/resetpassword";
 import { Dashboard } from "./components/dashboard/dashboard";
 import { NotFoundPage } from "./components/404/404";
 import { Profile } from "./components/profile/profile";
-import { Recommendations } from './components/recommendations/recommendations';
+import { Suggestions } from "./components/suggestions/suggestions";
+import { Hotels } from "./components/hotels/hotels.jsx";
+
+
 
 
 const Planetpass = () => {
@@ -39,7 +42,9 @@ const Planetpass = () => {
           <Route path="/flights" element={<Flights />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/suggestions" element={<Suggestions />} />
           <Route path="/flights" element={<Flights />} />
+          <Route path="/hotels" element={<Hotels />} />
           <Route path="/recommendations" element={<Recommendations />} />
         </Routes >
       </div >

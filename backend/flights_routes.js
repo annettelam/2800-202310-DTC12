@@ -1,10 +1,16 @@
 const express = require('express');
-const { searchFlights } = require('./skyscanner');
+const { searchFlights } = require('../skyscanner');
 const rateLimit = require('express-rate-limit');
+const session = require('express-session');
+const router = express.Router();
+const mongoose = require('mongoose');
+const crypto = require('crypto');
+const sessionSecret = crypto.randomBytes(32).toString('hex');
+const { database, mongodb_database } = require('./server');
+const { userCollection } = require('./databaseConnection');
+const app = require('express')();
+const port = 3100;
 
-const app = express();
-const port = 3000;
-app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 const limiter = rateLimit({
@@ -14,12 +20,17 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
+app.use(session({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: true
+}));
 
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.get('/flights', (req, res) => {
+router.get('/flights', (req, res) => {
   res.send(`
     <h1>Search Flight</h1>
     <form action="/flightResults" method="POST">
@@ -71,7 +82,7 @@ app.get('/flights', (req, res) => {
 });
 
 
-app.post('/flightResults', async (req, res) => {
+router.post('/flightResults', async (req, res) => {
   const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass } = req.body;
   console.log(req.body)
   console.log(originDisplayCode)
@@ -80,8 +91,7 @@ app.post('/flightResults', async (req, res) => {
   // console.log(returnDate)
   console.log(tripType)
   console.log(cabinClass)
-
-
+  req.session.destinationDisplayCode = destinationDisplayCode;
 
   try {
     let params = {
@@ -98,12 +108,10 @@ app.post('/flightResults', async (req, res) => {
       params.returnDate = returnDate
     }
 
-
     const results = await searchFlights(params);
     console.log(results)
     const filteredResults = results.data.data.filter((flight) => {
-      var matchFlight = false;
-
+      let matchFlight = false;
 
       if (tripType === 'roundTrip') {
         console.log(flight.legs.length)
@@ -111,19 +119,31 @@ app.post('/flightResults', async (req, res) => {
           matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
           console.log("yes")
         }
-      }
-      if (tripType === 'oneWay') {
+      } else if (tripType === 'oneWay') {
         if (flight.legs.length === 1) {
           matchFlight = true;
         }
       }
-      return matchFlight;
 
-    }
+      return matchFlight;
+    });
+
+    // Update user's document in the users collection with the search data
+    const user = req.session.user;
+    await userCollection.updateOne(
+      { username: user.username },
+      {
+        $set: {
+          destination: destinationDisplayCode,
+          departureDate: departureDate,
+          returnDate: tripType === 'roundTrip' ? returnDate : null
+        }
+      }
     );
 
-    // console.log(results.data)
-    var html = flightInformation(filteredResults, tripType, returnDate);
+    // const attractions = await fetchAttractions(destinationDisplayCode);
+    const html = flightInformation(filteredResults, tripType, returnDate);
+    // const attractionsHtml = attractionsInformation(attractions);
     res.send(html);
   } catch (error) {
     console.error(error);
@@ -214,7 +234,7 @@ const flightInformation = (flights, tripType, returnDate) => {
   return html;
 }
 
-
+module.exports = router;
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
