@@ -37,7 +37,7 @@ export const Profile = () => {
                     backgroundAttachment: 'fixed',
                     backgroundSize: 'cover',
                     fontFamily: 'Questrial',
-                    minHeight: '85vh',
+                    minHeight: '95vh',
                 }}
             >
                 <Container>
