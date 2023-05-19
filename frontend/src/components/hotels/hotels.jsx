@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image } from '@chakra-ui/react';
+import { ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image, HStack, useNumberInput } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton } from '@chakra-ui/react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
@@ -8,6 +9,7 @@ import dashBackground from '../../dashbkg.jpg';
 import cities from './cities';
 import { Button } from 'react-bootstrap';
 import { FaHeart } from 'react-icons/fa';
+import sustainabilityIcon from './planet-earth.png';
 
 export const Hotels = () => {
     const navigate = useNavigate();
@@ -18,13 +20,53 @@ export const Hotels = () => {
     const [city, setCity] = useState('');
     const [checkInDate, setCheckInDate] = useState('');
     const [checkOutDate, setCheckOutDate] = useState('');
-    const [numAdults, setNumAdults] = useState('');
-    const [numRooms, setNumRooms] = useState('');
+    const [numAdults, setNumAdults] = useState(1);
+    const [numRooms, setNumRooms] = useState(1);
+    const {
+        getInputProps: getAdultsInputProps,
+        getIncrementButtonProps: getAdultsIncProps,
+        getDecrementButtonProps: getAdultsDecProps,
+    } = useNumberInput({
+        step: 1,
+        defaultValue: 1,
+        min: 1,
+        max: 29,
+    });
+    const adultsInput = getAdultsInputProps();
+    const adultsInc = getAdultsIncProps();
+    const adultsDec = getAdultsDecProps();
+
+    const {
+        getInputProps: getRoomsInputProps,
+        getIncrementButtonProps: getRoomsIncProps,
+        getDecrementButtonProps: getRoomsDecProps,
+    } = useNumberInput({
+        step: 1,
+        defaultValue: 1,
+        min: 1,
+        max: 29,
+    });
+    const roomsInput = getRoomsInputProps();
+    const roomsInc = getRoomsIncProps();
+    const roomsDec = getRoomsDecProps();
 
     // Hotels
     const [hotels, setHotels] = useState({});
     const [savedHotels, setSavedHotels] = useState([]);
     const [hasNextPage, setHasNextPage] = useState(false);
+
+    // Modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedHotelId, setSelectedHotelId] = useState(null);
+    const openModal = (hotelId) => {
+        setSelectedHotelId(hotelId);
+        setIsModalOpen(true);
+    };
+    const closeModal = () => {
+        setSelectedHotelId(null);
+        setIsModalOpen(false);
+    };
+
 
     // Execute on page load
     useEffect(() => {
@@ -178,6 +220,8 @@ export const Hotels = () => {
                                     color="gray.800"
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                    min={new Date().toISOString().split('T')[0]} // Set min date to today
+                                    max={checkOutDate} // Set max date to checkOutDate
                                     required
                                 />
                             </FormControl>
@@ -192,36 +236,49 @@ export const Hotels = () => {
                                     color="gray.800"
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                    min={checkInDate} // Set min date to checkInDate
                                     required
                                 />
                             </FormControl>
 
                             <FormControl mt="4">
                                 <FormLabel>Number of Adults</FormLabel>
-                                <Input
-                                    type="number"
-                                    value={numAdults}
-                                    onChange={(e) => setNumAdults(e.target.value)}
-                                    bg="white"
-                                    color="gray.800"
-                                    borderColor="gray.300"
-                                    _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
-                                    required
-                                />
+                                <HStack maxW='250px' className='m-auto'>
+                                    <Button {...adultsDec} >-</Button>
+                                    <Input
+                                        type="number"
+                                        value={numAdults}
+                                        onChange={(e) => setNumAdults(e.target.value)}
+                                        bg="white"
+                                        color="gray.800"
+                                        borderColor="gray.300"
+                                        _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                        textAlign="center"
+                                        {...adultsInput}
+                                        required
+                                    />
+                                    <Button {...adultsInc} >+</Button>
+                                </HStack>
                             </FormControl>
 
                             <FormControl mt="4">
                                 <FormLabel>Number of Rooms</FormLabel>
-                                <Input
-                                    type="number"
-                                    value={numRooms}
-                                    onChange={(e) => setNumRooms(e.target.value)}
-                                    bg="white"
-                                    color="gray.800"
-                                    borderColor="gray.300"
-                                    _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
-                                    required
-                                />
+                                <HStack maxW='250px' className='m-auto'>
+                                    <Button {...roomsDec} >-</Button>
+                                    <Input
+                                        type="number"
+                                        value={numRooms}
+                                        onChange={(e) => setNumRooms(e.target.value)}
+                                        bg="white"
+                                        color="gray.800"
+                                        borderColor="gray.300"
+                                        _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                        textAlign="center"
+                                        {...roomsInput}
+                                        required
+                                    />
+                                    <Button {...roomsInc} >+</Button>
+                                </HStack>
                             </FormControl>
 
                             <ChakraButton type="submit" colorScheme="blue" mt="4">
@@ -230,14 +287,13 @@ export const Hotels = () => {
                         </form>
                     </Box>
                 </Container>
+
+                {/* Hotels Search Results */}
                 <Container className="hotel-results" maxWidth="6xl">
                     {Object.keys(hotels).map((hotelId) => {
                         const hotel = hotels[hotelId];
                         const roundedPrice = hotel.min_total_price.toFixed(2);
-
-                        // Check if hotel details exist and if the sustainability field is present
                         const sustainability = hotel.details?.sustainability;
-
                         return (
                             <Box key={hotelId} p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative">
                                 <Flex direction="column" align="center">
@@ -250,41 +306,120 @@ export const Hotels = () => {
                                             strokeWidth="10"
                                             style={{ cursor: 'pointer' }} />
                                     </Box>
+
+                                    {/* Hotel Name */}
                                     <Heading size={{ base: 'md', lg: 'lg' }} w='75%' textAlign="center" mb="4">
                                         {hotel.hotel_name}
                                     </Heading>
+
+                                    {/* Hotel Image */}
                                     <Image src={hotel.max_photo_url} alt={hotel.hotel_name} w={{ base: '80%', sm: '65%', md: '55%', lg: '40%' }} h="auto" rounded="md" mb="4" />
+
+                                    {/* Booking Button */}
+                                    <Button size="md" onClick={() => window.location.href = hotel.url} className='mb-3'>
+                                        Book at Booking.com
+                                    </Button>
+
+                                    {/* Hotel Details */}
                                     <Text fontSize="lg" textAlign="center" mb="2">
                                         <b>Price:</b> ${roundedPrice} CAD
                                     </Text>
                                     <Text fontSize="lg" textAlign="center" mb="2">
                                         <b>Address:</b> {hotel.address}
                                     </Text>
-                                    <Text fontSize="lg" textAlign="center" mb="4">
+                                    <Text fontSize="lg" textAlign="center" mb="2">
                                         <b>Rating:</b> {hotel.review_score !== null ? `${hotel.review_score} / 10` : 'No reviews yet'}
                                     </Text>
 
+                                    {/* Sustainability Initiatives */}
                                     {sustainability && (
-                                        <Box textAlign="center" mb="4">
-                                            <Text fontSize="lg" mb="2">
-                                                <b>Sustainability Initiatives:</b>
+                                        <Box textAlign="center" mb="4" style={{ width: "100%" }}>
+                                            <Text fontSize="lg" fontWeight="bold" mb="2" style={{ color: 'green' }}>
+                                                Eco-Friendly Property
                                             </Text>
-                                            <ul>
+                                            <Box display="flex" alignItems="center" justifyContent="center">
+                                                {sustainability.sustainability_page.tier === 'bronze' && (
+                                                    <img
+                                                        src={sustainabilityIcon}
+                                                        alt="Sustainability Icon"
+                                                        style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                                    />
+                                                )}
+                                                {sustainability.sustainability_page.tier === 'silver' && (
+                                                    <>
+                                                        <img
+                                                            src={sustainabilityIcon}
+                                                            alt="Sustainability Icon"
+                                                            style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                                        />
+                                                        <img
+                                                            src={sustainabilityIcon}
+                                                            alt="Sustainability Icon"
+                                                            style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                                        />
+                                                    </>
+                                                )}
+                                                {sustainability.sustainability_page.tier === 'gold' && (
+                                                    <>
+                                                        <img
+                                                            src={sustainabilityIcon}
+                                                            alt="Sustainability Icon"
+                                                            style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                                        />
+                                                        <img
+                                                            src={sustainabilityIcon}
+                                                            alt="Sustainability Icon"
+                                                            style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                                        />
+                                                        <img
+                                                            src={sustainabilityIcon}
+                                                            alt="Sustainability Icon"
+                                                            style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                                        />
+                                                    </>
+                                                )}
+                                            </Box>
+
+                                            {/* Open Modal Button */}
+                                            <ChakraButton colorScheme="green" height={8} size="md" borderRadius="md" _hover={{ bg: 'green.600' }} _active={{ bg: 'green.700' }} mt={2}
+                                                onClick={() => openModal(hotel.hotel_id)}>
+                                                Read More
+                                            </ChakraButton>
+
+                                            {/* Modal for Sustainability Intiatives */}
+                                            <Modal isOpen={isModalOpen && selectedHotelId === hotel.hotel_id} onClose={closeModal} size="2xl">
+                                                <ModalOverlay />
+                                                <ModalContent bg="green.300">
+                                                    <ModalHeader>{hotel.name}</ModalHeader>
+                                                    <ModalCloseButton />
+                                                    <ModalBody>
+                                                        <h4 mb="2" style={{ fontWeight: 'bold' }}>Sustainability Initiatives</h4>
+                                                        {sustainability.sustainability_page.efforts.map((effort) => (
+                                                            <Box key={effort.title} mb="4">
+                                                                <Text fontSize="lg" fontWeight="bold" mb="2">{effort.title}</Text>
+                                                                <ul style={{ listStyleType: "none" }}>
+                                                                    {effort.steps.map((step) => (
+                                                                        <li key={step} style={{ marginTop: 5 }}>{step}</li>
+                                                                    ))}
+                                                                </ul>
+                                                            </Box>
+                                                        ))}
+                                                    </ModalBody>
+                                                    <ModalFooter>
+                                                        <Button colorScheme="blue" mr={3} onClick={closeModal}>Close</Button>
+                                                    </ModalFooter>
+                                                </ModalContent>
+                                            </Modal>
+                                            {/* <ul>
                                                 {sustainability.sustainability_page.efforts.map((effort) => (
                                                     effort.steps.map((step) => (
                                                         <li key={step}>{step}</li>
                                                     ))
                                                 ))}
-                                            </ul>
+                                            </ul> */}
                                         </Box>
                                     )}
 
-                                    <Button
-                                        size="md"
-                                        onClick={() => window.location.href = hotel.url}
-                                    >
-                                        Book at Booking.com
-                                    </Button>
                                 </Flex>
                             </Box>
                         );
