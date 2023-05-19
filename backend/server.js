@@ -284,8 +284,26 @@ app.post("/flights", async (req, res) => {
             }, 600)
         })
 
-    const filteredResults = results.data.data.filter((flight) => {
-      var matchFlight = false;
+        const filteredResults = results.data.data.filter((flight) => {
+            var matchFlight = false;
+            console.log("filtering1")
+
+
+            if (tripType === 'roundTrip') {
+                console.log(flight.legs.length)
+                if (flight.legs.length === 2) {
+                    matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
+                    console.log("yes")
+                }
+            }
+            console.log("filtering2")
+            if (tripType === 'oneWay') {
+                if (flight.legs.length === 1) {
+                    matchFlight = true;
+                }
+            }
+            console.log("filtering3")
+            return matchFlight;
 
       if (tripType === "roundTrip") {
         // console.log(flight.legs.length)
@@ -302,12 +320,12 @@ app.post("/flights", async (req, res) => {
       return matchFlight;
     });
 
-    // console.log(filteredResults)
-    res.json(filteredResults);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal server error");
-  }
+        console.log(filteredResults)
+        res.json(filteredResults);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal server error: /flights');
+    }
 });
 
 //password reset
@@ -420,29 +438,50 @@ app.post("/hotels", async (req, res) => {
                 hotel_id: hotel.hotel_id,
                 currency: "CAD",
                 locale: "en-gb",
-                checkout_date: checkOutDate,
-                checkin_date: checkInDate,
-              },
+                room_number: numRooms,
+            },
+        });
+        // Slice the array to get the hotels for the current batch
+        const batchSize = 4;
+        const startIndex = (page - 1) * batchSize;
+        const endIndex = page * batchSize;
+        const hotelsData = hotels.data.result.slice(startIndex, endIndex);
+        // Get hotel details for sliced hotels with a delay between each call
+        const hotelDetails = hotelsData.map((hotel, index) => {
+            return new Promise((resolve, reject) => {
+                setTimeout(async () => {
+                    try {
+                        const response = await hotelAPI.get('/v2/hotels/details', {
+                            params: {
+                                hotel_id: hotel.hotel_id,
+                                currency: 'CAD',
+                                locale: 'en-gb',
+                                checkout_date: checkOutDate,
+                                checkin_date: checkInDate,
+                            },
+                        });
+                        resolve(response);
+                    } catch (error) {
+                        reject(error);
+                    }
+                }, index * 100);
             });
-            resolve(response);
-          } catch (error) {
-            reject(error);
-          }
-        }, index * 200); // Delay each API call by 1 second (adjust the delay as needed)
-      });
-    });
-    // Add hotel details to hotelsData
-    hotelDetails.forEach((hotel, index) => {
-      hotelsData[index].details = hotel.data;
-    });
-    res.json({
-      hotels: hotelsData,
-      hasNextPage: endIndex < hotels.data.result.length,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal server error");
-  }
+        });
+        // Wait for all API calls to finish
+        const hotelDetailsData = await Promise.all(hotelDetails);
+        // Add hotel details to hotelsData
+        hotelDetailsData.forEach((hotel, index) => {
+            console.log(hotel.data);
+            hotelsData[index].details = hotel.data;
+        });
+        res.json({
+            hotels: hotelsData,
+            hasNextPage: endIndex < hotels.data.result.length,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal server error");
+    }
 });
 
 app.post("/save-hotel", async (req, res) => {

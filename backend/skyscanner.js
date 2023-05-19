@@ -18,6 +18,7 @@ const searchFlights = async (params) => {
         return response;
     } catch (error) {
         console.error(error);
+        res.status(500).send('Internal server error: searchFlights');
     }
 };
 
