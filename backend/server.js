@@ -262,18 +262,6 @@ app.post("/flights", async (req, res) => {
   // console.log(tripType)
   // console.log(cabinClass)
 
-  // console.log("Updating user's destination, departure date, and return date in the database...");
-  // const updateResult = await userCollection.updateOne(
-  //     { email: req.session.user.email }, // Match the user based on their email stored in the session
-  //     {
-  //         $set: {
-  //             destination: destinationDisplayCode,
-  //             departureDate: departureDate,
-  //             returnDate: returnDate,
-  //         }
-  //     }
-  // );
-  // console.log("Update result:", updateResult);
 
   try {
     let params = {
