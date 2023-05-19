@@ -11,7 +11,9 @@ import {
     SimpleGrid,
     VStack,
     Card,
-    Tooltip
+    Tooltip,
+    UnorderedList,
+    ListItem
 } from '@chakra-ui/react';
 import bkg from '../../bkg.jpg';
 
@@ -104,7 +106,9 @@ export const Recommendations = () => {
                         <SimpleGrid columns={1} spacing={4}>
                             {recommendations.map((recommendation, index) => (
                                 <Card key={index} bg="white" rounded="md" p={4}>
-                                    <Text>{recommendation}</Text>
+                                    <UnorderedList>
+                                        <ListItem>{recommendation}</ListItem>
+                                    </UnorderedList>
                                 </Card>
                             ))}
                         </SimpleGrid>
