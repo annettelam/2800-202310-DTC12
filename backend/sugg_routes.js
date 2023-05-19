@@ -45,22 +45,22 @@ router.post('/', async (req, res) => {
     // Check if user was found
     if (!flightUser) {
         console.log('User not found');
-        return;
+        return res.status(404).send('User not found');
     }
 
     // Check if user has any saved flights
     if (flightUser.savedFlights.length === 0) {
         console.log('No saved flights found');
-        return;
+        return res.status(404).send('No saved flights found');
     }
 
     //get user's most recent saved flight from mongodb
     const savedFlightsLength = flightUser.savedFlights.length;
-    const legsLength = flightUser.savedFlights[savedFlightsLength - 1].legs.length;
-    const airportCode = flightUser.savedFlights[savedFlightsLength - 1].legs[legsLength - 1].destination.display_code;
+    const airportCode = flightUser.savedFlights[savedFlightsLength - 1].legs[0].destination.display_code;
     console.log('airportCode', airportCode);
 
     let cityName = '';
+    const attractions = [];
 
     try {
         const getCityName = (airportCode) => {
@@ -94,10 +94,10 @@ router.post('/', async (req, res) => {
     }
 
     const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(cityName)}&key=${googleMapsApiKey}`;
-    const attractions = [];
-
-    let lat, lng = 0;
     
+
+    let lat, lng;
+
     try {
         const googleMapsResponse = await fetch(googleMapsApiUrl);
         const googleMapsData = await googleMapsResponse.json();
@@ -105,24 +105,29 @@ router.post('/', async (req, res) => {
         // console.log('googleMapsData', googleMapsData);
         if (googleMapsData.results.length === 0) {
             console.log('No results found for the provided address');
-            return;
+            return res.status(404).send('No results found for the provided address');
             }
 
-        const { lat, lng } = googleMapsData.results[0].geometry.location;
+        lat = googleMapsData.results[0].geometry.location.lat;
+        lng = googleMapsData.results[0].geometry.location.lng;
+        // const { lat, lng } = googleMapsData.results[0].geometry.location;
         console.log('lat', lat, 'lng', lng);
     } catch (err) {
         console.error(`Failed to fetch Google Maps data: ${err}`);
     }
-      
-    const tripAdvisorApiUrl = `https://api.content.tripadvisor.com/api/v1/location/nearby_search?latLong=${lat}%2C%20${lng}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
+
+    let tripAdvisorApiUrl = `https://api.content.tripadvisor.com/api/v1/location/nearby_search?latLong=${lat}%2C${lng}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
+  
+    // const tripAdvisorApiUrl = `https://api.content.tripadvisor.com/api/v1/location/nearby_search?latLong=${lat}%2C20${lng}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
 
     try {
         const tripAdvisorResponse = await fetch(tripAdvisorApiUrl);
         const tripAdvisorData = await tripAdvisorResponse.json();
+        // console.log('tripAdvisorData',tripAdvisorData);
 
         if (!tripAdvisorData.data || !Array.isArray(tripAdvisorData.data) || tripAdvisorData.data.length === 0) {
             console.log('No attractions found');
-            res.json({ cityName, attractions });
+            return;
         } else {
             tripAdvisorData.data.forEach((attraction) => {
             attractions.push({
@@ -136,79 +141,41 @@ router.post('/', async (req, res) => {
         console.error(`Failed to fetch TripAdvisor data: ${err}`);
     }
 
-    //             // Handle rate limit exceeded error
-    //             if (req.rateLimit.remaining === 0) {
-    //                 return res.status(429).send('Rate limit exceeded. Please try again later.');
-    //             }
-        
-    //             // Handle request throttling
-    //             await new Promise((resolve) => setTimeout(resolve, req.slowDown.delay));
-        
-    //             // Get image for each attraction
-    //             for (let i = 0; i < attractions.length; i++) {
-    //                 const attraction = attractions[i];
-    //                 const cityNameId = attraction.location_id;
-    //                 const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(cityNameId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`;
-        
-    //             try {
-    //               const tripAdvisorImgResponse = await fetch(tripAdvisorImgUrl);
-    //               const tripAdvisorImgData = await tripAdvisorImgResponse.json();
-      
-    //               if (!tripAdvisorImgData.data || !Array.isArray(tripAdvisorImgData.data) || tripAdvisorImgData.data.length === 0) {
-    //                 attraction.photoUrl = 'frontend/public/alicelogo.png';
-    //               } else {
-    //                 const photoUrl = tripAdvisorImgData.data[0].images.large.url;
-    //                 attraction.photoUrl = photoUrl;
-    //               }
-    //                 } catch (err) {
-    //                 console.error(`Failed to fetch attraction image: ${err}`);
-    //                 }
-    //             }
-      
-    //             const destinationDisplayCode = {
-    //                 cityName,
-    //                 attractions,
-    //                 timestamp: new Date(),
-    //             };
-      
-    //             try {
-    //                 const result = await userCollection.insertOne(destinationDisplayCode);
-    //                 console.log(`Destination display code added with _id: ${result.insertedId}`);
-    //             } catch (err) {
-    //                 console.error(`Failed to insert destination display code: ${err}`);
-    //             }
-      
-    //             res.json({ cityName, attractions });
-    //             } catch (err) {
-    //             console.error(`Failed to fetch attractions from TripAdvisor API: ${err}`);
-    //             res.status(500).send('Failed to fetch attractions');
-    //             }
-    //         } catch (err) {
-    //             console.error(`Failed to fetch city details from Google Maps API: ${err}`);
-    //             res.status(500).send('Failed to fetch city details');
-    //         }
-    //         } catch (err) {
-    //         console.error(`Failed to retrieve user details: ${err}`);
-    //         res.status(500).send('Failed to retrieve user details');
-    //         }
-    //     });
-      
-    //     router.get('/suggestions/:id', async (req, res) => {
-    //         const id = req.params.id;
-        
-    //         try {
-    //         const destinationDisplayCode = await userCollection.findOne({ _id: new ObjectID(id) });
-        
-    //         if (destinationDisplayCode) {
-    //             res.json(destinationDisplayCode);
-    //         } else {
-    //             res.status(404).send('Destination display code not found');
-    //         }
-    //         } catch (err) {
-    //         console.error(`Failed to retrieve destination display code: ${err}`);
-    //         res.status(500).send('Internal server error');
-    //         }
-    //     });
+    // Get image for each attraction
+    for (let i = 0; i < attractions.length; i++) {
+        const attraction = attractions[i];
+        // console.log('attractions', attractions)
+        // console.log('attraction', attraction)
+        const cityNameId = attraction.location_id;
+        const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(cityNameId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`;
+
+        try {
+            const tripAdvisorImgResponse = await fetch(tripAdvisorImgUrl);
+            const tripAdvisorImgData = await tripAdvisorImgResponse.json();
+
+            if (!tripAdvisorImgData.data || !Array.isArray(tripAdvisorImgData.data) || tripAdvisorImgData.data.length === 0) {
+                attraction.photoUrl = '../../alicelogo.png';
+            } else {
+                const photoUrl = tripAdvisorImgData.data[0].images.large.url;
+                attraction.photoUrl = photoUrl;
+            }
+        } catch (err) {
+            console.error(`Failed to fetch attraction image: ${err}`);
+        }
+    }
+    res.send({ attractions });
+
+    //           
+    //           
+
+    // Handle rate limit exceeded error
+    if (req.rateLimit.remaining === 0) {
+        return res.status(429).send('Rate limit exceeded. Please try again later.');
+    }
+
+    // Handle request throttling
+    await new Promise((resolve) => setTimeout(resolve, req.slowDown.delay));
+
 });
       
 module.exports = router;
