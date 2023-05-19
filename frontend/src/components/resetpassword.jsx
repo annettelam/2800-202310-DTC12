@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 
-export const ResetPassword = ({ }) => {
+export const ResetPassword = () => {
     const { token } = useParams();
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,7 +20,7 @@ export const ResetPassword = ({ }) => {
             return;
         }
         try {
-           
+
             await axios.post(`http://localhost:4000/reset-password/${token}`, { password });
             setSuccess(true);
         } catch (err) {

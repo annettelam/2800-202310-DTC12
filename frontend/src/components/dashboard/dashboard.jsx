@@ -5,9 +5,6 @@ import {
     Container,
     Heading,
     Text,
-    Flex,
-    Button as ChakraButton,
-    Stack,
     Grid,
     ChakraProvider,
 } from '@chakra-ui/react';
