@@ -80,7 +80,7 @@ export const Recommendations = () => {
                             <Tooltip
                                 label="Enter a single date (YYYY-MM-DD) or a range of dates (e.g. 'YYYY-MM-DD - YYYY-MM-DD')"
                                 hasArrow
-                                placement="top"
+                                placement="bottom"
                             >
                                 <Input
                                     type="text"
