@@ -227,6 +227,7 @@ app.post('/flights', async (req, res) => {
 
         const filteredResults = results.data.data.filter((flight) => {
             var matchFlight = false;
+            console.log("filtering1")
 
 
             if (tripType === 'roundTrip') {
@@ -236,11 +237,13 @@ app.post('/flights', async (req, res) => {
                     console.log("yes")
                 }
             }
+            console.log("filtering2")
             if (tripType === 'oneWay') {
                 if (flight.legs.length === 1) {
                     matchFlight = true;
                 }
             }
+            console.log("filtering3")
             return matchFlight;
 
         }
@@ -250,7 +253,7 @@ app.post('/flights', async (req, res) => {
         res.json(filteredResults);
     } catch (error) {
         console.error(error);
-        res.status(500).send('Internal server error');
+        res.status(500).send('Internal server error: /flights');
     }
 });
 
