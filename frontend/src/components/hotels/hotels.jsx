@@ -399,14 +399,14 @@ export const Hotels = () => {
                                                                 <Text fontSize="lg" fontWeight="bold" mb="2">{effort.title}</Text>
                                                                 <ul style={{ listStyleType: "none" }}>
                                                                     {effort.steps.map((step) => (
-                                                                        <li key={step} style={{ marginTop: 5 }}>{step}</li>
+                                                                        <li key={step} style={{ marginTop: 5 }}>{step}.</li>
                                                                     ))}
                                                                 </ul>
                                                             </Box>
                                                         ))}
                                                     </ModalBody>
                                                     <ModalFooter>
-                                                        <Button colorScheme="blue" mr={3} onClick={closeModal}>Close</Button>
+                                                        <ChakraButton colorScheme='blue' mr={3} onClick={closeModal}>Close</ChakraButton>
                                                     </ModalFooter>
                                                 </ModalContent>
                                             </Modal>
