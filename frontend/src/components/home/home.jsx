@@ -36,9 +36,9 @@ export const Home = (props) => {
                             <Text fontSize="xl" mb="4">
                                 Explore the world with ease.
                             </Text>
-                            <Button colorScheme="whiteAlpha" size="lg">
+                            {/* <Button colorScheme="whiteAlpha" size="lg">
                                 Get Started
-                            </Button>
+                            </Button> */}
                         </Box>
                     </Flex>
                     <Divider />
@@ -49,17 +49,17 @@ export const Home = (props) => {
                             {/* Feature 1 */}
                             <Box>
                                 {/* Add icon */}
-                                <Heading as="h3" size="lg" mb="2">
+                                <Heading as="h3" size="md" mb="2" color="white">
                                     Feature 1
                                 </Heading>
                                 <>
                                     <Button onClick={onToggle1}>Discover</Button>
                                     <Collapse in={isOpen1} animateOpacity>
                                         <Box
-                                            p="40px"
-                                            color="white"
+                                            p="20px"
+                                            color="black"
                                             mt="4"
-                                            bg="teal.500"
+                                            bg="gray.300"
                                             rounded="md"
                                             shadow="md"
                                         >
@@ -71,17 +71,17 @@ export const Home = (props) => {
                             {/* Feature 2 */}
                             <Box>
                                 {/* Add icon */}
-                                <Heading as="h3" size="lg" mb="2">
+                                <Heading as="h3" size="md" mb="2" color="white">
                                     Feature 2
                                 </Heading>
                                 <>
                                     <Button onClick={onToggle2}>Discover</Button>
                                     <Collapse in={isOpen2} animateOpacity>
                                         <Box
-                                            p="40px"
-                                            color="white"
+                                            p="20px"
+                                            color="black"
                                             mt="4"
-                                            bg="teal.500"
+                                            bg="gray.300"
                                             rounded="md"
                                             shadow="md"
                                         >
@@ -93,17 +93,17 @@ export const Home = (props) => {
                             {/* Feature 3 */}
                             <Box>
                                 {/* Add icon */}
-                                <Heading as="h3" size="lg" mb="2">
+                                <Heading as="h3" size="md" mb="2" color="white">
                                     Feature 3
                                 </Heading>
                                 <>
                                     <Button onClick={onToggle3}>Discover</Button>
                                     <Collapse in={isOpen3} animateOpacity>
                                         <Box
-                                            p="40px"
-                                            color="white"
+                                            p="20px"
+                                            color="black"
                                             mt="4"
-                                            bg="teal.500"
+                                            bg="gray.300"
                                             rounded="md"
                                             shadow="md"
                                         >
@@ -112,9 +112,9 @@ export const Home = (props) => {
                                     </Collapse>
                                 </>
                             </Box>
+                            <br></br>
                         </SimpleGrid>
                     </Box>
-                    <br></br>
                 </Container>
             </Box>
         </ChakraProvider>

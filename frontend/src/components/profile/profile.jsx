@@ -7,7 +7,7 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../App.css';
 import '../../fonts.css';
-import dashBackground from '../../dashbkg.jpg';
+import bkg from '../../bkg.jpg';
 
 export const Profile = () => {
     const navigate = useNavigate();
@@ -24,7 +24,7 @@ export const Profile = () => {
             <div
                 className="dashboard-container"
                 style={{
-                    backgroundImage: `url(${dashBackground})`,
+                    backgroundImage: `url(${bkg})`,
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center top 50px', // Move background down 50 pixels
                     backgroundAttachment: 'fixed',
