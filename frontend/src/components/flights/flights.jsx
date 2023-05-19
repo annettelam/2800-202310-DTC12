@@ -346,6 +346,7 @@ export const Flights = () => {
                     </div>
                 )}
 
+                {/* Display Flight Results */}
                 <Container maxWidth="6xl">
                     {Object.keys(flights).slice(0, displayResultsCount).map((key) => (
                         <Box key={key} p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative">
@@ -426,7 +427,7 @@ export const Flights = () => {
                             )}
                             
                             {/* SVG element for flight route */}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100px">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100px" className='m-auto' style={{ maxWidth: "300px" }}>
                                 {/* Line connecting origin and destination */}
                                 <line
                                     x1="20%"
