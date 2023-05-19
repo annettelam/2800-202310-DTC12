@@ -78,7 +78,7 @@ router.post('/', async (req, res) => {
                 BOS: 'Boston',
                 ORD: 'Chicago',
                 DFW: 'Dallas',
-                HNL: 'Hawaii',
+                HNL: 'Honolulu',
                 IAH: 'Houston',
                 JFK: 'New York',
                 LAX: 'Los Angeles',
