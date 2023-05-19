@@ -32,7 +32,16 @@ const speedLimiter = slowDown({
 router.use(limiter);
 router.use(speedLimiter);
 
+
 router.post('/', async (req, res) => {
+    // Handle request throttling
+    await new Promise((resolve) => setTimeout(resolve, req.slowDown.delay));
+
+    // Handle rate limit exceeded error
+    if (req.rateLimit.remaining === 0) {
+        return res.status(429).send('Rate limit exceeded. Please try again later.');
+    }
+
     const { user } = req.body;
     console.log('user', user);
     const userId = new ObjectId(user.userId);
@@ -118,8 +127,6 @@ router.post('/', async (req, res) => {
 
     let tripAdvisorApiUrl = `https://api.content.tripadvisor.com/api/v1/location/nearby_search?latLong=${lat}%2C${lng}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
   
-    // const tripAdvisorApiUrl = `https://api.content.tripadvisor.com/api/v1/location/nearby_search?latLong=${lat}%2C20${lng}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
-
     try {
         const tripAdvisorResponse = await fetch(tripAdvisorApiUrl);
         const tripAdvisorData = await tripAdvisorResponse.json();
@@ -154,8 +161,10 @@ router.post('/', async (req, res) => {
             const tripAdvisorImgData = await tripAdvisorImgResponse.json();
 
             if (!tripAdvisorImgData.data || !Array.isArray(tripAdvisorImgData.data) || tripAdvisorImgData.data.length === 0) {
+                // console.log('No images found for attraction');
                 attraction.photoUrl = '../../alicelogo.png';
             } else {
+                // console.log('image found');
                 const photoUrl = tripAdvisorImgData.data[0].images.large.url;
                 attraction.photoUrl = photoUrl;
             }
@@ -163,19 +172,7 @@ router.post('/', async (req, res) => {
             console.error(`Failed to fetch attraction image: ${err}`);
         }
     }
-    res.send({ attractions });
-
-    //           
-    //           
-
-    // Handle rate limit exceeded error
-    if (req.rateLimit.remaining === 0) {
-        return res.status(429).send('Rate limit exceeded. Please try again later.');
-    }
-
-    // Handle request throttling
-    await new Promise((resolve) => setTimeout(resolve, req.slowDown.delay));
-
+    res.send({ cityName, attractions });
 });
       
 module.exports = router;
