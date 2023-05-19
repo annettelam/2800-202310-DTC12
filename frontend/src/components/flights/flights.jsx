@@ -94,7 +94,7 @@ export const Flights = () => {
     };
 
 
-    console.log("isLeafAnimationEnabled:", isLeafAnimationEnabled);
+    // console.log("isLeafAnimationEnabled:", isLeafAnimationEnabled);
 
 
 
