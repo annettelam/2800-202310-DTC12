@@ -144,6 +144,14 @@ export const Flights = () => {
         return formattedTime;
     }
 
+    // Format duration
+    function formatDuration(minutes) {
+        const hours = Math.floor(minutes / 60);
+        const remainingMinutes = minutes % 60;
+
+        return `${hours}h ${remainingMinutes}m`;
+    }
+
     return (
         <ChakraProvider>
             <div
@@ -340,25 +348,28 @@ export const Flights = () => {
                                     style={{ cursor: 'pointer' }} />
                             </Box>
                             <Heading >${flights[key].price.amount.toFixed(2)}</Heading>
-                            <Text mt="2">
-                                <b>{`${formatTime(flights[key].legs[0].departure)} - ${formatTime(flights[key].legs[0].arrival)}`}</b> 
+                            <Text mt="1" mb="1">
+                                <b>{`${formatTime(flights[key].legs[0].departure)} - ${formatTime(flights[key].legs[0].arrival)}`}</b>
                             </Text>
-                            <Text mt="2">
+                            <Text mt="1" mb="1">
+                                {formatDuration(flights[key].legs[0].duration)}
+                            </Text>
+                            {/* <Text mt="1" mb="1">
                                 <b>Origin:</b> {flights[key].legs[0].origin.name}
                             </Text>
-                            <Text  mt="2">
+                            <Text mt="1" mb="1">
                                 <b>OriginCode:</b> {flights[key].legs[0].origin.display_code}
                             </Text>
-                            <Text  mt="2">
+                            <Text mt="1" mb="1">
                                 <b>Destination:</b> {flights[key].legs[0].destination.name}
                             </Text>
-                            <Text  mt="2">
+                            <Text mt="1" mb="1">
                                 <b>Destination:</b> {flights[key].legs[0].destination.display_code}
-                            </Text>
-                            <Text  mt="2">
+                            </Text> */}
+                            <Text mt="1" mb="1">
                                 <b>Carrier:</b> {flights[key].legs[0].carriers[0].name}
                             </Text>
-                            <Text mt="2">
+                            <Text mt="1" mb="1">
                                 <b>Stops:</b> {flights[key].legs[0].stop_count}
                             </Text>
                             {flights[key].legs[0].stop_count > 0 ? (
@@ -375,6 +386,7 @@ export const Flights = () => {
                                     <b>Stop:</b> No stops
                                 </Text>
                             )}
+
 
                             {tripType === 'roundTrip' && flights[key].legs[1].departure.slice(0, 10) === returnDate && (
                                 <div>
