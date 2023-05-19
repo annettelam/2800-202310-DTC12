@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    ChakraProvider, Heading, Container, Box, Card,
-    Divider, Text
+    ChakraProvider,
+    Heading,
+    Container,
+    Box,
+    Card,
+    Divider,
+    Text,
+    Button,
 } from '@chakra-ui/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../App.css';
@@ -31,19 +37,21 @@ export const Profile = () => {
                     backgroundAttachment: 'fixed',
                     backgroundSize: 'cover',
                     fontFamily: 'Questrial',
-                    minHeight: '100vh',
+                    minHeight: '95vh',
                 }}
             >
                 <Container>
-                    <Box p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
-                        <Heading align="center" fontFamily="Questrial">Welcome, {user.firstName} {user.lastName}!</Heading>
+                    <Box p="3" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
+                        <Heading align="center" fontFamily="Questrial">
+                            Welcome, {user.firstName} {user.lastName}!
+                        </Heading>
                         <Text align="center" mt="2">
-                            Here are your account details.
+                            Here are your account details for PlanetPass.
                         </Text>
                     </Box>
 
-                    <Card maxWidth="500px" mx="auto">
-                        <Box p="5" textAlign="center">
+                    <Box mb="4">
+                        <Card maxWidth="500px" mx="auto" bg="aliceblue" p="5">
                             <Box display="flex" flexDirection="column" alignItems="center">
                                 <Box>
                                     <strong>Username:</strong> {user.username}
@@ -65,8 +73,21 @@ export const Profile = () => {
                                     <strong>City:</strong> {user.city}
                                 </Box>
                             </Box>
-                        </Box>
-                    </Card>
+                        </Card>
+                    </Box>
+
+                    <Box mb="4">
+                        <Card maxWidth="500px" mx="auto" bg="aliceblue" p="5">
+                            <Box display="flex" flexDirection="column" alignItems="center">
+                                <Text align="center" mt="2">
+                                    If you would like to change your password, click the button below.
+                                </Text>
+                                <Button colorScheme="blue" onClick={() => navigate('/forgotpassword')}>
+                                    Change Password
+                                </Button>
+                            </Box>
+                        </Card>
+                    </Box>
                 </Container>
             </div>
         </ChakraProvider>

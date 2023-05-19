@@ -7,7 +7,7 @@ import { Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import './flights.css';
-import dashBackground from '../../dashbkg.jpg';
+import bkg3 from '../../bkg3.jpg';
 import landingPlane from './landing-airplane.png';
 import takeoffPlane from './takeoff-airplane.png';
 import { FaHeart } from 'react-icons/fa';
@@ -19,7 +19,7 @@ export const Flights = () => {
 
     // User
     const [user, setUser] = useState({});
-    
+
     // Search form
     const [originDisplayCode, setOrigin] = useState('');
     const [destinationDisplayCode, setDestination] = useState('');
@@ -28,15 +28,15 @@ export const Flights = () => {
     const [tripType, setTripType] = useState('oneWay');
     const [adults, setAdults] = useState(1);
     const [cabinClass, setCabinClass] = useState('economy');
-    
+
     // Flights
     const [flights, setFlights] = useState({});
     const [savedFlights, setSavedFlights] = useState([]);
     const [hasNextPage, setHasNextPage] = useState(false);
-    
+
     // Easter Egg Animation
     const [isLeafAnimationEnabled, setLeafAnimationEnabled] = useState(false);
-    
+
     // Pagination
     const batchCount = 4;
     const [displayResultsCount, setDisplayResultsCount] = useState(batchCount);
@@ -172,7 +172,7 @@ export const Flights = () => {
             <div
                 className="dashboard-container"
                 style={{
-                    backgroundImage: `url(${dashBackground})`,
+                    backgroundImage: `url(${bkg3})`,
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center top 50px', // Move background down 50 pixels
                     backgroundAttachment: 'fixed',
@@ -275,7 +275,7 @@ export const Flights = () => {
                                     label="One Way"
                                     checked={tripType === 'oneWay'}
                                     onChange={() => setTripType('oneWay')}
-                                    />
+                                />
 
                                 <Form.Check
                                     type="radio"
@@ -285,9 +285,9 @@ export const Flights = () => {
                                     label="Round Trip"
                                     checked={tripType === 'roundTrip'}
                                     onChange={() => setTripType('roundTrip')}
-                                    />
+                                />
                             </div>
-                            
+
                             {tripType === 'roundTrip' && (
                                 <Form.Group controlId="formReturnDate">
                                     <Form.Label>Return Date</Form.Label>
@@ -331,7 +331,7 @@ export const Flights = () => {
                             </div>
                             <Button variant="primary" type="submit" style={{ width: '100%' }}>
                                 Submit
-                            </Button> 
+                            </Button>
                         </Form>
                     </Box>
                 </Container>
@@ -397,7 +397,7 @@ export const Flights = () => {
                                     <Text mt="1" mb="1">
                                         {leg.carriers[0].name}
                                     </Text>
-                                    
+
                                     {/* SVG element for flight route */}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100px" className='m-auto' style={{ maxWidth: "300px" }}>
                                         {/* Line connecting origin and destination */}

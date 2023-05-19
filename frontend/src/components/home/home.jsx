@@ -50,7 +50,7 @@ export const Home = (props) => {
                             <Box>
                                 {/* Add icon */}
                                 <Heading as="h3" size="md" mb="2" color="white">
-                                    Feature 1
+                                    Affordability
                                 </Heading>
                                 <>
                                     <Button onClick={onToggle1}>Discover</Button>
@@ -72,7 +72,7 @@ export const Home = (props) => {
                             <Box>
                                 {/* Add icon */}
                                 <Heading as="h3" size="md" mb="2" color="white">
-                                    Feature 2
+                                    Sustainability
                                 </Heading>
                                 <>
                                     <Button onClick={onToggle2}>Discover</Button>
@@ -94,7 +94,7 @@ export const Home = (props) => {
                             <Box>
                                 {/* Add icon */}
                                 <Heading as="h3" size="md" mb="2" color="white">
-                                    Feature 3
+                                    Convenience
                                 </Heading>
                                 <>
                                     <Button onClick={onToggle3}>Discover</Button>
