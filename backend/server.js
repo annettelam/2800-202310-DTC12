@@ -52,8 +52,8 @@ var mongoStore = MongoStore.create({
 const hotelAPI = axios.create({
   baseURL: "https://booking-com.p.rapidapi.com",
   headers: {
-    "X-RapidAPI-Key": "71646a7300msh8677bb088d2904ep189d22jsn7575f3cd5641",
-    "X-RapidAPI-Host": "booking-com.p.rapidapi.com",
+    'X-RapidAPI-Key': '71646a7300msh8677bb088d2904ep189d22jsn7575f3cd5641',
+    'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
   },
 });
 
@@ -243,25 +243,16 @@ app.get("/profile", (req, res) => {
 });
 
 //flight results
-app.post("/flights", async (req, res) => {
-  // console.log("req.session:", req.session);
-  const {
-    originDisplayCode,
-    destinationDisplayCode,
-    departureDate,
-    returnDate,
-    tripType,
-    adults,
-    cabinClass,
-  } = req.body;
-  // console.log(req.body)
-  // console.log(originDisplayCode)
-  // console.log(destinationDisplayCode)
-  // console.log(departureDate)
-  // // console.log(returnDate)
-  // console.log(tripType)
-  // console.log(cabinClass)
+app.post('/flights', async (req, res) => {
 
+  const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass } = req.body;
+  console.log(req.body)
+  console.log(originDisplayCode)
+  console.log(destinationDisplayCode)
+  console.log(departureDate)
+  // console.log(returnDate)
+  console.log(tripType)
+  console.log(cabinClass)
 
   try {
     let params = {
@@ -270,62 +261,50 @@ app.post("/flights", async (req, res) => {
       date: departureDate,
       adults: adults,
       cabinClass: cabinClass,
-      currency: "CAD",
-      countryCode: "CA",
-    };
-
-    if (tripType === "roundTrip") {
-      params.returnDate = returnDate;
+      currency: 'CAD',
+      countryCode: 'CA'
     }
 
-        const results = await new Promise((resolve) => {
-            setTimeout(async () => {
-                resolve(await searchFlights(params));
-            }, 600)
-        })
+    if (tripType === 'roundTrip') {
+      params.returnDate = returnDate
+    }
 
-        const filteredResults = results.data.data.filter((flight) => {
-            var matchFlight = false;
-            console.log("filtering1")
+    const results = await new Promise((resolve) => {
+      setTimeout(async () => {
+        resolve(await searchFlights(params));
+      }, 600)
+    })
+
+    const filteredResults = results.data.data.filter((flight) => {
+      var matchFlight = false;
+      console.log("filtering1")
 
 
-            if (tripType === 'roundTrip') {
-                console.log(flight.legs.length)
-                if (flight.legs.length === 2) {
-                    matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
-                    console.log("yes")
-                }
-            }
-            console.log("filtering2")
-            if (tripType === 'oneWay') {
-                if (flight.legs.length === 1) {
-                    matchFlight = true;
-                }
-            }
-            console.log("filtering3")
-            return matchFlight;
-
-      if (tripType === "roundTrip") {
-        // console.log(flight.legs.length)
+      if (tripType === 'roundTrip') {
+        console.log(flight.legs.length)
         if (flight.legs.length === 2) {
           matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
-          // console.log("yes")
+          console.log("yes")
         }
       }
-      if (tripType === "oneWay") {
+      console.log("filtering2")
+      if (tripType === 'oneWay') {
         if (flight.legs.length === 1) {
           matchFlight = true;
         }
       }
+      console.log("filtering3")
       return matchFlight;
-    });
 
-        console.log(filteredResults)
-        res.json(filteredResults);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal server error: /flights');
     }
+    );
+
+    console.log(filteredResults)
+    res.json(filteredResults);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error: /flights');
+  }
 });
 
 //password reset
@@ -401,11 +380,8 @@ app.post("/reset-password/:token", async (req, res) => {
 
 app.post("/hotels", async (req, res) => {
   try {
-    const { city, checkInDate, checkOutDate, numAdults, numRooms, page } =
-      req.body;
-    console.log(
-      `backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}, ${page}`
-    );
+    const { city, checkInDate, checkOutDate, numAdults, numRooms, page } = req.body;
+    console.log(`backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}, ${page}`);
     // Get city id
     const cityId = cities[city];
     // Get Hotel list
@@ -433,55 +409,37 @@ app.post("/hotels", async (req, res) => {
       return new Promise((resolve, reject) => {
         setTimeout(async () => {
           try {
-            const response = await hotelAPI.get("/v2/hotels/details", {
+            const response = await hotelAPI.get('/v2/hotels/details', {
               params: {
                 hotel_id: hotel.hotel_id,
-                currency: "CAD",
-                locale: "en-gb",
-                room_number: numRooms,
-            },
-        });
-        // Slice the array to get the hotels for the current batch
-        const batchSize = 4;
-        const startIndex = (page - 1) * batchSize;
-        const endIndex = page * batchSize;
-        const hotelsData = hotels.data.result.slice(startIndex, endIndex);
-        // Get hotel details for sliced hotels with a delay between each call
-        const hotelDetails = hotelsData.map((hotel, index) => {
-            return new Promise((resolve, reject) => {
-                setTimeout(async () => {
-                    try {
-                        const response = await hotelAPI.get('/v2/hotels/details', {
-                            params: {
-                                hotel_id: hotel.hotel_id,
-                                currency: 'CAD',
-                                locale: 'en-gb',
-                                checkout_date: checkOutDate,
-                                checkin_date: checkInDate,
-                            },
-                        });
-                        resolve(response);
-                    } catch (error) {
-                        reject(error);
-                    }
-                }, index * 100);
+                currency: 'CAD',
+                locale: 'en-gb',
+                checkout_date: checkOutDate,
+                checkin_date: checkInDate,
+              },
             });
-        });
-        // Wait for all API calls to finish
-        const hotelDetailsData = await Promise.all(hotelDetails);
-        // Add hotel details to hotelsData
-        hotelDetailsData.forEach((hotel, index) => {
-            console.log(hotel.data);
-            hotelsData[index].details = hotel.data;
-        });
-        res.json({
-            hotels: hotelsData,
-            hasNextPage: endIndex < hotels.data.result.length,
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal server error");
-    }
+            resolve(response);
+          } catch (error) {
+            reject(error);
+          }
+        }, index * 100);
+      });
+    });
+    // Wait for all API calls to finish
+    const hotelDetailsData = await Promise.all(hotelDetails);
+    // Add hotel details to hotelsData
+    hotelDetailsData.forEach((hotel, index) => {
+      console.log(hotel.data);
+      hotelsData[index].details = hotel.data;
+    });
+    res.json({
+      hotels: hotelsData,
+      hasNextPage: endIndex < hotels.data.result.length,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
 });
 
 app.post("/save-hotel", async (req, res) => {
