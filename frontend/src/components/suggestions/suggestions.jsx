@@ -36,9 +36,9 @@ export const Suggestions = () => {
         const suggResponse = await axios.post('http://localhost:4000/suggestions', { 
           user 
         });
-        console.log('Suggestions Response: ', suggResponse);
+        // console.log('Suggestions Response: ', suggResponse);
         setAttractions(suggResponse.data.attractions);
-        console.log('Sugg Response data', suggResponse.data.attractions)
+        // console.log('Sugg Response data', suggResponse.data.attractions)
         setCityName(suggResponse.data.cityName);
       } catch (err) {
         console.log(err);

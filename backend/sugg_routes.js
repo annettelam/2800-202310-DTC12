@@ -43,13 +43,13 @@ router.post('/', async (req, res) => {
     }
 
     const { user } = req.body;
-    console.log('user', user);
+    // console.log('user', user);
     const userId = new ObjectId(user.userId);
-    console.log('userId', userId);
+    // console.log('userId', userId);
     
     // Get user from MongoDB
     const flightUser = await userCollection.findOne({ _id: userId });
-    console.log('flightUser', flightUser);
+    // console.log('flightUser', flightUser);
 
     // Check if user was found
     if (!flightUser) {
@@ -66,7 +66,7 @@ router.post('/', async (req, res) => {
     //get user's most recent saved flight from mongodb
     const savedFlightsLength = flightUser.savedFlights.length;
     const airportCode = flightUser.savedFlights[savedFlightsLength - 1].legs[0].destination.display_code;
-    console.log('airportCode', airportCode);
+    // console.log('airportCode', airportCode);
 
     let cityName = '';
     const attractions = [];
@@ -93,7 +93,7 @@ router.post('/', async (req, res) => {
         };
     
         cityName = getCityName(airportCode);
-        console.log('City Name:', cityName);
+        // console.log('City Name:', cityName);
     } catch (err) {
         if (!cityName) {
           // If the destinationDisplayCode is not found in the airports object
@@ -120,7 +120,7 @@ router.post('/', async (req, res) => {
         lat = googleMapsData.results[0].geometry.location.lat;
         lng = googleMapsData.results[0].geometry.location.lng;
         // const { lat, lng } = googleMapsData.results[0].geometry.location;
-        console.log('lat', lat, 'lng', lng);
+        // console.log('lat', lat, 'lng', lng);
     } catch (err) {
         console.error(`Failed to fetch Google Maps data: ${err}`);
     }
