@@ -6,6 +6,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
+import bkg2 from '../../bkg2.jpg';
 import './flights.css';
 import bkg3 from '../../bkg3.jpg';
 import landingPlane from './landing-airplane.png';
@@ -172,7 +173,7 @@ export const Flights = () => {
             <div
                 className="dashboard-container"
                 style={{
-                    backgroundImage: `url(${bkg3})`,
+                    backgroundImage: `url(${dashBackground})`,
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center top 50px', // Move background down 50 pixels
                     backgroundAttachment: 'fixed',
