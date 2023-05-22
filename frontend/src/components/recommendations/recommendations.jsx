@@ -4,7 +4,6 @@ import {
     ChakraProvider,
     Box,
     Heading,
-    Text,
     Input,
     Button,
     Container,
@@ -13,7 +12,7 @@ import {
     Card,
     Tooltip,
     UnorderedList,
-    ListItem
+    ListItem,
 } from '@chakra-ui/react';
 import bkg from '../../bkg.jpg';
 
@@ -28,23 +27,27 @@ export const Recommendations = () => {
             const prompt = `You: I am traveling to ${city} from ${dates}. What environmentally friendly items should I pack?`;
             const payload = {
                 prompt,
-                max_tokens: 50,
+                max_tokens: 300,
                 temperature: 0.7,
                 n: 1,
-                model: 'text-davinci-002'
+                model: 'text-davinci-002',
             };
             const headers = {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${process.env.REACT_APP_OPENAI}`
+                Authorization: `Bearer ${process.env.REACT_APP_OPENAI}`,
             };
 
             try {
                 const response = await axios.post(url, payload, { headers });
                 const response_data = response.data;
-                const recommendations = response_data.choices.map((choice) =>
-                    choice.text.trim()
-                );
-                setRecommendations(recommendations);
+                const generatedText = response_data.choices[0].text.trim();
+
+                if (generatedText.includes('-')) {
+                    const recommendations = generatedText.split('-').map((item) => item.trim());
+                    setRecommendations(recommendations);
+                } else {
+                    setRecommendations([generatedText]);
+                }
             } catch (error) {
                 console.error(error);
             }
@@ -62,7 +65,7 @@ export const Recommendations = () => {
                     backgroundAttachment: 'fixed',
                     backgroundSize: 'cover',
                     fontFamily: 'Questrial',
-                    minHeight: '95vh'
+                    minHeight: '95vh',
                 }}
                 p={8}
             >
@@ -104,13 +107,13 @@ export const Recommendations = () => {
                             Generated Recommendations
                         </Heading>
                         <SimpleGrid columns={1} spacing={4}>
-                            {recommendations.map((recommendation, index) => (
-                                <Card key={index} bg="white" rounded="md" p={4}>
-                                    <UnorderedList>
-                                        <ListItem>{recommendation}</ListItem>
-                                    </UnorderedList>
-                                </Card>
-                            ))}
+                            <Card bg="white" rounded="md" p={4}>
+                                <UnorderedList>
+                                    {recommendations.map((recommendation, index) => (
+                                        <ListItem key={index}>{recommendation}</ListItem>
+                                    ))}
+                                </UnorderedList>
+                            </Card>
                         </SimpleGrid>
                     </Container>
                 )}

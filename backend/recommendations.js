@@ -33,11 +33,16 @@ const generateRecommendations = async (city, dates) => {
 
     const response = await axios.post(url, payload, { headers });
     const response_data = response.data;
-    const recommendations = response_data.choices.map((choice) =>
-        choice.text.trim()
-    );
-    return recommendations;
+    const generatedText = response_data.choices[0].text.trim();
+
+    if (generatedText.includes('-')) {
+        const recommendations = generatedText.split('-').map((item) => item.trim());
+        return recommendations;
+    } else {
+        return [generatedText];
+    }
 };
+
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
