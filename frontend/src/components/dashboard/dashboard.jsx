@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Popover, OverlayTrigger } from 'react-bootstrap';
-import '../home/home.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../fonts.css';
 import { FaHeart } from 'react-icons/fa';
 import axios from 'axios';
 import bkg from '../../bkg.jpg';
+import { Recommendations } from '../recommendations/recommendations';
+import { IconButton } from '@chakra-ui/react';
+import { ChatIcon } from '@chakra-ui/icons';
 
 export const Dashboard = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState({});
     const [savedFlights, setSavedFlights] = useState([]);
+    const [showPackingAssistant, setShowPackingAssistant] = useState(false); // State to toggle Packing Assistant section
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
@@ -57,6 +58,10 @@ export const Dashboard = () => {
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const togglePackingAssistant = () => {
+        setShowPackingAssistant(!showPackingAssistant);
     };
 
     return (
@@ -114,6 +119,32 @@ export const Dashboard = () => {
                     </Col>
                 </Row>
                 {/* Add other categories here */}
+                <Row>
+                    <Col>
+                        <h2 className="mb-4">Packing Assistant</h2>
+                        <div className="horizontal-scroll">
+                            <OverlayTrigger
+                                show={showPackingAssistant}
+                                placement="right"
+                                overlay={
+                                    <Popover id="popover-recommendations">
+                                        <Popover.Header as="h3">Recommendations</Popover.Header>
+                                        <Popover.Body>
+                                            {showPackingAssistant && <Recommendations />}
+                                        </Popover.Body>
+                                    </Popover>
+                                }
+                            >
+                                <IconButton
+                                    icon={<ChatIcon />}
+                                    variant="outline"
+                                    aria-label="Toggle Packing Assistant"
+                                    onClick={() => setShowPackingAssistant(!showPackingAssistant)}
+                                />
+                            </OverlayTrigger>
+                        </div>
+                    </Col>
+                </Row>
             </Container>
         </div>
     );
