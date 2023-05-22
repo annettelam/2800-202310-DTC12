@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Card, Popover, OverlayTrigger } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
+import '../home/home.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../fonts.css';
 import { FaHeart } from 'react-icons/fa';
 import axios from 'axios';
 import bkg from '../../bkg.jpg';
-import { Recommendations } from '../recommendations/recommendations';
-import { IconButton } from '@chakra-ui/react';
-import { ChatIcon } from '@chakra-ui/icons';
+import './dashboard.css';
+import {
+    Heading,
+    Text,
+    VStack,
+    Image,
+    Box,
+} from '@chakra-ui/react';
+import { Packing } from '../packing/packing';
 
 export const Dashboard = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState({});
     const [savedFlights, setSavedFlights] = useState([]);
-    const [showPackingAssistant, setShowPackingAssistant] = useState(false); // State to toggle Packing Assistant section
+    const [cityName, setCityName] = useState('');
+    const [attractions, setAttractions] = useState([]);
+    const [showChat, setShowChat] = useState(false); // Track the visibility of the chat component
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
@@ -60,8 +71,24 @@ export const Dashboard = () => {
         }
     };
 
-    const togglePackingAssistant = () => {
-        setShowPackingAssistant(!showPackingAssistant);
+    useEffect(() => {
+        const fetchAttractions = async () => {
+            try {
+                const suggResponse = await axios.post('http://localhost:4000/suggestions', {
+                    user
+                });
+                setAttractions(suggResponse.data.attractions);
+                setCityName(suggResponse.data.cityName);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        fetchAttractions();
+    }, [user]);
+
+    // Toggle the visibility of the chat component
+    const handleChatButtonClick = () => {
+        setShowChat(!showChat);
     };
 
     return (
@@ -80,12 +107,16 @@ export const Dashboard = () => {
             }}
         >
             <Container fluid className="px-3">
-                <Row className="flex-nowrap">
+                <Row className="flex-nowrap"> {/* Add flex-nowrap class to prevent wrapping */}
                     <Col>
-                        <h2 className="mb-4">Flights</h2>
-                        <div className="horizontal-scroll">
+                        <h2 className="mb-4">Flights</h2> {/* Category heading */}
+                        <div className="horizontal-scroll"> {/* Wrap the scrollable content */}
                             {savedFlights.map((flight) => (
-                                <Card key={flight.id} className="m-2" style={{ minWidth: '300px', maxWidth: '400px' }}>
+                                <Card
+                                    key={flight.id}
+                                    className="m-2"
+                                    style={{ minWidth: '300px', maxWidth: '400px' }}
+                                >
                                     <Card.Header>
                                         <FaHeart
                                             size={30}
@@ -112,39 +143,76 @@ export const Dashboard = () => {
                         </div>
                     </Col>
                 </Row>
-                <Row className="flex-nowrap">
+                {/* Repeat the above structure for other categories */}
+                <Row className="flex-nowrap"> {/* Add flex-nowrap class to prevent wrapping */}
                     <Col>
-                        <h2 className="mb-4">Hotels</h2>
-                        <div className="horizontal-scroll">{/* ... Hotel cards */}</div>
-                    </Col>
-                </Row>
-                {/* Add other categories here */}
-                <Row>
-                    <Col>
-                        <h2 className="mb-4">Packing Assistant</h2>
-                        <div className="horizontal-scroll">
-                            <OverlayTrigger
-                                show={showPackingAssistant}
-                                placement="right"
-                                overlay={
-                                    <Popover id="popover-recommendations">
-                                        <Popover.Header as="h3">Recommendations</Popover.Header>
-                                        <Popover.Body>
-                                            {showPackingAssistant && <Recommendations />}
-                                        </Popover.Body>
-                                    </Popover>
-                                }
-                            >
-                                <IconButton
-                                    icon={<ChatIcon />}
-                                    variant="outline"
-                                    aria-label="Toggle Packing Assistant"
-                                    onClick={() => setShowPackingAssistant(!showPackingAssistant)}
-                                />
-                            </OverlayTrigger>
+                        <h2 className="mb-4">Hotels</h2> {/* Category heading */}
+                        <div className="horizontal-scroll"> {/* Wrap the scrollable content */}
+                            {/* ... Hotel cards */}
                         </div>
                     </Col>
                 </Row>
+                {/* Add other categories here */}
+                <Row className="flex-nowrap">
+                    <Col>
+                        <h2>Attractions in {cityName}</h2>
+                        <div className="horizontal-scroll"> {/* Wrap the scrollable content */}
+                            {attractions.length === 0 ? (
+                                <Text>Please save a flight first and wait a couple seconds.</Text>
+                            ) : (
+                                attractions.map((attraction) => (
+                                    <Col key={attraction.location_id} style={{ minWidth: '300px', maxWidth: '400px' }}>
+                                        <Card className="m-2" boxShadow="lg" rounded="md" overflow="hidden">
+                                            <Box display="flex" justifyContent="center" alignItems="center">
+                                                <Image
+                                                    src={attraction.photoUrl}
+                                                    w="250px"
+                                                    objectFit="cover"
+                                                    alt={attraction.name}
+                                                />
+                                            </Box>
+                                            <VStack p="4" alignItems="start" spacing={2}>
+                                                <Heading size="md">{attraction.name}</Heading>
+                                            </VStack>
+                                        </Card>
+                                    </Col>
+                                ))
+                            )}
+                        </div>
+                    </Col>
+                </Row>
+                {/* Render the Packing component based on the showChat state */}
+                {showChat && <Packing />}
+                {/* Chat button */}
+                <button
+                    onClick={handleChatButtonClick}
+                    style={{
+                        position: 'fixed',
+                        bottom: '20px',
+                        right: '20px',
+                        width: '60px',
+                        height: '60px',
+                        borderRadius: '50%',
+                        backgroundColor: '#007bff',
+                        color: '#ffffff',
+                        border: 'none',
+                        outline: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        zIndex: 999,
+                    }}
+                >
+                    <span
+                        style={{
+                            fontSize: '24px',
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        Chat
+                    </span>
+                </button>
             </Container>
         </div>
     );
