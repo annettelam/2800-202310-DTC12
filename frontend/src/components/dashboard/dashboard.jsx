@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col, Card, Popover, OverlayTrigger } from 'react-bootstrap';
 import { FaHeart } from 'react-icons/fa';
 import axios from 'axios';
 import bkg from '../../bkg.jpg';
+import { Recommendations } from '../recommendations/recommendations';
+import { IconButton } from '@chakra-ui/react';
+import { ChatIcon } from '@chakra-ui/icons';
 
 export const Dashboard = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState({});
     const [savedFlights, setSavedFlights] = useState([]);
+    const [showPackingAssistant, setShowPackingAssistant] = useState(false); // State to toggle Packing Assistant section
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
@@ -56,6 +60,10 @@ export const Dashboard = () => {
         }
     };
 
+    const togglePackingAssistant = () => {
+        setShowPackingAssistant(!showPackingAssistant);
+    };
+
     return (
         <div
             className="dashboard-container"
@@ -72,16 +80,12 @@ export const Dashboard = () => {
             }}
         >
             <Container fluid className="px-3">
-                <Row className="flex-nowrap"> {/* Add flex-nowrap class to prevent wrapping */}
+                <Row className="flex-nowrap">
                     <Col>
-                        <h2 className="mb-4">Flights</h2> {/* Category heading */}
-                        <div className="horizontal-scroll"> {/* Wrap the scrollable content */}
+                        <h2 className="mb-4">Flights</h2>
+                        <div className="horizontal-scroll">
                             {savedFlights.map((flight) => (
-                                <Card
-                                    key={flight.id}
-                                    className="m-2"
-                                    style={{ minWidth: '300px', maxWidth: '400px' }}
-                                >
+                                <Card key={flight.id} className="m-2" style={{ minWidth: '300px', maxWidth: '400px' }}>
                                     <Card.Header>
                                         <FaHeart
                                             size={30}
@@ -108,16 +112,39 @@ export const Dashboard = () => {
                         </div>
                     </Col>
                 </Row>
-                {/* Repeat the above structure for other categories */}
-                <Row className="flex-nowrap"> {/* Add flex-nowrap class to prevent wrapping */}
+                <Row className="flex-nowrap">
                     <Col>
-                        <h2 className="mb-4">Hotels</h2> {/* Category heading */}
-                        <div className="horizontal-scroll"> {/* Wrap the scrollable content */}
-                            {/* ... Hotel cards */}
-                        </div>
+                        <h2 className="mb-4">Hotels</h2>
+                        <div className="horizontal-scroll">{/* ... Hotel cards */}</div>
                     </Col>
                 </Row>
                 {/* Add other categories here */}
+                <Row>
+                    <Col>
+                        <h2 className="mb-4">Packing Assistant</h2>
+                        <div className="horizontal-scroll">
+                            <OverlayTrigger
+                                show={showPackingAssistant}
+                                placement="right"
+                                overlay={
+                                    <Popover id="popover-recommendations">
+                                        <Popover.Header as="h3">Recommendations</Popover.Header>
+                                        <Popover.Body>
+                                            {showPackingAssistant && <Recommendations />}
+                                        </Popover.Body>
+                                    </Popover>
+                                }
+                            >
+                                <IconButton
+                                    icon={<ChatIcon />}
+                                    variant="outline"
+                                    aria-label="Toggle Packing Assistant"
+                                    onClick={() => setShowPackingAssistant(!showPackingAssistant)}
+                                />
+                            </OverlayTrigger>
+                        </div>
+                    </Col>
+                </Row>
             </Container>
         </div>
     );
