@@ -45,15 +45,12 @@ export const Home = (props) => {
                     <br></br>
                     <Box>
                         {/* Features Section */}
-                        <SimpleGrid columns={[1, 2, 3]} spacing="8" align="center">
+                        <SimpleGrid columns={[1, 2]} spacing="8" align="center">
                             {/* Feature 1 */}
                             <Box>
                                 {/* Add icon */}
-                                <Heading as="h3" size="md" mb="2" color="white">
-                                    Affordability
-                                </Heading>
                                 <>
-                                    <Button onClick={onToggle1}>Discover</Button>
+                                    <Button onClick={onToggle1}> About Us </Button>
                                     <Collapse in={isOpen1} animateOpacity>
                                         <Box
                                             p="20px"
@@ -71,11 +68,8 @@ export const Home = (props) => {
                             {/* Feature 2 */}
                             <Box>
                                 {/* Add icon */}
-                                <Heading as="h3" size="md" mb="2" color="white">
-                                    Sustainability
-                                </Heading>
                                 <>
-                                    <Button onClick={onToggle2}>Discover</Button>
+                                    <Button onClick={onToggle2}> Our Mission </Button>
                                     <Collapse in={isOpen2} animateOpacity>
                                         <Box
                                             p="20px"
@@ -90,28 +84,7 @@ export const Home = (props) => {
                                     </Collapse>
                                 </>
                             </Box>
-                            {/* Feature 3 */}
-                            <Box>
-                                {/* Add icon */}
-                                <Heading as="h3" size="md" mb="2" color="white">
-                                    Convenience
-                                </Heading>
-                                <>
-                                    <Button onClick={onToggle3}>Discover</Button>
-                                    <Collapse in={isOpen3} animateOpacity>
-                                        <Box
-                                            p="20px"
-                                            color="black"
-                                            mt="4"
-                                            bg="gray.300"
-                                            rounded="md"
-                                            shadow="md"
-                                        >
-                                            Placeholder content for Feature 3.
-                                        </Box>
-                                    </Collapse>
-                                </>
-                            </Box>
+
                             <br></br>
                         </SimpleGrid>
                     </Box>
