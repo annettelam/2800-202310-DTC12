@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 const assert = require('assert');
 const { getUserCollection } = require('./databaseConnection');
 const { ObjectId } = require('mongodb');
+const openai = require('openai');
 require('dotenv').config();
 
 const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
