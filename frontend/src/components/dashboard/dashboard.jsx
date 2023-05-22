@@ -150,28 +150,29 @@ export const Dashboard = () => {
                 <Row className="flex-nowrap">
                     <Col>
                         <h2>Attractions in {cityName}</h2>
-                       
-                        {attractions.length === 0 ? (
-                            <Text>Please save a flight first and wait a couple seconds.</Text>
-                        ) : (
-                            attractions.map((attraction) => (
-                            <Col key={attraction.location_id} style={{ minWidth: '300px', maxWidth: '400px' }}>
-                            <Card className="m-2" boxShadow="lg" rounded="md" overflow="hidden">
-                                <Box display="flex" justifyContent="center" alignItems="center">
-                                <Image
-                                    src={attraction.photoUrl}
-                                    h="250px"
-                                    objectFit="cover"
-                                    alt={attraction.name}
-                                />
-                                </Box>
-                                <VStack p="4" alignItems="start" spacing={2}>
-                                <Heading size="md">{attraction.name}</Heading>
-                                </VStack>
-                            </Card>
-                            </Col>
-                        ))
-                        )}
+                        <div className="horizontal-scroll"> {/* Wrap the scrollable content */}
+                            {attractions.length === 0 ? (
+                                <Text>Please save a flight first and wait a couple seconds.</Text>
+                            ) : (
+                                attractions.map((attraction) => (
+                                <Col key={attraction.location_id} style={{ minWidth: '300px', maxWidth: '400px' }}>
+                                <Card className="m-2" boxShadow="lg" rounded="md" overflow="hidden">
+                                    <Box display="flex" justifyContent="center" alignItems="center">
+                                    <Image
+                                        src={attraction.photoUrl}
+                                        h="250px"
+                                        objectFit="cover"
+                                        alt={attraction.name}
+                                    />
+                                    </Box>
+                                    <VStack p="4" alignItems="start" spacing={2}>
+                                    <Heading size="md">{attraction.name}</Heading>
+                                    </VStack>
+                                </Card>
+                                </Col>
+                            ))
+                            )}
+                        </div>
                     </Col>
                 </Row>
             </Container>
