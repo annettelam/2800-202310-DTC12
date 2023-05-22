@@ -1,5 +1,6 @@
 .dashboard-container {
-    padding: 1rem;
+    padding: 2rem 0;
+    /* Adjust top and bottom padding */
     background-repeat: no-repeat;
     background-position: center top 50px;
     /* Move background down 50 pixels */
@@ -7,6 +8,8 @@
     background-size: cover;
     font-family: Questrial;
     min-height: 100vh;
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
 }
 
 @media screen and (max-width: 768px) {
@@ -16,9 +19,25 @@
     }
 }
 
+.horizontal-scroll {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem 0;
+    /* Add some space around the scrollable content */
+}
+
+.horizontal-scroll>* {
+    scroll-snap-align: start;
+}
+
 .simple-grid {
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
     /* Display two cards per row on small screens */
+    gap: 1rem;
+    /* Add some space between the cards */
 }
 
 @media screen and (min-width: 768px) {
