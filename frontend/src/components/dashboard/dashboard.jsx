@@ -160,7 +160,7 @@ export const Dashboard = () => {
                                     <Box display="flex" justifyContent="center" alignItems="center">
                                     <Image
                                         src={attraction.photoUrl}
-                                        h="250px"
+                                        w="250px"
                                         objectFit="cover"
                                         alt={attraction.name}
                                     />
