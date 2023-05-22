@@ -14,6 +14,34 @@ import { FaHeart } from 'react-icons/fa';
 
 
 
+// Format time
+export function formatTime(timeString) {
+    const date = new Date(timeString);
+    const formattedTime = date.toLocaleTimeString([], {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+    });
+    return formattedTime;
+}
+
+// Format duration
+export function formatDuration(minutes) {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+
+    return `${hours}h ${remainingMinutes}m`;
+}
+
+// Format stop display
+export function formatStopDisplay(stops) {
+    if (stops === 0) {
+        return 'Direct';
+    } else {
+        return `${stops} Stop${stops > 1 ? 's' : ''}`;
+    }
+}
+
 export const Flights = () => {
     const navigate = useNavigate();
 
@@ -137,34 +165,6 @@ export const Flights = () => {
     const loadMoreFlights = () => {
         setDisplayResultsCount(displayResultsCount + batchCount);
         setHasNextPage(displayResultsCount < flights.length);
-    }
-
-    // Format time
-    function formatTime(timeString) {
-        const date = new Date(timeString);
-        const formattedTime = date.toLocaleTimeString([], {
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true
-        });
-        return formattedTime;
-    }
-
-    // Format duration
-    function formatDuration(minutes) {
-        const hours = Math.floor(minutes / 60);
-        const remainingMinutes = minutes % 60;
-
-        return `${hours}h ${remainingMinutes}m`;
-    }
-
-    // Format stop display
-    function formatStopDisplay(stops) {
-        if (stops === 0) {
-            return 'Direct';
-        } else {
-            return `${stops} Stop${stops > 1 ? 's' : ''}`;
-        }
     }
 
     return (
