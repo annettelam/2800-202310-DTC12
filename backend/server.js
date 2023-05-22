@@ -275,6 +275,8 @@ app.post('/flights', async (req, res) => {
       }, 600)
     })
 
+    const flightResults = results
+    console.log(flightResults)
     const filteredResults = results.data.data.filter((flight) => {
       var matchFlight = false;
       console.log("filtering1")
