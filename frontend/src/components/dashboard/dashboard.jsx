@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card } from 'react-bootstrap';
+import '../home/home.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../fonts.css';
 import { FaHeart } from 'react-icons/fa';
 import axios from 'axios';
 import bkg from '../../bkg.jpg';
+import './dashboard.css';
+import {
+    Heading,
+    Text,
+    VStack,
+    Image,
+    Box,
+  } from '@chakra-ui/react';
 
 export const Dashboard = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState({});
     const [savedFlights, setSavedFlights] = useState([]);
+    const [cityName, setCityName] = useState(''); 
+    const [attractions, setAttractions] = useState([]);
 
     useEffect(() => {
         if (localStorage.getItem('loggedIn') !== 'true') {
@@ -55,6 +68,22 @@ export const Dashboard = () => {
             console.log(error);
         }
     };
+
+    useEffect(() => {
+        const fetchAttractions = async () => {
+          try {
+            const suggResponse = await axios.post('http://localhost:4000/suggestions', { 
+              user 
+            });
+            setAttractions(suggResponse.data.attractions);
+            setCityName(suggResponse.data.cityName);
+          } catch (err) {
+            console.log(err);
+          }
+        };
+        fetchAttractions();
+      }, [user]);
+    
 
     return (
         <div
@@ -118,6 +147,33 @@ export const Dashboard = () => {
                     </Col>
                 </Row>
                 {/* Add other categories here */}
+                <Row className="flex-nowrap">
+                    <Col>
+                        <h2>Attractions in {cityName}</h2>
+                       
+                        {attractions.length === 0 ? (
+                            <Text>Please save a flight first and wait a couple seconds.</Text>
+                        ) : (
+                            attractions.map((attraction) => (
+                            <Col key={attraction.location_id} style={{ minWidth: '300px', maxWidth: '400px' }}>
+                            <Card className="m-2" boxShadow="lg" rounded="md" overflow="hidden">
+                                <Box display="flex" justifyContent="center" alignItems="center">
+                                <Image
+                                    src={attraction.photoUrl}
+                                    h="250px"
+                                    objectFit="cover"
+                                    alt={attraction.name}
+                                />
+                                </Box>
+                                <VStack p="4" alignItems="start" spacing={2}>
+                                <Heading size="md">{attraction.name}</Heading>
+                                </VStack>
+                            </Card>
+                            </Col>
+                        ))
+                        )}
+                    </Col>
+                </Row>
             </Container>
         </div>
     );
