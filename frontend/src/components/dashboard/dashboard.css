@@ -12,6 +12,17 @@
     /* Enable horizontal scrolling */
 }
 
+.dashboard-container .ecopacking-button .fa-leaf {
+    color: #34D399;
+    /* Green 700 */
+}
+
+.dashboard-container .ecopacking-button .fa-suitcase {
+    color: #F87171;
+    /* Orange 900 */
+}
+
+
 @media screen and (max-width: 768px) {
     .dashboard-container {
         padding-top: 4rem;
@@ -54,4 +65,3 @@
 .questrial-font {
     font-family: Questrial;
 }
-  
