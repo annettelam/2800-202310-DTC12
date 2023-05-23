@@ -126,9 +126,6 @@ export const Dashboard = () => {
           borderRadius="md"
           boxShadow="md"
         >
-          <Text fontSize="sm" fontWeight="bold" marginRight="0.5rem">
-            Eco-Assistant
-          </Text>
           <Ecopacking />
         </Box>
 
