@@ -244,6 +244,8 @@ app.get("/profile", (req, res) => {
 
 //flight results
 app.post('/flights', async (req, res) => {
+  // Start timer
+  console.time('flightSearch');
 
   const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass } = req.body;
   console.log(req.body)
@@ -300,8 +302,11 @@ app.post('/flights', async (req, res) => {
 
     }
     );
-
     console.log(filteredResults)
+
+    // End timer
+    console.timeEnd('flightSearch');
+    
     res.json(filteredResults);
   } catch (error) {
     console.error(error);
