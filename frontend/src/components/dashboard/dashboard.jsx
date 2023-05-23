@@ -89,6 +89,7 @@ export const Dashboard = () => {
   };
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
     const fetchAttractions = async () => {
       try {
         const suggResponse = await axios.post('http://localhost:4000/suggestions', {
@@ -101,7 +102,7 @@ export const Dashboard = () => {
       }
     };
     fetchAttractions();
-  }, [user]);
+  }, []);
 
   return (
     <ChakraProvider>
