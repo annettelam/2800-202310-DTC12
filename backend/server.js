@@ -382,7 +382,10 @@ app.post("/reset-password/:token", async (req, res) => {
 
 app.post("/hotels", async (req, res) => {
   try {
+    // Start timer
     console.time("hotels-api");
+
+    // Get the hotel fields
     const { city, checkInDate, checkOutDate, numAdults, numRooms, page } = req.body;
     console.log(`backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}, ${page}`);
     // Get city id
@@ -430,11 +433,13 @@ app.post("/hotels", async (req, res) => {
     });
     // Wait for all API calls to finish
     const hotelDetailsData = await Promise.all(hotelDetails);
-    // Add hotel details to hotelsData
+    // Add hotel details to hotels list
     hotelDetailsData.forEach((hotel, index) => {
       hotelsData[index].details = hotel.data;
     });
+    // End timer
     console.timeEnd("hotels-api");
+    // Send response
     res.json({
       hotels: hotelsData,
       hasNextPage: endIndex < hotels.data.result.length,
