@@ -12,6 +12,7 @@ import { FaHeart } from 'react-icons/fa';
 import sustainabilityIcon from './planet-earth.png';
 
 export const Hotels = () => {
+    // Navigate
     const navigate = useNavigate();
     // User
     const [user, setUser] = useState({});
@@ -22,6 +23,7 @@ export const Hotels = () => {
     const [checkOutDate, setCheckOutDate] = useState('');
     const [numAdults, setNumAdults] = useState(1);
     const [numRooms, setNumRooms] = useState(1);
+        // Increment/Decrement for adults
     const {
         getInputProps: getAdultsInputProps,
         getIncrementButtonProps: getAdultsIncProps,
@@ -35,7 +37,7 @@ export const Hotels = () => {
     const adultsInput = getAdultsInputProps();
     const adultsInc = getAdultsIncProps();
     const adultsDec = getAdultsDecProps();
-
+        // Increment/Decrement for rooms
     const {
         getInputProps: getRoomsInputProps,
         getIncrementButtonProps: getRoomsIncProps,
@@ -55,7 +57,7 @@ export const Hotels = () => {
     const [savedHotels, setSavedHotels] = useState([]);
     const [hasNextPage, setHasNextPage] = useState(false);
 
-    // Modal
+    // Modal for hotel details
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedHotelId, setSelectedHotelId] = useState(null);
     const openModal = (hotelId) => {
@@ -67,16 +69,14 @@ export const Hotels = () => {
         setIsModalOpen(false);
     };
 
-
     // Execute on page load
     useEffect(() => {
+        // Check if user is logged in
         if (localStorage.getItem('loggedIn') !== 'true') {
             navigate('/login');
         }
-
         // Save user from localStorage
         setUser(JSON.parse(localStorage.getItem('user')));
-
         // Get saved hotels from localStorage
         const savedHotels = JSON.parse(localStorage.getItem('user')).savedHotels;
         const savedHotelIds = savedHotels.map((savedHotel) => savedHotel.hotel_id);
@@ -100,7 +100,6 @@ export const Hotels = () => {
             const newSavedHotels = savedHotels.filter((savedHotelId) => savedHotelId !== hotelId);
             setSavedHotels(newSavedHotels);
         }
-        
         // Find hotel object
         const hotel = hotels.find((hotel) => hotel.hotel_id === hotelId);
         // Update database
@@ -110,7 +109,6 @@ export const Hotels = () => {
                 hotel, user
             });
             console.log(response.data);
-
             // Update localStorage
             if (response.data === "Hotel saved") {
                 user.savedHotels.push(hotel);
@@ -128,7 +126,6 @@ export const Hotels = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(city, checkInDate, checkOutDate, numAdults, numRooms);
-
         try {
             const response = await axios.post('http://localhost:4000/hotels', {
                 city,
@@ -139,7 +136,6 @@ export const Hotels = () => {
                 page: 1 // Start on page 1 (First 4 hotels)
             });
             console.log(response.data);
-
             // Update useState
             setHotels(response.data.hotels);
             setHasNextPage(response.data.hasNextPage);
@@ -160,7 +156,7 @@ export const Hotels = () => {
                 page: Math.ceil(hotels.length / 4) + 1 // Calculate the next page based on the current number of hotels
             });
             console.log(response.data);
-
+            // Update useState
             setHotels((prevHotels) => [...prevHotels, ...response.data.hotels]);
             setHasNextPage(response.data.hasNextPage);
         } catch (error) {
@@ -182,13 +178,13 @@ export const Hotels = () => {
                     minHeight: '100vh',
                 }}
             >
+                {/* Search Form */}
                 <Container maxWidth="md">
                     <Box p="4" boxShadow="lg" rounded="md" bg="aliceblue" mb="4">
                         <Heading align="center">Hotels</Heading>
                         <Text align="center" mt="2">
                             Search for Hotels here.
                         </Text>
-
                         <form onSubmit={handleSubmit}>
                             <FormControl mt="4">
                                 <FormLabel>City</FormLabel>
@@ -410,21 +406,15 @@ export const Hotels = () => {
                                                     </ModalFooter>
                                                 </ModalContent>
                                             </Modal>
-                                            {/* <ul>
-                                                {sustainability.sustainability_page.efforts.map((effort) => (
-                                                    effort.steps.map((step) => (
-                                                        <li key={step}>{step}</li>
-                                                    ))
-                                                ))}
-                                            </ul> */}
                                         </Box>
                                     )}
-
                                 </Flex>
                             </Box>
                         );
                     })}
                 </Container>
+
+                {/* Load More Button */}
                 {hasNextPage && (
                     <Flex justify="center" mt="4">
                         <ChakraButton onClick={loadMoreHotels} colorScheme="blue">
