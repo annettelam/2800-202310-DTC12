@@ -9,10 +9,12 @@ const assert = require('assert');
 const { getUserCollection } = require('./databaseConnection');
 const { ObjectId } = require('mongodb');
 const openai = require('openai');
+const axios = require('axios');
 require('dotenv').config();
 
 const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 const tripAdvisorApiKey = process.env.TRIP_ADVISOR_API_KEY;
+const openaiApiKey = process.env.REACT_APP_OPENAI;
 
 const userCollection = getUserCollection();
 
@@ -138,28 +140,46 @@ router.post('/', async (req, res) => {
             return;
         } else {
             tripAdvisorData.data.forEach((attraction) => {
-            attractions.push({
-                name: attraction.name,
-                location_id: attraction.location_id,
-                photoUrl: '',
-            });
+                attractions.push({
+                    name: attraction.name,
+                    location_id: attraction.location_id,
+                    photoUrl: '',
+                    description: '',
+                });
             });
         }
     } catch (err) {
         console.error(`Failed to fetch TripAdvisor data: ${err}`);
     }
 
-    // Get image for each attraction
+    // Get description & image for each attraction
     for (let i = 0; i < attractions.length; i++) {
         const attraction = attractions[i];
-        // console.log('attractions', attractions)
-        // console.log('attraction', attraction)
-        const cityNameId = attraction.location_id;
-        const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(cityNameId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`;
+        const attractionName = attraction.name;
+        const prompt = `You: Give me a description of ${attractionName} in ${cityName} in 75 words.`;
+        const openaiUrl = 'https://api.openai.com/v1/engines/text-davinci-002/completions';
 
         try {
+            const response = await axios.post(openaiUrl, {
+                prompt: prompt,
+                max_tokens: 50,
+                temperature: 0.7,
+                n: 1
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${openaiApiKey}`
+                },
+            });
+
+            const description = response.data.choices[0].text.trim();
+            attraction.description = description;
+            // console.log('description', description);
+            const cityNameId = attraction.location_id;
+            const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(cityNameId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`;
             const tripAdvisorImgResponse = await fetch(tripAdvisorImgUrl);
             const tripAdvisorImgData = await tripAdvisorImgResponse.json();
+            console.log('tripAdvisorImgData', tripAdvisorImgData);
 
             if (!tripAdvisorImgData.data || !Array.isArray(tripAdvisorImgData.data) || tripAdvisorImgData.data.length === 0) {
                 // console.log('No images found for attraction');
@@ -170,9 +190,12 @@ router.post('/', async (req, res) => {
                 attraction.photoUrl = photoUrl;
             }
         } catch (err) {
-            console.error(`Failed to fetch attraction image: ${err}`);
+            console.error(`Failed to fetch data for ${attractionName}: ${err}`);
+            attraction.description = 'Description not available.';
+            attraction.photoUrl = '../../alicelogo.png'; 
         }
     }
+
     res.send({ cityName, attractions });
 });
       
