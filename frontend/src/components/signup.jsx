@@ -23,7 +23,7 @@ export const SignUp = ({ onLogin }) => {
         console.log(email, username, password, firstName, lastName, city);
 
         try {
-            const response = await axios.post('http://localhost:4000/signup', {
+            const response = await axios.post('https://planetpass.onrender.com/signup', {
                 email,
                 username,
                 password,

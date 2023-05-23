@@ -20,7 +20,7 @@ export const Login = ({ onLogin }) => {
         console.log(email, password);
 
         try {
-            await axios.post('http://localhost:4000/login', {
+            await axios.post('https://planetpass.onrender.com/login', {
                 email, password
             }).then((res) => {
                 console.log(res.data);

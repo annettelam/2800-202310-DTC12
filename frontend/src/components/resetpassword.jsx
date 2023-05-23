@@ -21,7 +21,7 @@ export const ResetPassword = () => {
         }
         try {
 
-            await axios.post(`http://localhost:4000/reset-password/${token}`, { password });
+            await axios.post(`https://planetpass.onrender.com/reset-password/${token}`, { password });
             setSuccess(true);
         } catch (err) {
             setError('Failed to reset password');

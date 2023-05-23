@@ -16,7 +16,7 @@ export const CustomNavbar = ({ loggedIn, setLoggedIn }) => {
         console.log('Logging out');
         try {
             // Destroy session on server
-            await axios.post('http://localhost:4000/logout');
+            await axios.post('https://planetpass.onrender.com/logout');
 
             // Remove items from localStorage
             localStorage.removeItem('loggedIn');

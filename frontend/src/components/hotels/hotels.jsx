@@ -23,7 +23,7 @@ export const Hotels = () => {
     const [checkOutDate, setCheckOutDate] = useState('');
     const [numAdults, setNumAdults] = useState(1);
     const [numRooms, setNumRooms] = useState(1);
-        // Increment/Decrement for adults
+    // Increment/Decrement for adults
     const {
         getInputProps: getAdultsInputProps,
         getIncrementButtonProps: getAdultsIncProps,
@@ -37,7 +37,7 @@ export const Hotels = () => {
     const adultsInput = getAdultsInputProps();
     const adultsInc = getAdultsIncProps();
     const adultsDec = getAdultsDecProps();
-        // Increment/Decrement for rooms
+    // Increment/Decrement for rooms
     const {
         getInputProps: getRoomsInputProps,
         getIncrementButtonProps: getRoomsIncProps,
@@ -105,7 +105,7 @@ export const Hotels = () => {
         // Update database
         console.log(hotel);
         try {
-            const response = await axios.post('http://localhost:4000/save-hotel', {
+            const response = await axios.post('https://planetpass.onrender.com/save-hotel', {
                 hotel, user
             });
             console.log(response.data);
@@ -121,13 +121,13 @@ export const Hotels = () => {
             console.log(error);
         }
     };
-    
+
     // Get hotels on form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(city, checkInDate, checkOutDate, numAdults, numRooms);
         try {
-            const response = await axios.post('http://localhost:4000/hotels', {
+            const response = await axios.post('https://planetpass.onrender.com/hotels', {
                 city,
                 checkInDate,
                 checkOutDate,
@@ -147,7 +147,7 @@ export const Hotels = () => {
     // Load more hotels
     const loadMoreHotels = async () => {
         try {
-            const response = await axios.post('http://localhost:4000/hotels', {
+            const response = await axios.post('https://planetpass.onrender.com/hotels', {
                 city,
                 checkInDate,
                 checkOutDate,
@@ -197,7 +197,7 @@ export const Hotels = () => {
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
                                     required
                                 >
-                                    <option value="" style={{color:'grey'}}>Select a city</option>
+                                    <option value="" style={{ color: 'grey' }}>Select a city</option>
                                     {Object.keys(cities).map((cityOption) => (
                                         <option key={cityOption} value={cityOption}>
                                             {cityOption}

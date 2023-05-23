@@ -114,7 +114,7 @@ export const Flights = () => {
         // Update database
         console.log(flight);
         try {
-            const response = await axios.post('http://localhost:4000/save-flight', {
+            const response = await axios.post('https://planetpass.onrender.com/save-flight', {
                 flight, user
             });
             console.log(response.data);
@@ -149,7 +149,7 @@ export const Flights = () => {
         e.preventDefault();
         console.log(originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass);
         try {
-            await axios.post('http://localhost:4000/flights', {
+            await axios.post('https://planetpass.onrender.com/flights', {
                 originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass
             }).then((res) => {
                 console.log(res.data);
@@ -362,7 +362,7 @@ export const Flights = () => {
                             onChange={() => setShowEcoFlights(!showEcoFlights)}
                             style={{ borderColor: 'aliceblue', color: 'black' }}
                         >
-                            Show Eco Flights Only 
+                            Show Eco Flights Only
                         </Checkbox>
                     </Flex>
                 )}

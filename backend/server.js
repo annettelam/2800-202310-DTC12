@@ -50,18 +50,18 @@ var mongoStore = MongoStore.create({
 
 // Booking.com API
 const hotelAPI = axios.create({
-    baseURL: 'https://booking-com.p.rapidapi.com',
-    headers: {
-        'X-RapidAPI-Key': 'ef202a40a1msh84d101d331ea111p199b57jsne3be98f83a9a',
-        'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
-    }
+  baseURL: 'https://booking-com.p.rapidapi.com',
+  headers: {
+    'X-RapidAPI-Key': 'ef202a40a1msh84d101d331ea111p199b57jsne3be98f83a9a',
+    'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
+  }
 });
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000", // or your frontend URL
+    origin: "https://planetpass.onrender.com/", // or your frontend URL
     credentials: true,
   })
 );
@@ -306,7 +306,7 @@ app.post('/flights', async (req, res) => {
 
     // End timer
     console.timeEnd('flightSearch');
-    
+
     res.json(filteredResults);
   } catch (error) {
     console.error(error);
@@ -352,7 +352,7 @@ app.post("/reset-password", async (req, res) => {
   );
 
   // Send an email to the user with a link to reset their password
-  const resetUrl = `http://localhost:3000/reset-password/${token}`;
+  const resetUrl = `https://planetpass.onrender.com/reset-password/${token}`;
   const mailOptions = {
     from: process.env.EMAIL_ADDRESS,
     to: email,
