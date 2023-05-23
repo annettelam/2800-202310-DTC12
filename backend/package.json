@@ -26,9 +26,7 @@
     "mongoose": "^7.1.1",
     "node-fetch": "^2.6.11",
     "nodemailer": "^6.9.2",
-    "openai": "^3.2.1",
-    "react-responsive-carousel": "^3.2.23",
-    "react-router": "^6.11.1"
+    "openai": "^3.2.1"
   },
   "devDependencies": {
     "react-scripts": "4.0.3"
