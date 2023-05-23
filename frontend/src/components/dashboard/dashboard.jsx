@@ -11,6 +11,7 @@ import {
   PopoverCloseButton,
   Button,
   Box, // Import Box component from Chakra UI
+  Center
 } from '@chakra-ui/react';
 import '../home/home.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -28,6 +29,10 @@ import {
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Ecopacking } from '../ecopacking/ecopacking';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import landingPlane from '../flights/landing-airplane.png';
+import takeoffPlane from '../flights/takeoff-airplane.png';
+import { formatTime, formatDuration, formatStopDisplay } from '../flights/flights.jsx';
 
 
 export const Dashboard = () => {
@@ -135,7 +140,7 @@ export const Dashboard = () => {
             {/* Add flex-nowrap class to prevent wrapping */}
             <Col>
               <h2 className="mb-4">Flights</h2> {/* Category heading */}
-              <Carousel
+              <Carousel 
                 showThumbs={false}
                 showStatus={false}
                 infiniteLoop={true}
@@ -143,42 +148,98 @@ export const Dashboard = () => {
               >
                 {/* Wrap the scrollable content */}
                 {savedFlights.map((flight) => (
-                  <Card
-                    key={flight.id}
-                    className="m-2"
-                    style={{ minWidth: "200px", maxWidth: "300px" }}
-                  >
-                    <Card.Header>
+                  <Box key={flight.id} p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative">
+                    <Box align="right" onClick={() => handleSaveFlight(flight.id)}>
                       <FaHeart
                         size={30}
-                        color={isFlightSaved(flight.id) ? "red" : "black"}
-                        fill={isFlightSaved(flight.id) ? "red" : "none"}
-                        stroke={
-                          isFlightSaved(flight.id) ? "none" : "currentColor"
-                        }
+                        color={isFlightSaved(flight.id) ? 'red' : 'black'}
+                        fill={isFlightSaved(flight.id) ? 'red' : 'none'}
+                        stroke={isFlightSaved(flight.id) ? 'none' : 'currentColor'}
                         strokeWidth="10"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleSaveFlight(flight.id)}
+                        style={{ cursor: 'pointer' }}
                       />
-                    </Card.Header>
-                    <Card.Body>
-                      <Card.Title className="text-center">
-                        ${flight.price.amount}
-                      </Card.Title>
-                      <Card.Text className="text-center">
-                        <b>Origin:</b> {flight.legs[0].origin.name}
-                      </Card.Text>
-                      <Card.Text className="text-center">
-                        <b>Origin Code:</b>{" "}
-                        {flight.legs[0].origin.display_code}
-                      </Card.Text>
-                      {/* ... Rest of the flight details */}
-                    </Card.Body>
-                  </Card>
+                    </Box>
+                    <Heading>${flight.price.amount.toFixed(2)}</Heading>
+
+                    {/* Eco flight information */}
+                    {flight.is_eco_contender && (
+                      <Box>
+                        <Text align="left" fontWeight="bold" fontSize="lg" mb="0">
+                          <span style={{ color: 'green' }}>Eco Flight</span>
+                        </Text>
+                        <Text align="left">
+                          <span style={{ color: 'green' }}>
+                            Produces <b>{Math.round(Math.abs(flight.eco_contender_delta))}%</b> less carbon emissions compared to similar flights.
+                          </span>
+                        </Text>
+                      </Box>
+                    )}
+
+                    
+                {/* Iterate over legs and display departure times */}
+                {flight.legs.map((leg, index) => (
+                  <Box key={index}>
+                    <hr />
+                    <h4>{index === 0 ? 'Departure Flight' : 'Return Flight'}</h4>
+                    <h6>
+                      {leg.origin.name} - {leg.destination.name}
+                    </h6>
+                    <Text mt="1" mb="1">
+                      <b>{`${formatTime(leg.departure)} - ${formatTime(leg.arrival)}`}</b>
+                    </Text>
+                    <Text mt="1" mb="1">{formatDuration(leg.duration)}</Text>
+                    <Text mt="1" mb="1">{leg.carriers[0].name}</Text>
+
+                    {/* SVG element for flight route */}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100px" className="m-auto" style={{ maxWidth: '300px' }}>
+                      {/* Line connecting origin and destination */}
+                      <line x1="20%" y1="50%" x2="80%" y2="50%" stroke="black" strokeWidth="2" strokeLinecap="round" fill="none" />
+
+                      {/* Dots for stops */}
+                      {leg.stop_count > 0 &&
+                        leg.stops.map((stop, index) => (
+                          <g key={index}>
+                            {/* Dot for stop */}
+                            <circle cx={`${((index + 1) / (leg.stop_count + 1)) * 80 + 10}%`} cy="50%" r="4" fill="red" />
+
+                            {/* Display code for the stop */}
+                            <text x={`${((index + 1) / (leg.stop_count + 1)) * 80 + 10}%`} y="65%" textAnchor="middle" fontSize="10" fontWeight="bold">
+                              {stop.display_code}
+                            </text>
+                          </g>
+                        ))}
+
+                      {/* Landing airplane */}
+                      <image href={takeoffPlane} x="5%" y="50%" width="20" height="20" transform="translate(-10, -10)" />
+
+                      {/* Display code for origin */}
+                      <text x="10%" y="50%" textAnchor="start" alignmentBaseline="middle" fontSize="12">
+                        {leg.origin.display_code}
+                      </text>
+
+                      {/* Takeoff airplane */}
+                      <image href={landingPlane} x="88%" y="50%" width="20" height="20" transform="translate(10, -10)" />
+
+                      {/* Display code for destination */}
+                      <text x="90%" y="50%" textAnchor="end" alignmentBaseline="middle" fontSize="12">
+                        {leg.destination.display_code}
+                      </text>
+
+                      {/* Number of stops */}
+                      <text x="50%" y="80%" textAnchor="middle" fontSize="12" fill={leg.stop_count > 0 ? 'red' : 'green'} fontWeight="bold">
+                        {formatStopDisplay(leg.stop_count)}
+                      </text>
+                    </svg>
+                  </Box>
                 ))}
+
+                  </Box>
+                ))}
+
               </Carousel>
             </Col>
           </Row>
+
           {/* Repeat the above structure for other categories */}
           <Row className="flex-nowrap">
             {" "}
@@ -277,3 +338,7 @@ export const Dashboard = () => {
     </ChakraProvider>
   );
 };
+
+
+
+
