@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.4522aded.css",
-    "main.js": "/static/js/main.e4eaca43.js",
+    "main.css": "/static/css/main.8b165077.css",
+    "main.js": "/static/js/main.2bb581f8.js",
     "static/js/787.f19b9719.chunk.js": "/static/js/787.f19b9719.chunk.js",
     "static/media/404-image.jpg": "/static/media/404-image.f912d435afd07ac31484.jpg",
     "static/media/bkg.jpg": "/static/media/bkg.b892e085166db64597be.jpg",
@@ -15,12 +15,12 @@
     "static/media/planet-earth.png": "/static/media/planet-earth.1f99a1873b0722b85af7.png",
     "static/media/alicelogo.png": "/static/media/alicelogo.cf696667124860ccabd3.png",
     "index.html": "/index.html",
-    "main.4522aded.css.map": "/static/css/main.4522aded.css.map",
-    "main.e4eaca43.js.map": "/static/js/main.e4eaca43.js.map",
+    "main.8b165077.css.map": "/static/css/main.8b165077.css.map",
+    "main.2bb581f8.js.map": "/static/js/main.2bb581f8.js.map",
     "787.f19b9719.chunk.js.map": "/static/js/787.f19b9719.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.4522aded.css",
-    "static/js/main.e4eaca43.js"
+    "static/css/main.8b165077.css",
+    "static/js/main.2bb581f8.js"
   ]
 }
