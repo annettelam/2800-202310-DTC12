@@ -46,13 +46,10 @@ router.post('/', async (req, res) => {
     }
 
     const { user } = req.body;
-    // console.log('user', user);
     const userId = new ObjectId(user.userId);
-    // console.log('userId', userId);
     
     // Get user from MongoDB
     const flightUser = await userCollection.findOne({ _id: userId });
-    // console.log('flightUser', flightUser);
 
     // Check if user was found
     if (!flightUser) {
@@ -69,7 +66,6 @@ router.post('/', async (req, res) => {
     //get user's most recent saved flight from mongodb
     const savedFlightsLength = flightUser.savedFlights.length;
     const airportCode = flightUser.savedFlights[savedFlightsLength - 1].legs[0].destination.display_code;
-    // console.log('airportCode', airportCode);
 
     let cityName = '';
     const attractions = [];
@@ -96,12 +92,10 @@ router.post('/', async (req, res) => {
         };
     
         cityName = getCityName(airportCode);
-        // console.log('City Name:', cityName);
     } catch (err) {
         if (!cityName) {
-          // If the destinationDisplayCode is not found in the airports object
-          console.error(`Unknown destinationDisplayCode: ${userDestinationDisplayCode}`);
-          return;
+            console.error(`Unknown destinationDisplayCode: ${userDestinationDisplayCode}`);
+            return;
         }
     }
 
@@ -113,8 +107,6 @@ router.post('/', async (req, res) => {
     try {
         const googleMapsResponse = await fetch(googleMapsApiUrl);
         const googleMapsData = await googleMapsResponse.json();
-        // console.log('cityName', cityName)
-        // console.log('googleMapsData', googleMapsData);
         if (googleMapsData.results.length === 0) {
             console.log('No results found for the provided address');
             return res.status(404).send('No results found for the provided address');
@@ -122,8 +114,6 @@ router.post('/', async (req, res) => {
 
         lat = googleMapsData.results[0].geometry.location.lat;
         lng = googleMapsData.results[0].geometry.location.lng;
-        // const { lat, lng } = googleMapsData.results[0].geometry.location;
-        // console.log('lat', lat, 'lng', lng);
     } catch (err) {
         console.error(`Failed to fetch Google Maps data: ${err}`);
     }
@@ -133,7 +123,6 @@ router.post('/', async (req, res) => {
     try {
         const tripAdvisorResponse = await fetch(tripAdvisorApiUrl);
         const tripAdvisorData = await tripAdvisorResponse.json();
-        // console.log('tripAdvisorData',tripAdvisorData);
 
         if (!tripAdvisorData.data || !Array.isArray(tripAdvisorData.data) || tripAdvisorData.data.length === 0) {
             console.log('No attractions found');
@@ -174,7 +163,6 @@ router.post('/', async (req, res) => {
 
             const description = response.data.choices[0].text.trim();
             attraction.description = description;
-            // console.log('description', description);
             const cityNameId = attraction.location_id;
             const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(cityNameId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`;
             const tripAdvisorImgResponse = await fetch(tripAdvisorImgUrl);
@@ -182,10 +170,8 @@ router.post('/', async (req, res) => {
             console.log('tripAdvisorImgData', tripAdvisorImgData);
 
             if (!tripAdvisorImgData.data || !Array.isArray(tripAdvisorImgData.data) || tripAdvisorImgData.data.length === 0) {
-                // console.log('No images found for attraction');
                 attraction.photoUrl = '../../alicelogo.png';
             } else {
-                // console.log('image found');
                 const photoUrl = tripAdvisorImgData.data[0].images.large.url;
                 attraction.photoUrl = photoUrl;
             }
