@@ -10,6 +10,7 @@ import {
   PopoverBody,
   PopoverCloseButton,
   Button,
+  Box, // Import Box component from Chakra UI
   Center
 } from '@chakra-ui/react';
 import '../home/home.css';
@@ -24,9 +25,10 @@ import {
   Text,
   VStack,
   Image,
-  Box,
 } from '@chakra-ui/react';
 import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { Ecopacking } from '../ecopacking/ecopacking';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import landingPlane from '../flights/landing-airplane.png';
 import takeoffPlane from '../flights/takeoff-airplane.png';
@@ -101,7 +103,6 @@ export const Dashboard = () => {
     fetchAttractions();
   }, [user]);
 
-
   return (
     <ChakraProvider>
       <div
@@ -116,8 +117,23 @@ export const Dashboard = () => {
           minHeight: "95vh",
           overflowX: "auto", // Enable horizontal scrolling
           padding: "2rem 0", // Add top and bottom padding
+          position: "relative", // Add position relative
         }}
       >
+        <Box // Create a box for Eco-Assistant
+          position="absolute"
+          top="1rem"
+          right="1rem"
+          display="flex"
+          alignItems="center"
+          bg="white"
+          padding="0.5rem 1rem"
+          borderRadius="md"
+          boxShadow="md"
+        >
+          <Ecopacking />
+        </Box>
+
         <Container fluid className="px-3">
           <Row className="flex-nowrap">
             {" "}
@@ -280,7 +296,6 @@ export const Dashboard = () => {
                           <Heading size="md" alignItems="center">{attraction.name}</Heading>
                         </VStack>
                         <Popover
-
                           placement="top-start"
                           closeOnBlur={false}
                         >

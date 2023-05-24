@@ -246,6 +246,9 @@ app.get("/profile", (req, res) => {
 app.post('/flights', async (req, res) => {
   // res.status(500).send('Searching for flights is currently unavailable. Please try again later.')
   
+  // Start timer
+  console.time('flightSearch');
+
   const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass } = req.body;
   console.log(req.body)
   console.log(originDisplayCode)
@@ -304,15 +307,14 @@ app.post('/flights', async (req, res) => {
       }
       console.log("filtering3")
       return matchFlight;
-    });
 
+    }
+    );
     console.log(filteredResults)
 
-    // if (filteredResults.length === 0) {
-    //   res.status(404).send('No flights found.');
-    //   return;
-    // }
-
+    // End timer
+    console.timeEnd('flightSearch');
+    
     res.json(filteredResults);
   } catch (error) {
     console.error(error);
@@ -396,6 +398,10 @@ app.post("/reset-password/:token", async (req, res) => {
 
 app.post("/hotels", async (req, res) => {
   try {
+    // Start timer
+    console.time("hotels-api");
+
+    // Get the hotel fields
     const { city, checkInDate, checkOutDate, numAdults, numRooms, page } = req.body;
     console.log(`backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}, ${page}`);
     // Get city id
@@ -443,11 +449,13 @@ app.post("/hotels", async (req, res) => {
     });
     // Wait for all API calls to finish
     const hotelDetailsData = await Promise.all(hotelDetails);
-    // Add hotel details to hotelsData
+    // Add hotel details to hotels list
     hotelDetailsData.forEach((hotel, index) => {
-      console.log(hotel.data);
       hotelsData[index].details = hotel.data;
     });
+    // End timer
+    console.timeEnd("hotels-api");
+    // Send response
     res.json({
       hotels: hotelsData,
       hasNextPage: endIndex < hotels.data.result.length,
