@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Checkbox, Heading, Text, Flex, FormControl, FormLabel, Select, Input, Button as ChakraButton } from '@chakra-ui/react';
+import { Box, Container, Checkbox, Heading, Text, Flex, Alert, AlertIcon, FormControl, FormLabel, Select, Input, Button as ChakraButton } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -71,6 +71,9 @@ export const Flights = () => {
     // Pagination
     const batchCount = 4;
     const [displayResultsCount, setDisplayResultsCount] = useState(batchCount);
+
+    //Error message
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         // Check is user is logged in
@@ -146,7 +149,15 @@ export const Flights = () => {
 
     // Get flights on form submit
     const handleSubmit = async (e) => {
+
         e.preventDefault();
+        if (destinationDisplayCode === 'Earth') {
+            setErrorMessage('Sorry, we do not fly to Earth yet. Please try another destination.')
+            setFlights({});
+            setFormSubmitted(false);
+            setHasNextPage(false);
+            return
+        }
         console.log(originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass);
         try {
             await axios.post('http://localhost:4000/flights', {
@@ -157,11 +168,16 @@ export const Flights = () => {
                     setFlights(res.data);
                     setHasNextPage(displayResultsCount < res.data.length);
                     setFormSubmitted(true);
+                    setErrorMessage('');
 
                 }
             });
         } catch (err) {
             console.log(err);
+            setErrorMessage(err.response.data);
+            setFlights({});
+            setFormSubmitted(false);
+            setHasNextPage(false);
         }
     };
 
@@ -186,6 +202,7 @@ export const Flights = () => {
                     minHeight: '100vh',
                 }}
             >
+
 
                 <Container maxWidth="xl">
                     <Box p="4" boxshadow="lg" rounded="md" bg="aliceblue" mb="4">
@@ -267,31 +284,39 @@ export const Flights = () => {
                                     color="gray.800"
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                    min={new Date().toISOString().split('T')[0]} // Set min date to today
+                                    max={departureDate} // Set max date to checkOutDate
                                     required
                                 />
                             </FormControl>
 
                             <div>
-                                <Form.Check
-                                    type="radio"
-                                    id="oneWay"
-                                    name="tripType"
-                                    value="oneWay"
-                                    label="One Way"
-                                    checked={tripType === 'oneWay'}
-                                    onChange={() => setTripType('oneWay')}
-                                />
-
-                                <Form.Check
-                                    type="radio"
-                                    id="roundTrip"
-                                    name="tripType"
-                                    value="roundTrip"
-                                    label="Round Trip"
-                                    checked={tripType === 'roundTrip'}
-                                    onChange={() => setTripType('roundTrip')}
-                                />
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Form.Check
+                                        type="radio"
+                                        id="oneWay"
+                                        name="tripType"
+                                        value="oneWay"
+                                        label="One Way"
+                                        checked={tripType === 'oneWay'}
+                                        onChange={() => setTripType('oneWay')}
+                                        style={{ marginRight: '5px', marginTop: '10px' }}
+                                    />
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center'}}>
+                                    <Form.Check
+                                        type="radio"
+                                        id="roundTrip"
+                                        name="tripType"
+                                        value="roundTrip"
+                                        label="Round Trip"
+                                        checked={tripType === 'roundTrip'}
+                                        onChange={() => setTripType('roundTrip')}
+                                        style={{ marginRight: '5px', marginTop: '10px' }}
+                                    />
+                                </div>
                             </div>
+
 
                             {tripType === 'roundTrip' && (
                                 <Form.Group controlId="formReturnDate">
@@ -299,6 +324,7 @@ export const Flights = () => {
                                     <Form.Control
                                         type="date"
                                         name="returnDate"
+                                        min={departureDate} // Set min date to checkInDate
                                         value={returnDate}
                                         onChange={(e) => setReturnDate(e.target.value)}
                                     />
@@ -306,7 +332,7 @@ export const Flights = () => {
                             )}
 
                             <div className="d-flex">
-                                <Form.Group controlId="formAdults" style={{ width: '48%' }}>
+                                <Form.Group controlId="formAdults" style={{ width: '48%',  paddingTop: '10px' }}>
                                     <Form.Label>Number of Adults</Form.Label>
                                     <Form.Control
                                         type="number"
@@ -319,7 +345,7 @@ export const Flights = () => {
                                     />
                                 </Form.Group>
 
-                                <Form.Group controlId="formCabinClass" style={{ width: '48%' }}>
+                                <Form.Group controlId="formCabinClass" style={{ width: '48%', paddingTop: '10px', paddingBottom: '20px' }}>
                                     <Form.Label>Cabin Class</Form.Label>
                                     <Form.Control
                                         as="select"
@@ -334,12 +360,19 @@ export const Flights = () => {
                                     </Form.Control>
                                 </Form.Group>
                             </div>
+
                             <Button variant="primary" type="submit" style={{ width: '100%' }}>
                                 Submit
                             </Button>
+                            {errorMessage && (
+                                <p className="text-danger fw-bold" style={{ textAlign: 'left' }}>
+                                {errorMessage}
+                            </p>
+                            )}
                         </Form>
                     </Box>
                 </Container>
+
 
                 {isLeafAnimationEnabled && (
                     <div>
@@ -362,7 +395,7 @@ export const Flights = () => {
                             onChange={() => setShowEcoFlights(!showEcoFlights)}
                             style={{ borderColor: 'aliceblue', color: 'black' }}
                         >
-                            Show Eco Flights Only 
+                            Show Eco Flights Only
                         </Checkbox>
                     </Flex>
                 )}
@@ -460,7 +493,7 @@ export const Flights = () => {
                         ))}
                 </Container>
 
-                {hasNextPage && (
+                {hasNextPage && flights.length > displayResultsCount &&(
                     <Flex justify="center" mt="4">
                         <ChakraButton onClick={loadMoreFlights} colorScheme="blue">
                             Load More

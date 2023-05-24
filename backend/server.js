@@ -244,6 +244,8 @@ app.get("/profile", (req, res) => {
 
 //flight results
 app.post('/flights', async (req, res) => {
+  // res.status(500).send('Searching for flights is currently unavailable. Please try again later.')
+  
   // Start timer
   console.time('flightSearch');
 
@@ -277,18 +279,25 @@ app.post('/flights', async (req, res) => {
       }, 600)
     })
 
-    const flightResults = results
-    console.log(flightResults)
+    console.log(results.data.message)
+    if(results.data.message === 'Session not found in state: UNKNOWN_SESSION_ID') {
+      res.status(404).send('No flights found.')
+      return;
+    }
+
+  
+    
+    // const flightResults = results
+    // console.log(flightResults)
+
     const filteredResults = results.data.data.filter((flight) => {
       var matchFlight = false;
       console.log("filtering1")
-
 
       if (tripType === 'roundTrip') {
         console.log(flight.legs.length)
         if (flight.legs.length === 2) {
           matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
-          console.log("yes")
         }
       }
       console.log("filtering2")
@@ -310,9 +319,11 @@ app.post('/flights', async (req, res) => {
     res.json(filteredResults);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal server error: /flights');
+    res.status(500).send('Searching for flights is currently unavailable. Please try again later.');
   }
 });
+
+
 
 //password reset
 const transporter = nodemailer.createTransport({
