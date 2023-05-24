@@ -17,7 +17,7 @@ const { ObjectId } = require("mongodb");
 const suggRoutes = require("./sugg_routes.js");
 
 // API files
-const cities = require("../frontend/src/components/hotels/cities");
+const cities = require("./cities.js");
 const { application } = require("express");
 
 // Constants
