@@ -149,11 +149,11 @@ export const Flights = () => {
 
     // Get flights on form submit
     const handleSubmit = async (e) => {
-        
+
         e.preventDefault();
         if (destinationDisplayCode === 'Earth') {
             setErrorMessage('Sorry, we do not fly to Earth yet. Please try another destination.')
-            return 
+            return
         }
         console.log(originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass);
         try {
@@ -284,26 +284,32 @@ export const Flights = () => {
                             </FormControl>
 
                             <div>
-                                <Form.Check
-                                    type="radio"
-                                    id="oneWay"
-                                    name="tripType"
-                                    value="oneWay"
-                                    label="One Way"
-                                    checked={tripType === 'oneWay'}
-                                    onChange={() => setTripType('oneWay')}
-                                />
-
-                                <Form.Check
-                                    type="radio"
-                                    id="roundTrip"
-                                    name="tripType"
-                                    value="roundTrip"
-                                    label="Round Trip"
-                                    checked={tripType === 'roundTrip'}
-                                    onChange={() => setTripType('roundTrip')}
-                                />
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Form.Check
+                                        type="radio"
+                                        id="oneWay"
+                                        name="tripType"
+                                        value="oneWay"
+                                        label="One Way"
+                                        checked={tripType === 'oneWay'}
+                                        onChange={() => setTripType('oneWay')}
+                                        style={{ marginRight: '5px', marginTop: '10px' }}
+                                    />
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center'}}>
+                                    <Form.Check
+                                        type="radio"
+                                        id="roundTrip"
+                                        name="tripType"
+                                        value="roundTrip"
+                                        label="Round Trip"
+                                        checked={tripType === 'roundTrip'}
+                                        onChange={() => setTripType('roundTrip')}
+                                        style={{ marginRight: '5px', marginTop: '10px' }}
+                                    />
+                                </div>
                             </div>
+
 
                             {tripType === 'roundTrip' && (
                                 <Form.Group controlId="formReturnDate">
@@ -319,7 +325,7 @@ export const Flights = () => {
                             )}
 
                             <div className="d-flex">
-                                <Form.Group controlId="formAdults" style={{ width: '48%' }}>
+                                <Form.Group controlId="formAdults" style={{ width: '48%',  paddingTop: '10px' }}>
                                     <Form.Label>Number of Adults</Form.Label>
                                     <Form.Control
                                         type="number"
@@ -332,7 +338,7 @@ export const Flights = () => {
                                     />
                                 </Form.Group>
 
-                                <Form.Group controlId="formCabinClass" style={{ width: '48%' }}>
+                                <Form.Group controlId="formCabinClass" style={{ width: '48%', paddingTop: '10px', paddingBottom: '20px' }}>
                                     <Form.Label>Cabin Class</Form.Label>
                                     <Form.Control
                                         as="select"
@@ -347,19 +353,14 @@ export const Flights = () => {
                                     </Form.Control>
                                 </Form.Group>
                             </div>
+
                             <Button variant="primary" type="submit" style={{ width: '100%' }}>
                                 Submit
                             </Button>
                             {errorMessage && (
-                                <Alert status="error" rounded="md" my="4">
-                                    <AlertIcon />
-                                    <Box ml="2">
-                                        <Heading as="h4" size="md" mb="2">
-                                            Error
-                                        </Heading>
-                                        <Text>{errorMessage}</Text>
-                                    </Box>
-                                </Alert>
+                                <p className="text-danger fw-bold" style={{ textAlign: 'left' }}>
+                                {errorMessage}
+                            </p>
                             )}
                         </Form>
                     </Box>
