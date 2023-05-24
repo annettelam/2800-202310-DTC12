@@ -69,7 +69,7 @@ export const Dashboard = () => {
 
     // Update database
     try {
-      const response = await axios.post('https://planetpass.onrender.com/save-flight', {
+      const response = await axios.post('https://planetpass-backend.onrender.com/save-flight', {
         flight,
         user,
       });
@@ -91,7 +91,7 @@ export const Dashboard = () => {
   useEffect(() => {
     const fetchAttractions = async () => {
       try {
-        const suggResponse = await axios.post('https://planetpass.onrender.com/suggestions', {
+        const suggResponse = await axios.post('https://planetpass-backend.onrender.com/suggestions', {
           user
         });
         setAttractions(suggResponse.data.attractions);

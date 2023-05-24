@@ -11,7 +11,7 @@ export const ForgotPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('https://planetpass.onrender.com/reset-password', { email });
+            await axios.post('https://planetpass-backend.onrender.com/reset-password', { email });
             setEmailSent(true);
         } catch (err) {
             console.log(err);

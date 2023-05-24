@@ -105,7 +105,7 @@ export const Hotels = () => {
         // Update database
         console.log(hotel);
         try {
-            const response = await axios.post('https://planetpass.onrender.com/save-hotel', {
+            const response = await axios.post('https://planetpass-backend.onrender.com/save-hotel', {
                 hotel, user
             });
             console.log(response.data);
@@ -127,7 +127,7 @@ export const Hotels = () => {
         e.preventDefault();
         console.log(city, checkInDate, checkOutDate, numAdults, numRooms);
         try {
-            const response = await axios.post('https://planetpass.onrender.com/hotels', {
+            const response = await axios.post('https://planetpass-backend.onrender.com/hotels', {
                 city,
                 checkInDate,
                 checkOutDate,
@@ -147,7 +147,7 @@ export const Hotels = () => {
     // Load more hotels
     const loadMoreHotels = async () => {
         try {
-            const response = await axios.post('https://planetpass.onrender.com/hotels', {
+            const response = await axios.post('https://planetpass-backend.onrender.com/hotels', {
                 city,
                 checkInDate,
                 checkOutDate,
