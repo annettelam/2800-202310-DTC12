@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Checkbox, Heading, Text, Flex, FormControl, FormLabel, Select, Input, Button as ChakraButton } from '@chakra-ui/react';
+import { Box, Container, Checkbox, Heading, Text, Flex, Alert, AlertIcon, FormControl, FormLabel, Select, Input, Button as ChakraButton } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -71,6 +71,9 @@ export const Flights = () => {
     // Pagination
     const batchCount = 4;
     const [displayResultsCount, setDisplayResultsCount] = useState(batchCount);
+
+    //Error message
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         // Check is user is logged in
@@ -146,7 +149,12 @@ export const Flights = () => {
 
     // Get flights on form submit
     const handleSubmit = async (e) => {
+        
         e.preventDefault();
+        if (destinationDisplayCode === 'Earth') {
+            setErrorMessage('Sorry, we do not fly to Earth yet. Please try another destination.')
+            return 
+        }
         console.log(originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass);
         try {
             await axios.post('http://localhost:4000/flights', {
@@ -162,6 +170,7 @@ export const Flights = () => {
             });
         } catch (err) {
             console.log(err);
+            setErrorMessage(err.response.data);
         }
     };
 
@@ -186,6 +195,7 @@ export const Flights = () => {
                     minHeight: '100vh',
                 }}
             >
+
 
                 <Container maxWidth="xl">
                     <Box p="4" boxshadow="lg" rounded="md" bg="aliceblue" mb="4">
@@ -267,6 +277,8 @@ export const Flights = () => {
                                     color="gray.800"
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                    min={new Date().toISOString().split('T')[0]} // Set min date to today
+                                    max={departureDate} // Set max date to checkOutDate
                                     required
                                 />
                             </FormControl>
@@ -299,6 +311,7 @@ export const Flights = () => {
                                     <Form.Control
                                         type="date"
                                         name="returnDate"
+                                        min={departureDate} // Set min date to checkInDate
                                         value={returnDate}
                                         onChange={(e) => setReturnDate(e.target.value)}
                                     />
@@ -337,9 +350,21 @@ export const Flights = () => {
                             <Button variant="primary" type="submit" style={{ width: '100%' }}>
                                 Submit
                             </Button>
+                            {errorMessage && (
+                                <Alert status="error" rounded="md" my="4">
+                                    <AlertIcon />
+                                    <Box ml="2">
+                                        <Heading as="h4" size="md" mb="2">
+                                            Error
+                                        </Heading>
+                                        <Text>{errorMessage}</Text>
+                                    </Box>
+                                </Alert>
+                            )}
                         </Form>
                     </Box>
                 </Container>
+
 
                 {isLeafAnimationEnabled && (
                     <div>
@@ -362,7 +387,7 @@ export const Flights = () => {
                             onChange={() => setShowEcoFlights(!showEcoFlights)}
                             style={{ borderColor: 'aliceblue', color: 'black' }}
                         >
-                            Show Eco Flights Only 
+                            Show Eco Flights Only
                         </Checkbox>
                     </Flex>
                 )}
