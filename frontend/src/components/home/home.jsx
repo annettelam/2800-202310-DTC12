@@ -7,7 +7,6 @@ import navlogo from '../../navlogo.png';
 export const Home = (props) => {
     const [isOpen1, setIsOpen1] = useState(false);
     const [isOpen2, setIsOpen2] = useState(false);
-    const [isOpen3, setIsOpen3] = useState(false);
 
     const onToggle1 = () => {
         setIsOpen1(!isOpen1);
@@ -17,9 +16,6 @@ export const Home = (props) => {
         setIsOpen2(!isOpen2);
     };
 
-    const onToggle3 = () => {
-        setIsOpen3(!isOpen3);
-    };
 
     return (
         <ChakraProvider>
@@ -60,7 +56,13 @@ export const Home = (props) => {
                                             rounded="md"
                                             shadow="md"
                                         >
-                                            Placeholder content for Feature 1.
+                                            Welcome to aether, a dynamic venture brought to life by four BCIT CST students: Michelle Kwok, Annette Lam, Lisa Jung, and Mikko Sio. Bound by their shared passion for coding and their deep love for traveling, these aspiring individuals have come together to create something different. 
+                                            <br />
+                                            <br />
+                                            Driven by the belief that technology has the power to transform the way we explore the world, aether combines their technical expertise with their insatiable wanderlust. 
+                                            <br />
+                                            <br />
+                                            Join us on this exhilarating journey as aether revolutionizes the intersection of coding and travel, providing unforgettable experiences that inspire, inform, and connect people from all corners of the globe.
                                         </Box>
                                     </Collapse>
                                 </>
