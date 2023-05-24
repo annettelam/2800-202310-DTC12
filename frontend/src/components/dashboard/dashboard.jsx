@@ -49,8 +49,10 @@ export const Dashboard = () => {
     setUser(JSON.parse(localStorage.getItem('user')));
 
     // Get saved flights from localStorage
-    const savedFlights = JSON.parse(localStorage.getItem('user')).savedFlights;
-    setSavedFlights(savedFlights);
+    if (localStorage.getItem('user') !== null) {
+      const savedFlights = JSON.parse(localStorage.getItem('user')).savedFlights;
+      setSavedFlights(savedFlights);
+    }
   }, [navigate]);
 
   // Check if flight is saved
