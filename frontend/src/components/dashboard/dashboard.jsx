@@ -148,21 +148,21 @@ export const Dashboard = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const user = JSON.parse(localStorage.getItem('user'));
-  //   const fetchAttractions = async () => {
-  //     try {
-  //       const suggResponse = await axios.post('http://localhost:4000/suggestions', {
-  //         user
-  //       });
-  //       setAttractions(suggResponse.data.attractions);
-  //       setCityName(suggResponse.data.cityName);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-  //   fetchAttractions();
-  // }, []);
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const fetchAttractions = async () => {
+      try {
+        const suggResponse = await axios.post('http://localhost:4000/suggestions', {
+          user
+        });
+        setAttractions(suggResponse.data.attractions);
+        setCityName(suggResponse.data.cityName);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchAttractions();
+  }, []);
 
   return (
     <ChakraProvider>
