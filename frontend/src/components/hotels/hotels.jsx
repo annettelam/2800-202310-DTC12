@@ -78,9 +78,11 @@ export const Hotels = () => {
         // Save user from localStorage
         setUser(JSON.parse(localStorage.getItem('user')));
         // Get saved hotels from localStorage
-        const savedHotels = JSON.parse(localStorage.getItem('user')).savedHotels;
-        const savedHotelIds = savedHotels.map((savedHotel) => savedHotel.hotel_id);
-        setSavedHotels(savedHotelIds);
+        if (localStorage.getItem('user') !== null) {
+            const savedHotels = JSON.parse(localStorage.getItem('user')).savedHotels;
+            const savedHotelIds = savedHotels.map((savedHotel) => savedHotel.hotel_id);
+            setSavedHotels(savedHotelIds);
+        }
     }, [navigate]);
 
     // Check if hotel is saved
