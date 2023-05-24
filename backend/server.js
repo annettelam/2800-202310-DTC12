@@ -61,7 +61,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://planetpass.onrender.com/", // or your frontend URL
+    origin: "https://planet-pass-test.onrender.com", // or your frontend URL
     credentials: true,
   })
 );
