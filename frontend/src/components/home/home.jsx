@@ -51,13 +51,13 @@ export const Home = (props) => {
                             <Box>
                                 {/* Add icon */}
                                 <>
-                                    <Button onClick={onToggle1}> About Us </Button>
+                                    <Button onClick={onToggle1} bg="teal.50"> About Us </Button>
                                     <Collapse in={isOpen1} animateOpacity>
                                         <Box
                                             p="20px"
                                             color="black"
                                             mt="4"
-                                            bg="gray.300"
+                                            bg="teal.50"
                                             rounded="md"
                                             shadow="md"
                                         >
@@ -76,13 +76,13 @@ export const Home = (props) => {
                             <Box>
                                 {/* Add icon */}
                                 <>
-                                    <Button onClick={onToggle2}> Our Mission </Button>
+                                    <Button onClick={onToggle2} bg="teal.50"> Our Mission </Button>
                                     <Collapse in={isOpen2} animateOpacity>
                                         <Box
                                             p="20px"
                                             color="black"
                                             mt="4"
-                                            bg="gray.300"
+                                            bg="teal.50"
                                             rounded="md"
                                             shadow="md"
                                         >
@@ -95,13 +95,13 @@ export const Home = (props) => {
                             <Box>
                                 {/* Add icon */}
                                 <>
-                                    <Button onClick={onToggle3}> Our App </Button>
+                                    <Button onClick={onToggle3} bg="teal.50"> Our App </Button>
                                     <Collapse in={isOpen3} animateOpacity>
                                         <Box
                                             p="20px"
                                             color="black"
                                             mt="4"
-                                            bg="gray.300"
+                                            bg="teal.50"
                                             rounded="md"
                                             shadow="md"
                                         >
