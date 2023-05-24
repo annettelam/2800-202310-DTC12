@@ -89,6 +89,7 @@ export const Dashboard = () => {
   };
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
     const fetchAttractions = async () => {
       try {
         const suggResponse = await axios.post('http://localhost:4000/suggestions', {
@@ -101,7 +102,7 @@ export const Dashboard = () => {
       }
     };
     fetchAttractions();
-  }, [user]);
+  }, []);
 
   return (
     <ChakraProvider>
@@ -136,11 +137,10 @@ export const Dashboard = () => {
 
         <Container fluid className="px-3">
           <Row className="flex-nowrap">
-            {" "}
             {/* Add flex-nowrap class to prevent wrapping */}
-            <Col>
-              <h2 className="mb-4">Flights</h2> {/* Category heading */}
-              <Carousel 
+            <Col style={{ zIndex: 1 }}>
+              <h2>Flights</h2>
+              <Carousel
                 showThumbs={false}
                 showStatus={false}
                 infiniteLoop={true}
@@ -148,97 +148,162 @@ export const Dashboard = () => {
               >
                 {/* Wrap the scrollable content */}
                 {savedFlights.map((flight) => (
-                  <Box key={flight.id} p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative">
-                    <Box align="right" onClick={() => handleSaveFlight(flight.id)}>
-                      <FaHeart
-                        size={30}
-                        color={isFlightSaved(flight.id) ? 'red' : 'black'}
-                        fill={isFlightSaved(flight.id) ? 'red' : 'none'}
-                        stroke={isFlightSaved(flight.id) ? 'none' : 'currentColor'}
-                        strokeWidth="10"
-                        style={{ cursor: 'pointer' }}
-                      />
-                    </Box>
-                    <Heading>${flight.price.amount.toFixed(2)}</Heading>
-
-                    {/* Eco flight information */}
-                    {flight.is_eco_contender && (
-                      <Box>
-                        <Text align="left" fontWeight="bold" fontSize="lg" mb="0">
-                          <span style={{ color: 'green' }}>Eco Flight</span>
-                        </Text>
-                        <Text align="left">
-                          <span style={{ color: 'green' }}>
-                            Produces <b>{Math.round(Math.abs(flight.eco_contender_delta))}%</b> less carbon emissions compared to similar flights.
-                          </span>
-                        </Text>
+                  <Col
+                    key={flight.id}
+                    style={{ minWidth: "200px", maxWidth: "300px" }}
+                  >
+                    <Card
+                      className="m-2"
+                      boxShadow="lg"
+                      rounded="md"
+                      overflow="hidden"
+                    >
+                      
+                      <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
+                        <Box display="flex" justifyContent="flex-end" alignItems="center" width="100%" pt="2" pr="2" >
+                          <Box onClick={() => handleSaveFlight(flight.id)}>
+                            <FaHeart
+                              size={30}
+                              color={isFlightSaved(flight.id) ? 'red' : 'black'}
+                              fill={isFlightSaved(flight.id) ? 'red' : 'none'}
+                              stroke={isFlightSaved(flight.id) ? 'none' : 'currentColor'}
+                              strokeWidth="10"
+                              style={{ cursor: 'pointer' }}
+                            />
+                          </Box>
+                        </Box>
+                        <Heading>${flight.price.amount.toFixed(2)}</Heading>
                       </Box>
-                    )}
 
-                    
-                {/* Iterate over legs and display departure times */}
-                {flight.legs.map((leg, index) => (
-                  <Box key={index}>
-                    <hr />
-                    <h4>{index === 0 ? 'Departure Flight' : 'Return Flight'}</h4>
-                    <h6>
-                      {leg.origin.name} - {leg.destination.name}
-                    </h6>
-                    <Text mt="1" mb="1">
-                      <b>{`${formatTime(leg.departure)} - ${formatTime(leg.arrival)}`}</b>
-                    </Text>
-                    <Text mt="1" mb="1">{formatDuration(leg.duration)}</Text>
-                    <Text mt="1" mb="1">{leg.carriers[0].name}</Text>
 
-                    {/* SVG element for flight route */}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100px" className="m-auto" style={{ maxWidth: '300px' }}>
-                      {/* Line connecting origin and destination */}
-                      <line x1="20%" y1="50%" x2="80%" y2="50%" stroke="black" strokeWidth="2" strokeLinecap="round" fill="none" />
 
-                      {/* Dots for stops */}
-                      {leg.stop_count > 0 &&
-                        leg.stops.map((stop, index) => (
-                          <g key={index}>
-                            {/* Dot for stop */}
-                            <circle cx={`${((index + 1) / (leg.stop_count + 1)) * 80 + 10}%`} cy="50%" r="4" fill="red" />
 
-                            {/* Display code for the stop */}
-                            <text x={`${((index + 1) / (leg.stop_count + 1)) * 80 + 10}%`} y="65%" textAnchor="middle" fontSize="10" fontWeight="bold">
-                              {stop.display_code}
-                            </text>
-                          </g>
-                        ))}
+                      {/* Eco flight information */}
+                      {flight.is_eco_contender && (
+                        <Box p="1" alignItems="start">
+                          <Text fontWeight="bold" fontSize="lg" mb="0">
+                            <span style={{ color: 'green' }}>Eco Flight</span>
+                          </Text>
+                          <Text>
+                            <span style={{ color: 'green' }}>
+                              Produces <b>{Math.round(Math.abs(flight.eco_contender_delta))}%</b> less carbon emissions compared to similar flights.
+                            </span>
+                          </Text>
+                        </Box>
+                      )}
 
-                      {/* Landing airplane */}
-                      <image href={takeoffPlane} x="5%" y="50%" width="20" height="20" transform="translate(-10, -10)" />
+                      {/* Iterate over legs and display departure times */}
+                      {flight.legs.map((leg, index) => (
+                        <Box key={index} p="1" alignItems="start">
+                          <hr />
+                          <Heading size="md" alignItems="center">
+                            {index === 0 ? 'Departure Flight' : 'Return Flight'}
+                          </Heading>
+                          <Text>
+                            {leg.origin.name} - {leg.destination.name}
+                          </Text>
+                          <Text mt="1" mb="1">
+                            <b>{`${formatTime(leg.departure)} - ${formatTime(leg.arrival)}`}</b>
+                          </Text>
+                          <Text mt="1" mb="1">{formatDuration(leg.duration)}</Text>
+                          <Text mt="1" mb="1">{leg.carriers[0].name}</Text>
+                          <Box display="flex" justifyContent="center" alignItems="center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="100%"
+                              height="100px"
+                              className="m-auto"
+                              style={{ maxWidth: '300px' }}
+                            >
+                              {/* Line connecting origin and destination */}
+                              <line
+                                x1="20%"
+                                y1="50%"
+                                x2="80%"
+                                y2="50%"
+                                stroke="black"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                fill="none"
+                              />
 
-                      {/* Display code for origin */}
-                      <text x="10%" y="50%" textAnchor="start" alignmentBaseline="middle" fontSize="12">
-                        {leg.origin.display_code}
-                      </text>
+                              {/* Dots for stops */}
+                              {leg.stop_count > 0 &&
+                                leg.stops.map((stop, index) => (
+                                  <g key={index}>
+                                    {/* Dot for stop */}
+                                    <circle
+                                      cx={`${((index + 1) / (leg.stop_count + 1)) * 80 + 10}%`}
+                                      cy="50%"
+                                      r="4"
+                                      fill="red"
+                                    />
 
-                      {/* Takeoff airplane */}
-                      <image href={landingPlane} x="88%" y="50%" width="20" height="20" transform="translate(10, -10)" />
+                                    {/* Display code for the stop */}
+                                    <text
+                                      x={`${((index + 1) / (leg.stop_count + 1)) * 80 + 10}%`}
+                                      y="65%"
+                                      textAnchor="middle"
+                                      fontSize="10"
+                                      fontWeight="bold"
+                                    >
+                                      {stop.display_code}
+                                    </text>
+                                  </g>
+                                ))}
 
-                      {/* Display code for destination */}
-                      <text x="90%" y="50%" textAnchor="end" alignmentBaseline="middle" fontSize="12">
-                        {leg.destination.display_code}
-                      </text>
+                              {/* Landing airplane */}
+                              <image
+                                href={takeoffPlane}
+                                x="5%"
+                                y="50%"
+                                width="20"
+                                height="20"
+                                transform="translate(-10, -10)"
+                              />
 
-                      {/* Number of stops */}
-                      <text x="50%" y="80%" textAnchor="middle" fontSize="12" fill={leg.stop_count > 0 ? 'red' : 'green'} fontWeight="bold">
-                        {formatStopDisplay(leg.stop_count)}
-                      </text>
-                    </svg>
-                  </Box>
+                              {/* Display code for origin */}
+                              <text x="10%" y="50%" textAnchor="start" alignmentBaseline="middle" fontSize="12">
+                                {leg.origin.display_code}
+                              </text>
+
+                              {/* Takeoff airplane */}
+                              <image
+                                href={landingPlane}
+                                x="88%"
+                                y="50%"
+                                width="20"
+                                height="20"
+                                transform="translate(10, -10)"
+                              />
+
+                              {/* Display code for destination */}
+                              <text x="90%" y="50%" textAnchor="end" alignmentBaseline="middle" fontSize="12">
+                                {leg.destination.display_code}
+                              </text>
+
+                              {/* Number of stops */}
+                              <text
+                                x="50%"
+                                y="80%"
+                                textAnchor="middle"
+                                fontSize="12"
+                                fill={leg.stop_count > 0 ? 'red' : 'green'}
+                                fontWeight="bold"
+                              >
+                                {formatStopDisplay(leg.stop_count)}
+                              </text>
+                            </svg>
+                          </Box>
+                        </Box>
+                      ))}
+                    </Card>
+                  </Col>
                 ))}
-
-                  </Box>
-                ))}
-
               </Carousel>
             </Col>
           </Row>
+
 
           {/* Repeat the above structure for other categories */}
           <Row className="flex-nowrap">
