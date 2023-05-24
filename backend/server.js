@@ -282,6 +282,7 @@ app.post('/flights', async (req, res) => {
     console.log(results.data.message)
     if(results.data.message === 'Session not found in state: UNKNOWN_SESSION_ID') {
       res.status(404).send('No flights found.')
+      return;
     }
 
   
@@ -319,7 +320,6 @@ app.post('/flights', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send('Searching for flights is currently unavailable. Please try again later.');
-    
   }
 });
 
