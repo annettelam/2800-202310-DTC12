@@ -493,7 +493,7 @@ export const Flights = () => {
                         ))}
                 </Container>
 
-                {hasNextPage && (
+                {hasNextPage && flights.length > displayResultsCount &&(
                     <Flex justify="center" mt="4">
                         <ChakraButton onClick={loadMoreFlights} colorScheme="blue">
                             Load More
