@@ -61,7 +61,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://planetpass.onrender.com", // or your frontend URL
+    origin: "https://planetpass-sjfh.onrender.com", // or your frontend URL
     credentials: true,
   })
 );
@@ -352,7 +352,7 @@ app.post("/reset-password", async (req, res) => {
   );
 
   // Send an email to the user with a link to reset their password
-  const resetUrl = `https://planetpass.onrender.com/reset-password/${token}`;
+  const resetUrl = `https://planetpass-sjfh.onrender.com/reset-password/${token}`;
   const mailOptions = {
     from: process.env.EMAIL_ADDRESS,
     to: email,
