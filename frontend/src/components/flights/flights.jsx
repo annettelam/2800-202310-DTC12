@@ -153,6 +153,9 @@ export const Flights = () => {
         e.preventDefault();
         if (destinationDisplayCode === 'Earth') {
             setErrorMessage('Sorry, we do not fly to Earth yet. Please try another destination.')
+            setFlights({});
+            setFormSubmitted(false);
+            setHasNextPage(false);
             return
         }
         console.log(originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass);
@@ -165,12 +168,16 @@ export const Flights = () => {
                     setFlights(res.data);
                     setHasNextPage(displayResultsCount < res.data.length);
                     setFormSubmitted(true);
+                    setErrorMessage('');
 
                 }
             });
         } catch (err) {
             console.log(err);
             setErrorMessage(err.response.data);
+            setFlights({});
+            setFormSubmitted(false);
+            setHasNextPage(false);
         }
     };
 
