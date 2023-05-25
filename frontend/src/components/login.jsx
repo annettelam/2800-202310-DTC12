@@ -76,7 +76,7 @@ export const Login = ({ onLogin }) => {
                     </FormControl>
                     <br />
                     <Button colorScheme="teal" variant="solid" type="submit" style={{ width: '100%' }}>
-                      Submit
+                      Log In
                     </Button>
                   </form>
                   {msg && (

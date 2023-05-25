@@ -136,7 +136,7 @@ export const SignUp = ({ onLogin }) => {
                     <br />
                     <br />
                     <Button colorScheme="teal" variant="solid" type="submit" style={{ width: '100%' }}>
-                      Submit
+                      Sign Up
                     </Button>
                   </form>
                   {msg && (
