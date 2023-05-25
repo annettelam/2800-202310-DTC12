@@ -12,7 +12,8 @@ import {
   Button as ChakraButton,
   Flex,
   Box,
-  Center
+  Center,
+  CircularProgress
 } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton } from '@chakra-ui/react';
 import { Button } from 'react-bootstrap';
@@ -501,15 +502,15 @@ export const Dashboard = () => {
                 showThumbs={false}
                 showStatus={false}
                 infiniteLoop={false}
-                interval={3000} // Adjust the interval as needed
+                interval={3000} 
                 emulateTouch={true}
                 swipeable={true}
               >
                 {/* Wrap the scrollable content */}
                 {attractions.length === 0 ? (
-                  <Text>
-                    Please save a flight first and wait a couple seconds.
-                  </Text>
+                  <Center>
+                    <CircularProgress isIndeterminate color='teal' />
+                  </Center>
                 ) : (
                   attractions.map((attraction) => (
                     <Box key={attraction.location_id} className='m-auto' w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
