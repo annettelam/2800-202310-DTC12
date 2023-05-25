@@ -260,19 +260,13 @@ app.get("/profile", (req, res) => {
 
 //flight results
 app.post('/flights', async (req, res) => {
-  // res.status(500).send('Searching for flights is currently unavailable. Please try again later.')
-  
   // Start timer
   console.time('flightSearch');
-
+  // Get flight search parameters
   const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass } = req.body;
-  console.log(req.body)
-  console.log(originDisplayCode)
-  console.log(destinationDisplayCode)
-  console.log(departureDate)
-  // console.log(returnDate)
-  console.log(tripType)
-  console.log(cabinClass)
+  console.log(`backend: ${originDisplayCode}, ${destinationDisplayCode}, ${departureDate}, ${returnDate}, ${tripType}, ${adults}, ${cabinClass}`);
+  const flightsListKey = `${originDisplayCode}-${destinationDisplayCode}-${departureDate}-${returnDate}-${tripType}-${adults}-${cabinClass}`;
+  let filteredResults;
 
   try {
     let params = {
@@ -289,45 +283,41 @@ app.post('/flights', async (req, res) => {
       params.returnDate = returnDate
     }
 
-    const results = await new Promise((resolve) => {
-      setTimeout(async () => {
-        resolve(await searchFlights(params));
-      }, 600)
-    })
-
-    console.log(results.data.message)
-    if(results.data.message === 'Session not found in state: UNKNOWN_SESSION_ID') {
-      res.status(404).send('No flights found.')
-      return;
-    }
-
-  
-    
-    // const flightResults = results
-    // console.log(flightResults)
-
-    const filteredResults = results.data.data.filter((flight) => {
-      var matchFlight = false;
-      console.log("filtering1")
-
-      if (tripType === 'roundTrip') {
-        console.log(flight.legs.length)
-        if (flight.legs.length === 2) {
-          matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
-        }
+    // Check if filtered flights list is cached
+    const flightsList = await redisClient.get(flightsListKey);
+    if (flightsList) {
+      console.log('Flights list found in cache');
+      filteredResults = JSON.parse(flightsList);
+    // Else fetch flights list from API
+    } else {
+      console.log('Flights list not found in cache');
+      const results = await new Promise((resolve) => {
+        setTimeout(async () => {
+          resolve(await searchFlights(params));
+        }, 600)
+      })
+      if (results.data.message === 'Session not found in state: UNKNOWN_SESSION_ID') {
+        res.status(404).send('No flights found.')
+        return;
       }
-      console.log("filtering2")
-      if (tripType === 'oneWay') {
-        if (flight.legs.length === 1) {
-          matchFlight = true;
+      // Filter flights list
+      filteredResults = results.data.data.filter((flight) => {
+        var matchFlight = false;
+        if (tripType === 'roundTrip') {
+          if (flight.legs.length === 2) {
+            matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
+          }
         }
-      }
-      console.log("filtering3")
-      return matchFlight;
-
+        if (tripType === 'oneWay') {
+          if (flight.legs.length === 1) {
+            matchFlight = true;
+          }
+        }
+        return matchFlight;
+      });
+      // Cache filtered flights list
+      redisClient.set(flightsListKey, JSON.stringify(filteredResults));
     }
-    );
-    console.log(filteredResults)
 
     // End timer
     console.timeEnd('flightSearch');
@@ -338,8 +328,6 @@ app.post('/flights', async (req, res) => {
     res.status(500).send('Searching for flights is currently unavailable. Please try again later.');
   }
 });
-
-
 
 //password reset
 const transporter = nodemailer.createTransport({
