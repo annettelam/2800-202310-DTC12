@@ -17,7 +17,6 @@ import {
 } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton } from '@chakra-ui/react';
 import { Button } from 'react-bootstrap';
-import '../home/home.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import { FaHeart } from 'react-icons/fa';
@@ -388,9 +387,14 @@ export const Dashboard = () => {
                         <Image src={hotel.max_photo_url} alt={hotel.hotel_name} w={{ base: '80%', sm: '65%', md: '55%', lg: '40%' }} h="auto" rounded="md" mb="4" />
 
                         {/* Booking Button */}
-                        <Button size="md" onClick={() => window.location.href = hotel.url} className='mb-3'>
+                        <ChakraButton
+                          size="md"
+                          onClick={() => (window.location.href = hotel.url)}
+                          className="mb-3"
+                          colorScheme="teal"
+                        >
                           Book at Booking.com
-                        </Button>
+                        </ChakraButton>
 
                         {/* Hotel Details */}
                         <Text fontSize="lg" textAlign="center" mb="2">
