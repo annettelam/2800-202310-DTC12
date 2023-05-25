@@ -535,23 +535,29 @@ export const Dashboard = () => {
                             alt={attraction.name}
                           />
                         </Box>
-                        <VStack p="1" alignItems="start" spacing={2}>
-                          <Heading size="md" alignItems="center">{attraction.name}</Heading>
+                        <VStack p="1" alignItems="center" spacing={2}>
+                          <Heading size="md">
+                            {attraction.name}
+                          </Heading>
                         </VStack>
                         <Popover
                           placement="top-start"
                           closeOnBlur={false}
                         >
                           <PopoverTrigger>
-                            <ChakraButton className="questrial-font">
+                            <ChakraButton className="questrial-font" colorScheme='teal'>
                               Learn More
                             </ChakraButton>
                           </PopoverTrigger>
                           <PopoverContent
                             color="white"
-                            bg="blue.700"
+                            bg="teal.700"
                             borderColor="blue.800"
-                            w="340px"
+                            w="300px"
+                            mx="auto"
+                            display="flex"
+                            justifyContent="center" 
+                            alignItems="center" 
                           >
                             <PopoverCloseButton />
                             <PopoverBody
