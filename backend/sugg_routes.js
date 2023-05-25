@@ -37,6 +37,9 @@ router.use(speedLimiter);
 
 
 router.post('/', async (req, res) => {
+    // Start timer
+    console.time('tripadvisor-api');
+
     // Handle request throttling
     await new Promise((resolve) => setTimeout(resolve, req.slowDown.delay));
 
@@ -179,7 +182,7 @@ router.post('/', async (req, res) => {
             const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(cityNameId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`;
             const tripAdvisorImgResponse = await fetch(tripAdvisorImgUrl);
             const tripAdvisorImgData = await tripAdvisorImgResponse.json();
-            console.log('tripAdvisorImgData', tripAdvisorImgData);
+            // console.log('tripAdvisorImgData', tripAdvisorImgData);
 
             if (!tripAdvisorImgData.data || !Array.isArray(tripAdvisorImgData.data) || tripAdvisorImgData.data.length === 0) {
                 // console.log('No images found for attraction');
@@ -195,6 +198,9 @@ router.post('/', async (req, res) => {
             attraction.photoUrl = '../../alicelogo.png'; 
         }
     }
+
+    // End timer
+    console.timeEnd('tripadvisor-api');
 
     res.send({ cityName, attractions });
 });
