@@ -170,20 +170,17 @@ export const Dashboard = () => {
         className="dashboard-container"
         style={{
           backgroundImage: `url(${bkg})`,
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center top 50px", // Move background down 50 pixels
-          backgroundAttachment: "fixed",
-          backgroundSize: "cover",
-          fontFamily: "Questrial",
-          minHeight: "95vh",
-          overflowX: "auto", // Enable horizontal scrolling
-          padding: "2rem 0", // Add top and bottom padding
-          position: "relative", // Add position relative
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center top 50px', // Move background down 50 pixels
+          backgroundAttachment: 'fixed',
+          backgroundSize: 'cover',
+          fontFamily: 'Questrial',
+          minHeight: '100vh',
         }}
       >
         <Box // Create a box for Eco-Assistant
           position="absolute"
-          top="1rem"
+          top="5rem"
           right="1rem"
           display="flex"
           alignItems="center"
@@ -196,11 +193,13 @@ export const Dashboard = () => {
         </Box>
 
         <Container fluid className="px-3">
-          <Row className="flex-nowrap">
+          <Row className="flex-nowrap py-4">
             {" "}
             {/* Add flex-nowrap class to prevent wrapping */}
             <Col>
-              <h2 className="mb-4">Flights</h2> {/* Category heading */}
+              <Flex justifyContent="center">
+                <h2 className="mb-4">Your Saved Flights</h2> {/* Category heading */}
+              </Flex>
               <Carousel 
                 showThumbs={false}
                 showStatus={false}
@@ -211,7 +210,7 @@ export const Dashboard = () => {
               >
                 {/* Wrap the scrollable content */}
                 {savedFlights.map((flight) => (
-                  <Box key={flight.id} p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative">
+                  <Box key={flight.id} className='m-auto' p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
                     <Box align="right" onClick={() => handleSaveFlight(flight.id)}>
                       <FaHeart
                         size={30}
@@ -304,9 +303,11 @@ export const Dashboard = () => {
           </Row>
 
           {/* Saved Hotels */}
-          <Row className="flex-nowrap">
+          <Row className="flex-nowrap py-4">
             <Col>
-              <h2 className="mb-4">Your Saved Hotels</h2>
+              <Flex justifyContent="center">
+                <h2 className="mb-4">Your Saved Hotels</h2>
+              </Flex>
               <Carousel
                 showThumbs={false}
                 showStatus={false}
@@ -445,9 +446,11 @@ export const Dashboard = () => {
             </Col>
           </Row>
     
-          <Row className="flex-nowrap">
+          <Row className="flex-nowrap py-4">
             <Col style={{ zIndex: 1 }}>
-              <h2>Attractions in {cityName}</h2>
+              <Flex justifyContent="center">
+                <h2>Attractions in {cityName}</h2>
+              </Flex>
               <Carousel
                 showThumbs={false}
                 showStatus={false}
@@ -463,10 +466,7 @@ export const Dashboard = () => {
                   </Text>
                 ) : (
                   attractions.map((attraction) => (
-                    <Col
-                      key={attraction.location_id}
-                      style={{ minWidth: "200px", maxWidth: "300px" }}
-                    >
+                    <Box key={attraction.location_id} className='m-auto' w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
                       <Card
                         className="m-2"
                         boxShadow="lg"
@@ -501,7 +501,7 @@ export const Dashboard = () => {
                             color="white"
                             bg="blue.700"
                             borderColor="blue.800"
-                            w="250px"
+                            w="340px"
                           >
                             <PopoverCloseButton />
                             <PopoverBody
@@ -520,7 +520,7 @@ export const Dashboard = () => {
                           </PopoverContent>
                         </Popover>
                       </Card>
-                    </Col>
+                    </Box>
                   ))
                 )}
               </Carousel>
