@@ -9,10 +9,13 @@ import {
   PopoverFooter,
   PopoverBody,
   PopoverCloseButton,
-  Button,
-  Box, // Import Box component from Chakra UI
+  Button as ChakraButton,
+  Flex,
+  Box,
   Center
 } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton } from '@chakra-ui/react';
+import { Button } from 'react-bootstrap';
 import '../home/home.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
@@ -33,12 +36,14 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import landingPlane from '../flights/landing-airplane.png';
 import takeoffPlane from '../flights/takeoff-airplane.png';
 import { formatTime, formatDuration, formatStopDisplay } from '../flights/flights.jsx';
+import sustainabilityIcon from '../hotels/planet-earth.png';
 
 
 export const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [savedFlights, setSavedFlights] = useState([]);
+  const [savedHotels, setSavedHotels] = useState([]);
   const [cityName, setCityName] = useState('');
   const [attractions, setAttractions] = useState([]);
 
@@ -48,10 +53,26 @@ export const Dashboard = () => {
     }
     setUser(JSON.parse(localStorage.getItem('user')));
 
-    // Get saved flights from localStorage
-    const savedFlights = JSON.parse(localStorage.getItem('user')).savedFlights;
-    setSavedFlights(savedFlights);
+    // Get saved flights and hotels from localStorage
+    if (localStorage.getItem('user') !== null) {
+      const savedFlights = JSON.parse(localStorage.getItem('user')).savedFlights;
+      setSavedFlights(savedFlights);
+      const savedHotels = JSON.parse(localStorage.getItem('user')).savedHotels;
+      setSavedHotels(savedHotels);
+    }
   }, [navigate]);
+
+  // Modal for hotel details
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedHotelId, setSelectedHotelId] = useState(null);
+  const openModal = (hotelId) => {
+    setSelectedHotelId(hotelId);
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setSelectedHotelId(null);
+    setIsModalOpen(false);
+  };
 
   // Check if flight is saved
   const isFlightSaved = (flightId) => {
@@ -88,6 +109,45 @@ export const Dashboard = () => {
     }
   };
 
+  // Check if hotel is saved
+  const isHotelSaved = (hotelId) => {
+    return savedHotels.find((hotel) => hotel.hotel_id === hotelId) !== undefined;
+  };
+
+  // Save hotel
+  const handleSaveHotel = async (hotelId) => {
+    console.log(hotelId);
+    console.log(isHotelSaved(hotelId));
+    if (!isHotelSaved(hotelId)) {
+      // Update useState
+      setSavedHotels([...savedHotels, hotelId]);
+    } else {
+      // Update useState
+      const newSavedHotels = savedHotels.filter((savedHotel) => savedHotel.hotel_id !== hotelId);
+      setSavedHotels(newSavedHotels);
+    }
+    // Find hotel object
+    const hotel = savedHotels.find((hotel) => hotel.hotel_id === hotelId);
+    // Update database
+    console.log(hotel);
+    try {
+      const response = await axios.post('http://localhost:4000/save-hotel', {
+        hotel, user
+      });
+      console.log(response.data);
+      // Update localStorage
+      if (response.data === "Hotel saved") {
+        user.savedHotels.push(hotel);
+        localStorage.setItem('user', JSON.stringify(user));
+      } else {
+        user.savedHotels = user.savedHotels.filter((savedHotel) => savedHotel.hotel_id !== hotelId);
+        localStorage.setItem('user', JSON.stringify(user));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     const fetchAttractions = async () => {
@@ -110,20 +170,17 @@ export const Dashboard = () => {
         className="dashboard-container"
         style={{
           backgroundImage: `url(${bkg})`,
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center top 50px", // Move background down 50 pixels
-          backgroundAttachment: "fixed",
-          backgroundSize: "cover",
-          fontFamily: "Questrial",
-          minHeight: "95vh",
-          overflowX: "auto", // Enable horizontal scrolling
-          padding: "2rem 0", // Add top and bottom padding
-          position: "relative", // Add position relative
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center top 50px', // Move background down 50 pixels
+          backgroundAttachment: 'fixed',
+          backgroundSize: 'cover',
+          fontFamily: 'Questrial',
+          minHeight: '100vh',
         }}
       >
         <Box // Create a box for Eco-Assistant
           position="absolute"
-          top="1rem"
+          top="5rem"
           right="1rem"
           display="flex"
           alignItems="center"
@@ -136,47 +193,35 @@ export const Dashboard = () => {
         </Box>
 
         <Container fluid className="px-3">
-          <Row className="flex-nowrap">
+          <Row className="flex-nowrap py-4">
+            {" "}
             {/* Add flex-nowrap class to prevent wrapping */}
             <Col style={{ zIndex: 1 }}>
-              <h2>Flights</h2>
+              <Flex justifyContent="center">
+                <h2>Your Saved Flights</h2>
+              </Flex>
               <Carousel
                 showThumbs={false}
                 showStatus={false}
-                infiniteLoop={true}
+                infiniteLoop={false}
                 interval={3000} // Adjust the interval as needed
+                emulateTouch={true}
+                swipeable={true}
               >
                 {/* Wrap the scrollable content */}
                 {savedFlights.map((flight) => (
-                  <Col
-                    key={flight.id}
-                    style={{ minWidth: "200px", maxWidth: "300px" }}
-                  >
-                    <Card
-                      className="m-2"
-                      boxShadow="lg"
-                      rounded="md"
-                      overflow="hidden"
-                    >
-                      
-                      <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
-                        <Box display="flex" justifyContent="flex-end" alignItems="center" width="100%" pt="2" pr="2" >
-                          <Box onClick={() => handleSaveFlight(flight.id)}>
-                            <FaHeart
-                              size={30}
-                              color={isFlightSaved(flight.id) ? 'red' : 'black'}
-                              fill={isFlightSaved(flight.id) ? 'red' : 'none'}
-                              stroke={isFlightSaved(flight.id) ? 'none' : 'currentColor'}
-                              strokeWidth="10"
-                              style={{ cursor: 'pointer' }}
-                            />
-                          </Box>
-                        </Box>
-                        <Heading>${flight.price.amount.toFixed(2)}</Heading>
-                      </Box>
-
-
-
+                  <Box key={flight.id} className='m-auto' p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
+                    <Box align="right" onClick={() => handleSaveFlight(flight.id)}>
+                      <FaHeart
+                        size={30}
+                        color={isFlightSaved(flight.id) ? 'red' : 'black'}
+                        fill={isFlightSaved(flight.id) ? 'red' : 'none'}
+                        stroke={isFlightSaved(flight.id) ? 'none' : 'currentColor'}
+                        strokeWidth="10"
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </Box>
+                    <Heading>${flight.price.amount.toFixed(2)}</Heading>
 
                       {/* Eco flight information */}
                       {flight.is_eco_contender && (
@@ -304,29 +349,162 @@ export const Dashboard = () => {
             </Col>
           </Row>
 
-
-          {/* Repeat the above structure for other categories */}
-          <Row className="flex-nowrap">
-            {" "}
-            {/* Add flex-nowrap class to prevent wrapping */}
+          {/* Saved Hotels */}
+          <Row className="flex-nowrap py-4">
             <Col>
-              <h2 className="mb-4">Hotels</h2> {/* Category heading */}
-              <div className="horizontal-scroll">
-                {" "}
-                {/* Wrap the scrollable content */}
-                {/* ... Hotel cards */}
-              </div>
-            </Col>
-          </Row>
-          {/* Add other categories here */}
-          <Row className="flex-nowrap">
-            <Col style={{ zIndex: 1 }}>
-              <h2>Attractions in {cityName}</h2>
+              <Flex justifyContent="center">
+                <h2 className="mb-4">Your Saved Hotels</h2>
+              </Flex>
               <Carousel
                 showThumbs={false}
                 showStatus={false}
-                infiniteLoop={true}
+                infiniteLoop={false}
+                interval={3000}
+                emulateTouch={true}
+                swipeable={true}
+              >
+                {savedHotels.map((hotel) => {
+                  const roundedPrice = hotel.min_total_price.toFixed(2);
+                  const sustainability = hotel.details?.sustainability;
+                  return (
+                    <Box key={hotel.hotel_id} className='m-auto' p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%"}}>
+                      <Flex direction="column" align="center">
+                        <Box position="absolute" top="15px" right="15px" onClick={() => handleSaveHotel(hotel.hotel_id)}>
+                          <FaHeart
+                            size={30}
+                            color={isHotelSaved(hotel.hotel_id) ? 'red' : 'black'}
+                            fill={isHotelSaved(hotel.hotel_id) ? 'red' : 'none'}
+                            stroke={isHotelSaved(hotel.hotel_id) ? 'none' : 'currentColor'}
+                            strokeWidth="10"
+                            style={{ cursor: 'pointer' }} />
+                        </Box>
+
+                        {/* Hotel Name */}
+                        <Heading size={{ base: 'md', lg: 'lg' }} w='75%' textAlign="center" mb="4">
+                          {hotel.hotel_name}
+                        </Heading>
+
+                        {/* Hotel Image */}
+                        <Image src={hotel.max_photo_url} alt={hotel.hotel_name} w={{ base: '80%', sm: '65%', md: '55%', lg: '40%' }} h="auto" rounded="md" mb="4" />
+
+                        {/* Booking Button */}
+                        <Button size="md" onClick={() => window.location.href = hotel.url} className='mb-3'>
+                          Book at Booking.com
+                        </Button>
+
+                        {/* Hotel Details */}
+                        <Text fontSize="lg" textAlign="center" mb="2">
+                          <b>Price:</b> ${roundedPrice} CAD
+                        </Text>
+                        <Text fontSize="lg" textAlign="center" mb="2">
+                          <b>Address:</b> {hotel.address}
+                        </Text>
+                        <Text fontSize="lg" textAlign="center" mb="2">
+                          <b>Rating:</b> {hotel.review_score !== null ? `${hotel.review_score} / 10` : 'No reviews yet'}
+                        </Text>
+
+                        {/* Sustainability Initiatives */}
+                        {sustainability && (
+                          <Box textAlign="center" mb="4" style={{ width: "100%" }}>
+                            <Text fontSize="lg" fontWeight="bold" mb="2" style={{ color: 'green' }}>
+                              Eco-Friendly Property
+                            </Text>
+                            <Box display="flex" alignItems="center" justifyContent="center">
+                              {sustainability.sustainability_page.tier === 'bronze' && (
+                                <img
+                                  src={sustainabilityIcon}
+                                  alt="Sustainability Icon"
+                                  style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                />
+                              )}
+                              {sustainability.sustainability_page.tier === 'silver' && (
+                                <>
+                                  <img
+                                    src={sustainabilityIcon}
+                                    alt="Sustainability Icon"
+                                    style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                  />
+                                  <img
+                                    src={sustainabilityIcon}
+                                    alt="Sustainability Icon"
+                                    style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                  />
+                                </>
+                              )}
+                              {sustainability.sustainability_page.tier === 'gold' && (
+                                <>
+                                  <img
+                                    src={sustainabilityIcon}
+                                    alt="Sustainability Icon"
+                                    style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                  />
+                                  <img
+                                    src={sustainabilityIcon}
+                                    alt="Sustainability Icon"
+                                    style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                  />
+                                  <img
+                                    src={sustainabilityIcon}
+                                    alt="Sustainability Icon"
+                                    style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                  />
+                                </>
+                              )}
+                            </Box>
+                            
+                            {/* Open Modal Button */}
+                            <ChakraButton colorScheme="green" height={8} size="md" borderRadius="md" _hover={{ bg: 'green.600' }} _active={{ bg: 'green.700' }} mt={2}
+                              onClick={() => openModal(hotel.hotel_id)}>
+                              Read More
+                            </ChakraButton>
+
+                            {/* Modal for Sustainability Intiatives */}
+                            <Modal isOpen={isModalOpen && selectedHotelId === hotel.hotel_id} onClose={closeModal} size="2xl">
+                              <ModalOverlay />
+                              <ModalContent bg="green.300">
+                                <ModalHeader>{hotel.name}</ModalHeader>
+                                <ModalCloseButton />
+                                <ModalBody>
+                                  <h4 mb="2" style={{ fontWeight: 'bold' }}>Sustainability Initiatives</h4>
+                                  {sustainability.sustainability_page.efforts.map((effort) => (
+                                    <Box key={effort.title} mb="4">
+                                      <Text fontSize="lg" fontWeight="bold" mb="2">{effort.title}</Text>
+                                      <ul style={{ listStyleType: "none" }}>
+                                        {effort.steps.map((step) => (
+                                          <li key={step} style={{ marginTop: 5 }}>{step}.</li>
+                                        ))}
+                                      </ul>
+                                    </Box>
+                                  ))}
+                                </ModalBody>
+                                <ModalFooter>
+                                  <ChakraButton colorScheme='blue' mr={3} onClick={closeModal}>Close</ChakraButton>
+                                </ModalFooter>
+                              </ModalContent>
+                            </Modal>
+                          </Box>
+                        )}
+                      </Flex>
+                    </Box>
+                  );
+                })}
+                
+              </Carousel>
+            </Col>
+          </Row>
+    
+          <Row className="flex-nowrap py-4">
+            <Col style={{ zIndex: 1 }}>
+              <Flex justifyContent="center">
+                <h2>Attractions in {cityName}</h2>
+              </Flex>
+              <Carousel
+                showThumbs={false}
+                showStatus={false}
+                infiniteLoop={false}
                 interval={3000} // Adjust the interval as needed
+                emulateTouch={true}
+                swipeable={true}
               >
                 {/* Wrap the scrollable content */}
                 {attractions.length === 0 ? (
@@ -335,10 +513,7 @@ export const Dashboard = () => {
                   </Text>
                 ) : (
                   attractions.map((attraction) => (
-                    <Col
-                      key={attraction.location_id}
-                      style={{ minWidth: "200px", maxWidth: "300px" }}
-                    >
+                    <Box key={attraction.location_id} className='m-auto' w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
                       <Card
                         className="m-2"
                         boxShadow="lg"
@@ -365,15 +540,15 @@ export const Dashboard = () => {
                           closeOnBlur={false}
                         >
                           <PopoverTrigger>
-                            <Button className="questrial-font">
+                            <ChakraButton className="questrial-font">
                               Learn More
-                            </Button>
+                            </ChakraButton>
                           </PopoverTrigger>
                           <PopoverContent
                             color="white"
                             bg="blue.700"
                             borderColor="blue.800"
-                            w="250px"
+                            w="340px"
                           >
                             <PopoverCloseButton />
                             <PopoverBody
@@ -392,7 +567,7 @@ export const Dashboard = () => {
                           </PopoverContent>
                         </Popover>
                       </Card>
-                    </Col>
+                    </Box>
                   ))
                 )}
               </Carousel>

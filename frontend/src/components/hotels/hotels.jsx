@@ -277,9 +277,11 @@ export const Hotels = () => {
                                 </HStack>
                             </FormControl>
 
-                            <ChakraButton type="submit" colorScheme="blue" mt="4">
-                                Search
-                            </ChakraButton>
+                            <Flex justifyContent="center">
+                                <ChakraButton type="submit" colorScheme="blue" mt="4" w="50%">
+                                    Search
+                                </ChakraButton>
+                            </Flex>
                         </form>
                     </Box>
                 </Container>
