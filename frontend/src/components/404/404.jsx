@@ -28,7 +28,7 @@ export const NotFoundPage = () => {
                                 <Text fontSize="2xl" mt={2} color="white">
                                     Let's get back on track and continue our travel journey together.
                                 </Text>
-                                <Button colorScheme="blue" mt={5} onClick={goBack}>
+                                <Button colorScheme="teal" mt={5} onClick={goBack}>
                                     Go Back
                                 </Button>
                             </Col>
