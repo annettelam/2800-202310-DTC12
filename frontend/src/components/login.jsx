@@ -67,7 +67,7 @@ export const Login = ({ onLogin }) => {
                       <Input
                         type="password"
                         name="password"
-                        placeholder="Password"
+                        placeholder="Enter password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         bg="white"
