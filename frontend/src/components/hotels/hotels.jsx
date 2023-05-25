@@ -319,9 +319,14 @@ export const Hotels = () => {
                                     <Image src={hotel.max_photo_url} alt={hotel.hotel_name} w={{ base: '80%', sm: '65%', md: '55%', lg: '40%' }} h="auto" rounded="md" mb="4" />
 
                                     {/* Booking Button */}
-                                    <Button size="md" onClick={() => window.location.href = hotel.url} className='mb-3'>
+                                    <ChakraButton
+                                        size="md"
+                                        onClick={() => (window.location.href = hotel.url)}
+                                        className="mb-3"
+                                        colorScheme="teal"
+                                    >
                                         Book at Booking.com
-                                    </Button>
+                                    </ChakraButton>
 
                                     {/* Hotel Details */}
                                     <Text fontSize="lg" textAlign="center" mb="2">
