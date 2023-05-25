@@ -7,10 +7,17 @@ export const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [emailSent, setEmailSent] = useState(false);
   const toast = useToast();
-  const statuses = ['success'];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email) {
+      toast({
+        title: 'Email is required',
+        status: 'warning',
+        isClosable: true,
+      });
+      return;
+    }
     try {
       await axios.post('http://localhost:4000/reset-password', { email });
       setEmailSent(true);
@@ -20,7 +27,12 @@ export const ForgotPassword = () => {
         isClosable: true,
       });
     } catch (err) {
-      console.log(err);
+      setEmailSent(false);
+      toast({
+        title: 'Email not found. Please make sure you entered the correct email address.',
+        status: 'error',
+        isClosable: true,
+      });
     }
   };
 
@@ -28,7 +40,7 @@ export const ForgotPassword = () => {
     <ChakraProvider>
       <Box bgGradient="linear(to bottom right, aliceblue, teal)" fontFamily="Questrial" minHeight="100vh">
         <Container maxWidth="container.xl">
-          <Flex direction="column" align="center" justify="center" minHeight="100vh">
+          <Flex direction="column" align="center" justify="center" minHeight="50vh">
             <Box textAlign="center" mt="4">
               <Flex justify="center">
                 <Image src={navlogo} alt="Planetpass Logo" boxSize="250px" objectFit="contain" />
@@ -57,21 +69,18 @@ export const ForgotPassword = () => {
                   </FormControl>
                   <br />
                   <Wrap justify="center">
-                    {statuses.map((status, i) => (
-                      <WrapItem key={i}>
-                        <Button
-                          colorScheme="teal"
-                          variant="solid"
-                          type="submit"
-                          width="100%"
-                          mt="4"
-                          onClick={() => setEmailSent(true)}
-                          disabled={emailSent}
-                        >
-                          {emailSent ? 'Email Sent' : 'Reset Password'}
-                        </Button>
-                      </WrapItem>
-                    ))}
+                    <WrapItem>
+                      <Button
+                        colorScheme="teal"
+                        variant="solid"
+                        type="submit"
+                        width="100%"
+                        mt="4"
+                        disabled={emailSent}
+                      >
+                        {emailSent ? 'Email Sent' : 'Reset Password'}
+                      </Button>
+                    </WrapItem>
                   </Wrap>
                 </form>
               </Box>
