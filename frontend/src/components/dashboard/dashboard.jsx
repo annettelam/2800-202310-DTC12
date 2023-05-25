@@ -515,7 +515,6 @@ export const Dashboard = () => {
                     <Box key={attraction.location_id} className='m-auto' w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
                       <Card
                         className="m-2"
-                        boxShadow="lg"
                         rounded="md"
                         overflow="hidden"
                       >
