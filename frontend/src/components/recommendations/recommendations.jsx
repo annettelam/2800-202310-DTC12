@@ -26,7 +26,7 @@ export const Recommendations = ({ flightId }) => {
             const prompt = `You: I am traveling to ${city} from ${dates}. What environmentally friendly items should I pack?`;
             const payload = {
                 prompt,
-                max_tokens: 300,
+                max_tokens: 50,
                 temperature: 0.7,
                 n: 1,
                 model: 'text-davinci-002',
@@ -39,14 +39,10 @@ export const Recommendations = ({ flightId }) => {
             try {
                 const response = await axios.post(url, payload, { headers });
                 const response_data = response.data;
-                const generatedText = response_data.choices[0].text.trim();
-
-                if (generatedText.includes('-')) {
-                    const recommendations = generatedText.split('-').map((item) => item.trim());
-                    setRecommendations(recommendations);
-                } else {
-                    setRecommendations([generatedText]);
-                }
+                const recommendations = response_data.choices.map((choice) =>
+                    choice.text.trim()
+                );
+                setRecommendations(recommendations);
             } catch (error) {
                 console.error(error);
             }
