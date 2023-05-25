@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import {
-    ChakraProvider,
     Box,
-    Heading,
+    Text,
     Input,
     Button,
     Container,
@@ -13,10 +12,10 @@ import {
     Tooltip,
     UnorderedList,
     ListItem,
+    Flex,
 } from '@chakra-ui/react';
-import bkg from '../../bkg.jpg';
 
-export const Recommendations = () => {
+export const Recommendations = ({ flightId }) => {
     const [recommendations, setRecommendations] = useState([]);
     const [city, setCity] = useState('');
     const [dates, setDates] = useState('');
@@ -54,70 +53,82 @@ export const Recommendations = () => {
         }
     };
 
+    const clearFields = () => {
+        setCity('');
+        setDates('');
+        setRecommendations([]);
+    };
+
     return (
-        <ChakraProvider>
-            <Box
-                className="dashboard-container"
-                style={{
-                    backgroundImage: `url(${bkg})`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center top 50px', // Move background down 50 pixels
-                    backgroundAttachment: 'fixed',
-                    backgroundSize: 'cover',
-                    fontFamily: 'Questrial',
-                    minHeight: '95vh',
-                }}
-                p={8}
-            >
-                <Container maxW="md">
-                    <Heading mb={4} textAlign="center" color="white">
-                        Enter your travel details.
-                    </Heading>
-                    <Box bg="white" p={4} rounded="md">
-                        <VStack spacing={4} align="stretch">
+        <Box>
+            <Container maxW="md" bg="white" borderRadius="2xl" p="2">
+                <Text mb={2} textAlign="center" color="#2F855A" fontWeight="bold">
+                    Let's generate your eco-friendly packing list.
+                </Text>
+                <Box bg="white" p={2} rounded="md">
+                    <VStack spacing={2} align="stretch">
+                        <Input
+                            type="text"
+                            id="city"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            placeholder="Enter city"
+                        />
+                        <Tooltip
+                            label="Enter a single date (YYYY-MM-DD) or a range of dates (e.g. 'YYYY-MM-DD - YYYY-MM-DD')"
+                            hasArrow
+                            placement="bottom"
+                        >
                             <Input
                                 type="text"
-                                id="city"
-                                value={city}
-                                onChange={(e) => setCity(e.target.value)}
-                                placeholder="Enter city"
+                                id="dates"
+                                value={dates}
+                                onChange={(e) => setDates(e.target.value)}
+                                placeholder="Enter dates"
                             />
-                            <Tooltip
-                                label="Enter a single date (YYYY-MM-DD) or a range of dates (e.g. 'YYYY-MM-DD - YYYY-MM-DD')"
-                                hasArrow
-                                placement="bottom"
-                            >
-                                <Input
-                                    type="text"
-                                    id="dates"
-                                    value={dates}
-                                    onChange={(e) => setDates(e.target.value)}
-                                    placeholder="Enter dates"
-                                />
-                            </Tooltip>
-                            <Button colorScheme="blue" onClick={generateRecommendations}>
+                        </Tooltip>
+                        <Flex justify="space-between" align="center">
+                            <Button colorScheme="blue" onClick={generateRecommendations} w="80%">
                                 Generate List
                             </Button>
-                        </VStack>
-                    </Box>
+
+                            <Flex justify="center" w="20%">
+                                <Button variant="link" onClick={clearFields} color="blue.500">
+                                    Clear
+                                </Button>
+                            </Flex>
+                        </Flex>
+
+                    </VStack>
+                </Box>
+            </Container>
+            {recommendations.length > 0 && (
+                <Container maxW="lg" mt={2}>
+                    <SimpleGrid columns={1} spacing={4}>
+                        {recommendations.map((recommendation, index) => {
+                            const hasHyphen = recommendation.includes('-');
+                            if (hasHyphen) {
+                                const items = recommendation.split('-').map(item => item.trim());
+                                return (
+                                    <Card key={index} bg="white" rounded="md" p={4}>
+                                        <UnorderedList>
+                                            {items.map((item, itemIndex) => (
+                                                <ListItem key={itemIndex}>{item}</ListItem>
+                                            ))}
+                                        </UnorderedList>
+                                    </Card>
+                                );
+                            } else {
+                                return (
+                                    <Card key={index} bg="#F0FFF4" rounded="md" p={4}>
+                                        {index === 0 ? <Text>{recommendation}</Text> : recommendation}
+                                    </Card>
+                                );
+                            }
+                        })}
+                    </SimpleGrid>
                 </Container>
-                {recommendations.length > 0 && (
-                    <Container maxW="lg" mt={8}>
-                        <Heading mb={4} textAlign="center" color="white">
-                            Generated Recommendations
-                        </Heading>
-                        <SimpleGrid columns={1} spacing={4}>
-                            <Card bg="white" rounded="md" p={4}>
-                                <UnorderedList>
-                                    {recommendations.map((recommendation, index) => (
-                                        <ListItem key={index}>{recommendation}</ListItem>
-                                    ))}
-                                </UnorderedList>
-                            </Card>
-                        </SimpleGrid>
-                    </Container>
-                )}
-            </Box>
-        </ChakraProvider>
+            )}
+        </Box>
     );
 };
