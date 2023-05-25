@@ -342,8 +342,7 @@ export const Dashboard = () => {
                           </Box>
                         </Box>
                       ))}
-                    </Card>
-                  </Col>
+                  </Box>
                 ))}
               </Carousel>
             </Col>
