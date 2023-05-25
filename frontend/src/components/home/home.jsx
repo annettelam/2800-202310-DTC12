@@ -120,6 +120,7 @@ export const Home = (props) => {
                                     </Collapse>
                                 </>
                             </Box>
+                            <br />
                         </SimpleGrid>
                     </Box>
                 </Container>
