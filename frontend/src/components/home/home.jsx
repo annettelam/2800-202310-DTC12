@@ -46,7 +46,7 @@ export const Home = (props) => {
                     <br></br>
                     <Box>
                         {/* Features Section */}
-                        <SimpleGrid columns={[1, 2]} spacing="8" align="center">
+                        <SimpleGrid columns={[1, 2, 3]} spacing="8" align="center">
                             {/* Feature 1 */}
                             <Box>
                                 {/* Add icon */}
