@@ -51,7 +51,7 @@ export const Home = (props) => {
                             <Box>
                                 {/* Add icon */}
                                 <>
-                                    <Button onClick={onToggle1} bg="teal.50"> About Us </Button>
+                                    <Button onClick={onToggle1} bg="teal.50"> Our Story </Button>
                                     <Collapse in={isOpen1} animateOpacity>
                                         <Box
                                             p="20px"
@@ -120,8 +120,6 @@ export const Home = (props) => {
                                     </Collapse>
                                 </>
                             </Box>
-
-                            <br></br>
                         </SimpleGrid>
                     </Box>
                 </Container>
