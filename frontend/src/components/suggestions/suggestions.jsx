@@ -9,7 +9,6 @@ import {
   SimpleGrid,
   Box,
 } from '@chakra-ui/react';
-import '../home/home.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import dashBackground from '../../dashbkg.jpg';

@@ -7,7 +7,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import dashBackground from '../../dashbkg.jpg';
 import cities from './cities';
-import { Button } from 'react-bootstrap';
 import { FaHeart } from 'react-icons/fa';
 import sustainabilityIcon from './planet-earth.png';
 
