@@ -90,7 +90,7 @@ router.post('/', async (req, res) => {
     // console.log('airportCode', airportCode);
 
     let cityName = '';
-    const attractions = [];
+    let attractions = [];
 
     try {
         const getCityName = (airportCode) => {
@@ -122,72 +122,69 @@ router.post('/', async (req, res) => {
           return;
         }
     }
+    // Check if attractions is cached
+    const attractionsKey = `attractions:${cityName}`;
+    const cachedAttractions = await redisClient.get(attractionsKey);
+    if (cachedAttractions) {
+        console.log('Attractions found in cache');
+        attractions = JSON.parse(cachedAttractions);
+    // Else fetch attractions from TripAdvisor API
+    } else {
+        console.log('Attractions not found in cache');
+        const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(cityName)}&key=${googleMapsApiKey}`;
+        
 
-    const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(cityName)}&key=${googleMapsApiKey}`;
-    
+        let lat, lng;
 
-    let lat, lng;
+        try {
+            const googleMapsResponse = await fetch(googleMapsApiUrl);
+            const googleMapsData = await googleMapsResponse.json();
+            // console.log('cityName', cityName)
+            // console.log('googleMapsData', googleMapsData);
+            if (googleMapsData.results.length === 0) {
+                console.log('No results found for the provided address');
+                return res.status(404).send('No results found for the provided address');
+                }
 
-    try {
-        const googleMapsResponse = await fetch(googleMapsApiUrl);
-        const googleMapsData = await googleMapsResponse.json();
-        // console.log('cityName', cityName)
-        // console.log('googleMapsData', googleMapsData);
-        if (googleMapsData.results.length === 0) {
-            console.log('No results found for the provided address');
-            return res.status(404).send('No results found for the provided address');
-            }
-
-        lat = googleMapsData.results[0].geometry.location.lat;
-        lng = googleMapsData.results[0].geometry.location.lng;
-        // const { lat, lng } = googleMapsData.results[0].geometry.location;
-        // console.log('lat', lat, 'lng', lng);
-    } catch (err) {
-        console.error(`Failed to fetch Google Maps data: ${err}`);
-    }
-
-    let tripAdvisorApiUrl = `https://api.content.tripadvisor.com/api/v1/location/nearby_search?latLong=${lat}%2C${lng}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
-  
-    try {
-        const tripAdvisorResponse = await fetch(tripAdvisorApiUrl);
-        const tripAdvisorData = await tripAdvisorResponse.json();
-        // console.log('tripAdvisorData',tripAdvisorData);
-
-        if (!tripAdvisorData.data || !Array.isArray(tripAdvisorData.data) || tripAdvisorData.data.length === 0) {
-            console.log('No attractions found');
-            return;
-        } else {
-            tripAdvisorData.data.forEach((attraction) => {
-                attractions.push({
-                    name: attraction.name,
-                    location_id: attraction.location_id,
-                    photoUrl: '',
-                    description: '',
-                });
-            });
+            lat = googleMapsData.results[0].geometry.location.lat;
+            lng = googleMapsData.results[0].geometry.location.lng;
+            // const { lat, lng } = googleMapsData.results[0].geometry.location;
+            // console.log('lat', lat, 'lng', lng);
+        } catch (err) {
+            console.error(`Failed to fetch Google Maps data: ${err}`);
         }
-    } catch (err) {
-        console.error(`Failed to fetch TripAdvisor data: ${err}`);
-    }
 
-    // Get description & image for each attraction
-    for (let i = 0; i < attractions.length; i++) {
-        /* Get description for each attraction */
-        const attraction = attractions[i];
-        const attractionName = attraction.name;
-        const openaiCacheKey = `${attractionName}-${cityName}`;
+        let tripAdvisorApiUrl = `https://api.content.tripadvisor.com/api/v1/location/nearby_search?latLong=${lat}%2C${lng}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
+    
+        try {
+            const tripAdvisorResponse = await fetch(tripAdvisorApiUrl);
+            const tripAdvisorData = await tripAdvisorResponse.json();
+            // console.log('tripAdvisorData',tripAdvisorData);
 
-        // Check if description is cached in Redis
-        const cachedDescription = await redisClient.get(openaiCacheKey);
-        if (cachedDescription) {
-            console.log('Found cached description');
-            attraction.description = JSON.parse(cachedDescription);
-        // Else, get description from OpenAI API
-        } else {
-            console.log('Fetching description from OpenAI API');
+            if (!tripAdvisorData.data || !Array.isArray(tripAdvisorData.data) || tripAdvisorData.data.length === 0) {
+                console.log('No attractions found');
+                return;
+            } else {
+                tripAdvisorData.data.forEach((attraction) => {
+                    attractions.push({
+                        name: attraction.name,
+                        location_id: attraction.location_id,
+                        photoUrl: '',
+                        description: '',
+                    });
+                });
+            }
+        } catch (err) {
+            console.error(`Failed to fetch TripAdvisor data: ${err}`);
+        }
+
+        // Get description & image for each attraction
+        for (let i = 0; i < attractions.length; i++) {
+            /* Get description for each attraction */
+            const attraction = attractions[i];
+            const attractionName = attraction.name;
             const prompt = `You: Give me a description of ${attractionName} in ${cityName} in 75 words.`;
             const openaiUrl = 'https://api.openai.com/v1/engines/text-davinci-002/completions';
-
             try {
                 const response = await axios.post(openaiUrl, {
                     prompt: prompt,
@@ -200,32 +197,16 @@ router.post('/', async (req, res) => {
                         'Authorization': `Bearer ${openaiApiKey}`
                     },
                 });
-
                 const description = response.data.choices[0].text.trim();
                 attraction.description = description;
                 // console.log('description', description);
-
-                // Store description in Redis
-                await redisClient.set(openaiCacheKey, JSON.stringify(description));
             } catch (err) {
                 console.error(`Failed to fetch OpenAI data: ${err}`);
                 attraction.description = 'Description not available.';
             }
-        }
 
-
-        /* Get image for each attraction */
-        const cityNameId = attraction.location_id;
-        const tripadvisorCacheKey = `${cityNameId}`;
-
-        // Check if image is cached in Redis
-        const cachedImage = await redisClient.get(tripadvisorCacheKey);
-        if (cachedImage) {
-            console.log('Found cached image');
-            attraction.photoUrl = JSON.parse(cachedImage);
-        // Else, get image from TripAdvisor API
-        } else {
-            console.log('Fetching image from TripAdvisor API');
+            /* Get image for each attraction */
+            const cityNameId = attraction.location_id;
             try {
                 const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(cityNameId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`;
                 const tripAdvisorImgResponse = await fetch(tripAdvisorImgUrl);
@@ -240,14 +221,13 @@ router.post('/', async (req, res) => {
                     const photoUrl = tripAdvisorImgData.data[0].images.large.url;
                     attraction.photoUrl = photoUrl;
                 }
-
-                // Store image in Redis
-                await redisClient.set(tripadvisorCacheKey, JSON.stringify(attraction.photoUrl));
             } catch (err) {
                 console.error(`Failed to fetch TripAdvisor image data: ${err}`);
                 attraction.photoUrl = '../../alicelogo.png'; 
             }
         }
+        // Set attractions in cache
+        await redisClient.set(attractionsKey, JSON.stringify(attractions));
     }
 
     // End timer
