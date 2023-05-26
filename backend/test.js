@@ -17,8 +17,7 @@ async function automate() {
         await decimalNumberInputFlight(driver);
         await negativeNumberInputFlight(driver);
         await noFlightsFoundError(driver);
-        // await fillHotelSearchForm(driver);
-
+        await maxNumberOfAdultsHotel(driver);
 
 
     } catch (error) {
@@ -482,67 +481,72 @@ async function noFlightsFoundError(driver) {
     }
 }
 
-// async function fillHotelSearchForm(driver) {
-//     try {
+async function maxNumberOfAdultsHotel(driver) {
+    try {
 
-//         await driver.get('http://localhost:3000/login');
+        await driver.get('http://localhost:3000/login');
 
-//         // Find email and password input fields and enter values
-//         const emailInput = await driver.findElement(By.name('email'));
-//         const passwordInput = await driver.findElement(By.name('password'));
-//         await emailInput.sendKeys('lisatesting@test.ca');
-//         await passwordInput.sendKeys('12345');
-//         await driver.sleep(1000);
+        // Find email and password input fields and enter values
+        const emailInput = await driver.findElement(By.name('email'));
+        const passwordInput = await driver.findElement(By.name('password'));
+        await emailInput.sendKeys('lisatesting@test.ca');
+        await passwordInput.sendKeys('12345');
+        await driver.sleep(1000);
 
-//         // Find and click the submit button
-//         const submitButton = await driver.findElement(By.id('submitBtn'));
-//         await submitButton.click();
-//         await driver.sleep(1000);
+        // Find and click the submit button
+        const submitButton = await driver.findElement(By.id('submitBtn'));
+        await submitButton.click();
+        await driver.sleep(1000);
 
-//         await driver.get('http://localhost:3000/hotels');
+        await driver.get('http://localhost:3000/hotels');
 
-//         // Find the city select element
-//         const citySelect = await driver.wait(until.elementLocated(By.id('city')), 80000);
-//         const cityDropdown = await driver.wait(until.elementIsVisible(citySelect));
-//         const citySelectObject = new Select(cityDropdown);
-//         await citySelectObject.selectByValue('New York City, New York');
-//         await driver.sleep(1000);
+        // Find the city select element
+        const citySelect = await driver.wait(until.elementLocated(By.id('city')), 80000);
+        const cityDropdown = await driver.wait(until.elementIsVisible(citySelect));
+        const citySelectObject = new Select(cityDropdown);
+        await citySelectObject.selectByValue('New York City, New York');
+        await driver.sleep(1000);
 
-//         // Find the check-in date input field
-//         const checkInDateInput = await driver.wait(until.elementLocated(By.name('checkInDate')), 5000);
-//         await checkInDateInput.click();
-//         await checkInDateInput.sendKeys(06); // Fill in the month
-//         await checkInDateInput.sendKeys(Key.TAB); // Move the cursor to the day field
-//         await checkInDateInput.sendKeys(2023); // Fill in the day
-//         await checkInDateInput.sendKeys(Key.TAB); // Move the cursor to the year field
-//         await checkInDateInput.sendKeys(1101); // Fill in the year
-//         await driver.sleep(1000);
+        // Find the check-in date input field
+        const checkInDateInput = await driver.wait(until.elementLocated(By.name('checkInDate')), 5000);
+        await checkInDateInput.click();
+        await checkInDateInput.sendKeys(06); // Fill in the month
+        await checkInDateInput.sendKeys(Key.TAB); // Move the cursor to the day field
+        await checkInDateInput.sendKeys(2023); // Fill in the day
+        await checkInDateInput.sendKeys(Key.TAB); // Move the cursor to the year field
+        await checkInDateInput.sendKeys(1101); // Fill in the year
+        await driver.sleep(1000);
 
 
-//         // Find the check-out date input field
-//         const checkOutDateInput = await driver.wait(until.elementLocated(By.name('checkOutDate')), 5000);
-//         await checkOutDateInput.sendKeys(06); // Fill in the month
-//         await checkOutDateInput.sendKeys(Key.TAB); // Move the cursor to the day field
-//         await checkOutDateInput.sendKeys(2023); // Fill in the day
-//         await checkOutDateInput.sendKeys(Key.TAB); // Move the cursor to the year field
-//         await checkOutDateInput.sendKeys(1105); // Fill in the year
-//         await driver.sleep(1000);
+        // Find the check-out date input field
+        const checkOutDateInput = await driver.wait(until.elementLocated(By.name('checkOutDate')), 5000);
+        await checkOutDateInput.sendKeys(06); // Fill in the month
+        await checkOutDateInput.sendKeys(Key.TAB); // Move the cursor to the day field
+        await checkOutDateInput.sendKeys(2023); // Fill in the day
+        await checkOutDateInput.sendKeys(Key.TAB); // Move the cursor to the year field
+        await checkOutDateInput.sendKeys(1105); // Fill in the year
+        await driver.sleep(1000);
 
-//         // Find the number of adults input field
-//         const numAdultsInput = await driver.wait(until.elementLocated(By.id('increaseBtn')), 5000);
-//         await numAdultsInput.click();
-//         await numAdultsInput.click();
-//         await numAdultsInput.click();
-//         await numAdultsInput.click();
+        // Find the number of adults input field
+        const numAdultsInput = await driver.wait(until.elementLocated(By.id('increaseBtn')), 5000);
+        const numClicks = 11; // Set the number of clicks you want to perform
+        for (let i = 0; i < numClicks; i++) {
+            await numAdultsInput.click();
+            await driver.sleep(1000);
+        }
 
-//         // Submit the form
-//         const submitButtons = await driver.findElement(By.id('submitButton'));
-//         await submitButtons.click();
-//         await driver.sleep(8000);
-//     } catch (error) {
-//         console.error('An error occurred:', error);
-//     }
-// }
+        // Submit the form
+        const submitButtons = await driver.findElement(By.id('submitButton'));
+        await submitButtons.click();
+        
+        const hotelResultsElement = await driver.findElement(By.className('hotel-results'));
+        const isHotelResultsDisplayed = await hotelResultsElement.isDisplayed();
+        assert.strictEqual(isHotelResultsDisplayed, false, 'Hotel results are displayed when they should not be - max number of adults reached.');
+
+    } catch (error) {
+        console.error('An error occurred:', error);
+    }
+}
 
 
 automate();

@@ -50,11 +50,11 @@ var mongoStore = MongoStore.create({
 
 // Booking.com API
 const hotelAPI = axios.create({
-    baseURL: 'https://booking-com.p.rapidapi.com',
-    headers: {
-        'X-RapidAPI-Key': 'ef202a40a1msh84d101d331ea111p199b57jsne3be98f83a9a',
-        'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
-    }
+  baseURL: 'https://booking-com.p.rapidapi.com',
+  headers: {
+    'X-RapidAPI-Key': '35dccabe2bmshe9e38a9634ad4ebp1c7bc7jsnbc3aa35675b0',
+    'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
+  }
 });
 
 app.use(express.urlencoded({ extended: false }));
@@ -245,7 +245,7 @@ app.get("/profile", (req, res) => {
 //flight results
 app.post('/flights', async (req, res) => {
   // res.status(500).send('Searching for flights is currently unavailable. Please try again later.')
-  
+
   // Start timer
   console.time('flightSearch');
 
@@ -280,13 +280,13 @@ app.post('/flights', async (req, res) => {
     })
 
     console.log(results.data.message)
-    if(results.data.message === 'Session not found in state: UNKNOWN_SESSION_ID') {
+    if (results.data.message === 'Session not found in state: UNKNOWN_SESSION_ID') {
       res.status(404).send('No flights found.')
       return;
     }
 
-  
-    
+
+
     // const flightResults = results
     // console.log(flightResults)
 
@@ -315,7 +315,7 @@ app.post('/flights', async (req, res) => {
 
     // End timer
     console.timeEnd('flightSearch');
-    
+
     res.json(filteredResults);
   } catch (error) {
     console.error(error);
