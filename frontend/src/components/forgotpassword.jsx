@@ -35,8 +35,10 @@ export const ForgotPassword = () => {
       return;
     }
     try {
+      // Send a POST request to the server to reset the password
       await axios.post('http://localhost:4000/reset-password', { email });
       setEmailSent(true);
+      // Show a success toast if the email was sent successfully
       toast({
         title: 'Email sent successfully!',
         status: 'success',
@@ -44,6 +46,7 @@ export const ForgotPassword = () => {
       });
     } catch (err) {
       setEmailSent(false);
+      // Show an error toast if the email was not found
       toast({
         title: 'Email not found. Please make sure you entered the correct email address.',
         status: 'error',
