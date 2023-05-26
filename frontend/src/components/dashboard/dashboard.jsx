@@ -210,167 +210,174 @@ export const Dashboard = () => {
 
         <Container fluid className="px-3">
           <Row className="flex-nowrap py-4">
-            {" "}
-            {/* Add flex-nowrap class to prevent wrapping */}
             <Col style={{ zIndex: 1 }}>
-              <Flex justifyContent="center">
-                <h2>Your Saved Flights</h2>
-              </Flex>
-              <Carousel
-                showThumbs={false}
-                showStatus={false}
-                infiniteLoop={true}
-                selectedItem={0}
-                interval={3000} // Adjust the interval as needed
-                emulateTouch={true}
-                swipeable={true}
-              >
-                {/* Wrap the scrollable content */}
-                {savedFlights.map((flight) => (
-                  <Box key={flight.id} className='m-auto' p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
-                    <Box align="right" onClick={() => handleSaveFlight(flight.id)}>
-                      <FaHeart
-                        size={30}
-                        color={isFlightSaved(flight.id) ? 'red' : 'black'}
-                        fill={isFlightSaved(flight.id) ? 'red' : 'none'}
-                        stroke={isFlightSaved(flight.id) ? 'none' : 'currentColor'}
-                        strokeWidth="10"
-                        style={{ cursor: 'pointer' }}
-                      />
-                    </Box>
-                    <Heading>${flight.price.amount.toFixed(2)}</Heading>
+              <Box className='m-auto mb-2' p="3" boxShadow="lg" rounded="md" bg="teal" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
+                <Flex justifyContent="center">
+                  <h2 style={{ color: "white" }}>Your Saved Flights</h2>
+                </Flex>
+              </Box>
+              {savedFlights.length > 0 ? (
+                <Carousel
+                  showThumbs={false}
+                  showStatus={false}
+                  infiniteLoop={true}
+                  selectedItem={0}
+                  interval={3000}
+                  emulateTouch={true}
+                  swipeable={true}
+                >
+                  {savedFlights.map((flight) => (
+                    <Box key={flight.id} className='m-auto' p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
+                      <Box align="right" onClick={() => handleSaveFlight(flight.id)}>
+                        <FaHeart
+                          size={30}
+                          color={isFlightSaved(flight.id) ? 'red' : 'black'}
+                          fill={isFlightSaved(flight.id) ? 'red' : 'none'}
+                          stroke={isFlightSaved(flight.id) ? 'none' : 'currentColor'}
+                          strokeWidth="10"
+                          style={{ cursor: 'pointer' }}
+                        />
+                      </Box>
+                      <Heading>${flight.price.amount.toFixed(2)}</Heading>
 
-                      {/* Eco flight information */}
-                      {flight.is_eco_contender && (
-                        <Box p="1" alignItems="start">
-                          <Text fontWeight="bold" fontSize="lg" mb="0">
-                            <span style={{ color: 'green' }}>Eco Flight</span>
-                          </Text>
-                          <Text>
-                            <span style={{ color: 'green' }}>
-                              Produces <b>{Math.round(Math.abs(flight.eco_contender_delta))}%</b> less carbon emissions compared to similar flights.
-                            </span>
-                          </Text>
-                        </Box>
-                      )}
-
-                      {/* Iterate over legs and display departure times */}
-                      {flight.legs.map((leg, index) => (
-                        <Box key={index} p="1" alignItems="start">
-                          <hr />
-                          <Heading size="md" alignItems="center">
-                            {index === 0 ? 'Departure Flight' : 'Return Flight'}
-                          </Heading>
-                          <Text>
-                            {leg.origin.name} - {leg.destination.name}
-                          </Text>
-                          <Text mt="1" mb="1">
-                            <b>{`${formatTime(leg.departure)} - ${formatTime(leg.arrival)}`}</b>
-                          </Text>
-                          <Text mt="1" mb="1">{formatDuration(leg.duration)}</Text>
-                          <Text mt="1" mb="1">{leg.carriers[0].name}</Text>
-                          <Box display="flex" justifyContent="center" alignItems="center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="100%"
-                              height="100px"
-                              className="m-auto"
-                              style={{ maxWidth: '300px' }}
-                            >
-                              {/* Line connecting origin and destination */}
-                              <line
-                                x1="20%"
-                                y1="50%"
-                                x2="80%"
-                                y2="50%"
-                                stroke="black"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                fill="none"
-                              />
-
-                              {/* Dots for stops */}
-                              {leg.stop_count > 0 &&
-                                leg.stops.map((stop, index) => (
-                                  <g key={index}>
-                                    {/* Dot for stop */}
-                                    <circle
-                                      cx={`${((index + 1) / (leg.stop_count + 1)) * 80 + 10}%`}
-                                      cy="50%"
-                                      r="4"
-                                      fill="red"
-                                    />
-
-                                    {/* Display code for the stop */}
-                                    <text
-                                      x={`${((index + 1) / (leg.stop_count + 1)) * 80 + 10}%`}
-                                      y="65%"
-                                      textAnchor="middle"
-                                      fontSize="10"
-                                      fontWeight="bold"
-                                    >
-                                      {stop.display_code}
-                                    </text>
-                                  </g>
-                                ))}
-
-                              {/* Landing airplane */}
-                              <image
-                                href={takeoffPlane}
-                                x="5%"
-                                y="50%"
-                                width="20"
-                                height="20"
-                                transform="translate(-10, -10)"
-                              />
-
-                              {/* Display code for origin */}
-                              <text x="10%" y="50%" textAnchor="start" alignmentBaseline="middle" fontSize="12">
-                                {leg.origin.display_code}
-                              </text>
-
-                              {/* Takeoff airplane */}
-                              <image
-                                href={landingPlane}
-                                x="88%"
-                                y="50%"
-                                width="20"
-                                height="20"
-                                transform="translate(10, -10)"
-                              />
-
-                              {/* Display code for destination */}
-                              <text x="90%" y="50%" textAnchor="end" alignmentBaseline="middle" fontSize="12">
-                                {leg.destination.display_code}
-                              </text>
-
-                              {/* Number of stops */}
-                              <text
-                                x="50%"
-                                y="80%"
-                                textAnchor="middle"
-                                fontSize="12"
-                                fill={leg.stop_count > 0 ? 'red' : 'green'}
-                                fontWeight="bold"
-                              >
-                                {formatStopDisplay(leg.stop_count)}
-                              </text>
-                            </svg>
+                        {/* Eco flight information */}
+                        {flight.is_eco_contender && (
+                          <Box p="1" alignItems="start">
+                            <Text fontWeight="bold" fontSize="lg" mb="0">
+                              <span style={{ color: 'green' }}>Eco Flight</span>
+                            </Text>
+                            <Text>
+                              <span style={{ color: 'green' }}>
+                                Produces <b>{Math.round(Math.abs(flight.eco_contender_delta))}%</b> less carbon emissions compared to similar flights.
+                              </span>
+                            </Text>
                           </Box>
-                        </Box>
-                      ))}
-                  </Box>
-                ))}
-              </Carousel>
+                        )}
+
+                        {/* Iterate over legs and display departure times */}
+                        {flight.legs.map((leg, index) => (
+                          <Box key={index} p="1" alignItems="start">
+                            <hr />
+                            <Heading size="md" alignItems="center">
+                              {index === 0 ? 'Departure Flight' : 'Return Flight'}
+                            </Heading>
+                            <Text>
+                              {leg.origin.name} - {leg.destination.name}
+                            </Text>
+                            <Text mt="1" mb="1">
+                              <b>{`${formatTime(leg.departure)} - ${formatTime(leg.arrival)}`}</b>
+                            </Text>
+                            <Text mt="1" mb="1">{formatDuration(leg.duration)}</Text>
+                            <Text mt="1" mb="1">{leg.carriers[0].name}</Text>
+                            <Box display="flex" justifyContent="center" alignItems="center">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="100%"
+                                height="100px"
+                                className="m-auto"
+                                style={{ maxWidth: '300px' }}
+                              >
+                                {/* Line connecting origin and destination */}
+                                <line
+                                  x1="20%"
+                                  y1="50%"
+                                  x2="80%"
+                                  y2="50%"
+                                  stroke="black"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  fill="none"
+                                />
+
+                                {/* Dots for stops */}
+                                {leg.stop_count > 0 &&
+                                  leg.stops.map((stop, index) => (
+                                    <g key={index}>
+                                      {/* Dot for stop */}
+                                      <circle
+                                        cx={`${((index + 1) / (leg.stop_count + 1)) * 80 + 10}%`}
+                                        cy="50%"
+                                        r="4"
+                                        fill="red"
+                                      />
+
+                                      {/* Display code for the stop */}
+                                      <text
+                                        x={`${((index + 1) / (leg.stop_count + 1)) * 80 + 10}%`}
+                                        y="65%"
+                                        textAnchor="middle"
+                                        fontSize="10"
+                                        fontWeight="bold"
+                                      >
+                                        {stop.display_code}
+                                      </text>
+                                    </g>
+                                  ))}
+
+                                {/* Landing airplane */}
+                                <image
+                                  href={takeoffPlane}
+                                  x="5%"
+                                  y="50%"
+                                  width="20"
+                                  height="20"
+                                  transform="translate(-10, -10)"
+                                />
+
+                                {/* Display code for origin */}
+                                <text x="10%" y="50%" textAnchor="start" alignmentBaseline="middle" fontSize="12">
+                                  {leg.origin.display_code}
+                                </text>
+
+                                {/* Takeoff airplane */}
+                                <image
+                                  href={landingPlane}
+                                  x="88%"
+                                  y="50%"
+                                  width="20"
+                                  height="20"
+                                  transform="translate(10, -10)"
+                                />
+
+                                {/* Display code for destination */}
+                                <text x="90%" y="50%" textAnchor="end" alignmentBaseline="middle" fontSize="12">
+                                  {leg.destination.display_code}
+                                </text>
+
+                                {/* Number of stops */}
+                                <text
+                                  x="50%"
+                                  y="80%"
+                                  textAnchor="middle"
+                                  fontSize="12"
+                                  fill={leg.stop_count > 0 ? 'red' : 'green'}
+                                  fontWeight="bold"
+                                >
+                                  {formatStopDisplay(leg.stop_count)}
+                                </text>
+                              </svg>
+                            </Box>
+                          </Box>
+                        ))}
+                    </Box>
+                  ))}
+                </Carousel>
+              ) : (
+                <Box className='m-auto' p="3" boxShadow="lg" rounded="md" bg="white" mb="4" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
+                  <Text textAlign="center">You currently don't have any saved flights.</Text>
+                </Box>
+              )}
             </Col>
           </Row>
 
           {/* Saved Hotels */}
           <Row className="flex-nowrap py-4">
             <Col>
-              <Flex justifyContent="center">
-                <h2 className="mb-4">Your Saved Hotels</h2>
-              </Flex>
+              <Box className='m-auto mb-2' p="3" boxShadow="lg" rounded="md" bg="teal" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
+                <Flex justifyContent="center">
+                  <h2 style={{ color: "white" }} fontWeight="bold">Your Saved Hotels</h2>
+                </Flex>
+              </Box>
               {savedHotels.length > 0 ? (
                 <Carousel
                   showThumbs={false}
@@ -511,98 +518,107 @@ export const Dashboard = () => {
                       </Box>
                     );
                   })}
-                  
                 </Carousel>
               ) : (
-                <Text textAlign="center">You currently don't have any saved hotels.</Text>
+                <Box className='m-auto' p="3" boxShadow="lg" rounded="md" bg="white" mt="4" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
+                  <Text textAlign="center" fontWeight="bold">You currently don't have any saved hotels.</Text>
+                </Box>
               )}
             </Col>
           </Row>
-    
+          
           <Row className="flex-nowrap py-4">
             <Col style={{ zIndex: 1 }}>
-              <Flex justifyContent="center">
-                <h2>Attractions in {cityName}</h2>
-              </Flex>
-              <Carousel
-                showThumbs={false}
-                showStatus={false}
-                infiniteLoop={true}
-                selectedItem={0}
-                interval={3000} 
-                emulateTouch={true}
-                swipeable={true}
-              >
-                {/* Wrap the scrollable content */}
-                {attractions.length === 0 ? (
-                  <Center>
-                    <CircularProgress isIndeterminate color='teal' />
-                  </Center>
-                ) : (
-                  attractions.map((attraction) => (
-                    <Box key={attraction.location_id} className='m-auto' w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
-                      <Card
-                        className="m-2"
-                        rounded="md"
-                        overflow="hidden"
-                      >
-                        <Box
-                          display="flex"
-                          justifyContent="center"
-                          alignItems="center"
+              <Box className='m-auto mb-2' p="3" boxShadow="lg" rounded="md" bg="teal" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
+                <Flex justifyContent="center">
+                  <h2 style={{ color: "white"}}>Attractions in {cityName}</h2>
+                </Flex>
+              </Box>
+              {savedFlights.length > 0 ? (
+                <Carousel
+                  showThumbs={false}
+                  showStatus={false}
+                  infiniteLoop={true}
+                  selectedItem={0}
+                  interval={3000} 
+                  emulateTouch={true}
+                  swipeable={true}
+                >
+                  {/* Wrap the scrollable content */}
+                  {attractions.length === 0 ? (
+                    <Center>
+                      <CircularProgress isIndeterminate color='teal' />
+                    </Center>
+                  ) : (
+                    attractions.map((attraction) => (
+                      <Box key={attraction.location_id} className='m-auto' w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
+                        <Card
+                          className="m-2"
+                          rounded="md"
+                          overflow="hidden"
                         >
-                          <Image
-                            src={attraction.photoUrl}
-                            w="200px"
-                            objectFit="cover"
-                            alt={attraction.name}
-                          />
-                        </Box>
-                        <VStack p="1" alignItems="center" spacing={2}>
-                          <Heading size="md">
-                            {attraction.name}
-                          </Heading>
-                        </VStack>
-                        <Popover
-                          placement="top-start"
-                          closeOnBlur={false}
-                        >
-                          <PopoverTrigger>
-                            <ChakraButton className="questrial-font" colorScheme='teal'>
-                              Learn More
-                            </ChakraButton>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            color="white"
-                            bg="teal.700"
-                            borderColor="blue.800"
-                            w="300px"
-                            mx="auto"
+                          <Box
                             display="flex"
-                            justifyContent="center" 
-                            alignItems="center" 
+                            justifyContent="center"
+                            alignItems="center"
                           >
-                            <PopoverCloseButton />
-                            <PopoverBody
-                              className="questrial-font"
-                              style={{ overflowWrap: "break-word" }}
-                            >
-                              {attraction.description}
-                            </PopoverBody>
-                            <PopoverFooter
-                              border="0"
+                            <Image
+                              src={attraction.photoUrl}
+                              w="200px"
+                              objectFit="cover"
+                              alt={attraction.name}
+                            />
+                          </Box>
+                          <VStack p="1" alignItems="center" spacing={2}>
+                            <Heading size="md">
+                              {attraction.name}
+                            </Heading>
+                          </VStack>
+                          <Popover
+                            placement="top-start"
+                            closeOnBlur={false}
+                          >
+                            <PopoverTrigger>
+                              <ChakraButton className="questrial-font" colorScheme='teal'>
+                                Learn More
+                              </ChakraButton>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              color="white"
+                              bg="teal.700"
+                              borderColor="blue.800"
+                              w="300px"
+                              mx="auto"
                               display="flex"
-                              alignItems="center"
-                              justifyContent="space-between"
-                              pb={4}
-                            ></PopoverFooter>
-                          </PopoverContent>
-                        </Popover>
-                      </Card>
-                    </Box>
-                  ))
-                )}
-              </Carousel>
+                              justifyContent="center" 
+                              alignItems="center" 
+                            >
+                              <PopoverCloseButton />
+                              <PopoverBody
+                                className="questrial-font"
+                                style={{ overflowWrap: "break-word" }}
+                              >
+                                {attraction.description}
+                              </PopoverBody>
+                              <PopoverFooter
+                                border="0"
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="space-between"
+                                pb={4}
+                              ></PopoverFooter>
+                            </PopoverContent>
+                          </Popover>
+                        </Card>
+                      </Box>
+                    ))
+                  )}
+                </Carousel>
+              ) : (
+                <Box className='m-auto' p="3" boxShadow="lg" rounded="md" bg="white" mb="4" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
+                  <Text textAlign="center" fontWeight="bold">You currently don't have any saved flights.</Text>
+                </Box>
+              )}
             </Col>
           </Row>
         </Container>
