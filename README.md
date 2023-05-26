@@ -1,9 +1,9 @@
 # 2800-202310-DTC12
-
+Welcome to aether! We are a dynamic venture brought to life by four BCIT CST students: Michelle Kwok, Annette Lam, Lisa Jung, and Mikko Sio. As individuals who share a passion for the environment and a deep love for traveling, we have come together to create something different.
 
 This repository contains the following files and directories:
 
-## Files
+# Files
 
 - forgotpassword.jsx: handles the functionality for resetting a user's password.
 - login.jsx: implements the login feature of the application.
