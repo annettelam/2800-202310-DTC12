@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { ChakraProvider, Box, FormControl, FormLabel, Input, Button, Container, Flex, Image, useToast } from '@chakra-ui/react';
+import { 
+  ChakraProvider, 
+  Box, 
+  FormControl, 
+  FormLabel, 
+  Input, 
+  Button, 
+  Container, 
+  Flex, 
+  Image, 
+  useToast } from '@chakra-ui/react';
 import navlogo from '../navlogo.png';
 
 export const ResetPassword = () => {

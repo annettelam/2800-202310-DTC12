@@ -33,7 +33,7 @@ export const Profile = () => {
                 style={{
                     backgroundImage: `url(${bkg})`,
                     backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center top 50px', // Move background down 50 pixels
+                    backgroundPosition: 'center top 50px', 
                     backgroundAttachment: 'fixed',
                     backgroundSize: 'cover',
                     fontFamily: 'Questrial',

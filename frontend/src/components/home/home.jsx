@@ -37,19 +37,13 @@ export const Home = (props) => {
                             <Text fontSize="xl" mb="4">
                                 Explore the world with ease.
                             </Text>
-                            {/* <Button colorScheme="whiteAlpha" size="lg">
-                                Get Started
-                            </Button> */}
                         </Box>
                     </Flex>
                     <Divider />
                     <br></br>
                     <Box>
-                        {/* Features Section */}
                         <SimpleGrid columns={[1, 2, 3]} spacing="8" align="center">
-                            {/* Feature 1 */}
                             <Box>
-                                {/* Add icon */}
                                 <>
                                     <Button onClick={onToggle1} bg="teal.50"> Our Story </Button>
                                     <Collapse in={isOpen1} animateOpacity>
@@ -72,9 +66,7 @@ export const Home = (props) => {
                                     </Collapse>
                                 </>
                             </Box>
-                            {/* Feature 2 */}
                             <Box>
-                                {/* Add icon */}
                                 <>
                                     <Button onClick={onToggle2} bg="teal.50"> Our Mission </Button>
                                     <Collapse in={isOpen2} animateOpacity>
@@ -93,7 +85,6 @@ export const Home = (props) => {
                                 </>
                             </Box>
                             <Box>
-                                {/* Add icon */}
                                 <>
                                     <Button onClick={onToggle3} bg="teal.50"> Our App </Button>
                                     <Collapse in={isOpen3} animateOpacity>
@@ -115,7 +106,6 @@ export const Home = (props) => {
                                             <br />
                                             <br />
                                             We provide personalized recommendations for attractions based on destination. Additionally, our AI-powered packing list suggests sustainable and minimalist options, reducing waste.
-                                            
                                         </Box>
                                     </Collapse>
                                 </>

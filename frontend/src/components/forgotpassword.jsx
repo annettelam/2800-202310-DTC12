@@ -1,7 +1,23 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import navlogo from '../navlogo.png';
-import { ChakraProvider, Box, Stack, AlertIcon, FormControl, FormLabel, Input, FormHelperText, Button, Container, Flex, Image, Alert, useToast, Wrap, WrapItem } from '@chakra-ui/react';
+import { 
+  ChakraProvider, 
+  Box, 
+  Stack, 
+  AlertIcon, 
+  FormControl, 
+  FormLabel, 
+  Input, 
+  FormHelperText, 
+  Button, 
+  Container, 
+  Flex, 
+  Image, 
+  Alert, 
+  useToast, 
+  Wrap, 
+  WrapItem } from '@chakra-ui/react';
 
 export const ForgotPassword = () => {
   const [email, setEmail] = useState('');

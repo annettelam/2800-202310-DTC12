@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ChakraProvider, Box, FormControl, FormLabel, Input, Button, Container, Flex, Image } from '@chakra-ui/react';
+import { 
+  ChakraProvider, 
+  Box, 
+  FormControl, 
+  FormLabel, 
+  Input, 
+  Button, 
+  Container, 
+  Flex, 
+  Image } from '@chakra-ui/react';
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../fonts.css';

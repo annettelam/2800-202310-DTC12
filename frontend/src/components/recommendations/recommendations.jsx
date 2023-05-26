@@ -9,7 +9,6 @@ import {
     SimpleGrid,
     VStack,
     Card,
-    Tooltip,
     UnorderedList,
     ListItem,
     Flex,
