@@ -11,9 +11,7 @@ import { FaHeart, FaSortAmountDownAlt } from 'react-icons/fa';
 import sustainabilityIcon from './planet-earth.png';
 
 export const Hotels = () => {
-    // Navigate
     const navigate = useNavigate();
-    // User
     const [user, setUser] = useState({});
 
     // Search form
@@ -22,7 +20,8 @@ export const Hotels = () => {
     const [checkOutDate, setCheckOutDate] = useState('');
     const [numAdults, setNumAdults] = useState(1);
     const [numRooms, setNumRooms] = useState(1);
-        // Increment/Decrement for adults
+
+    // Increment/Decrement for adults
     const {
         getInputProps: getAdultsInputProps,
         getIncrementButtonProps: getAdultsIncProps,
@@ -36,7 +35,8 @@ export const Hotels = () => {
     const adultsInput = getAdultsInputProps();
     const adultsInc = getAdultsIncProps();
     const adultsDec = getAdultsDecProps();
-        // Increment/Decrement for rooms
+
+    // Increment/Decrement for rooms
     const {
         getInputProps: getRoomsInputProps,
         getIncrementButtonProps: getRoomsIncProps,
@@ -168,7 +168,7 @@ export const Hotels = () => {
                 style={{
                     backgroundImage: `url(${dashBackground})`,
                     backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center top 50px', // Move background down 50 pixels
+                    backgroundPosition: 'center top 50px', 
                     backgroundAttachment: 'fixed',
                     backgroundSize: 'cover',
                     fontFamily: 'Questrial',
@@ -423,7 +423,7 @@ export const Hotels = () => {
                         );
                     })}
                 </Container>
-
+                
                 {/* Load More Button */}
                 {hasNextPage && (
                     <Flex justify="center" mt="4">
