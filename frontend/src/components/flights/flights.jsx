@@ -361,7 +361,7 @@ export const Flights = () => {
                                 </Form.Group>
                             </div>
 
-                            <Button variant="primary" type="submit" style={{ width: '100%' }}>
+                            <Button id="submitBtn" variant="primary" type="submit" style={{ width: '100%' }}>
                                 Submit
                             </Button>
                             {errorMessage && (
@@ -390,7 +390,7 @@ export const Flights = () => {
                 {/* Filter option */}
                 {formSubmitted && (
                     <Flex justify="center" mt="4" mb="2">
-                        <Checkbox
+                        <Checkbox id="ecoFlightsCheckbox"
                             isChecked={showEcoFlights}
                             onChange={() => setShowEcoFlights(!showEcoFlights)}
                             style={{ borderColor: 'aliceblue', color: 'black' }}
@@ -422,7 +422,7 @@ export const Flights = () => {
                                 {/* Eco flight information */}
                                 {flights[key].is_eco_contender && (
                                     <Box>
-                                        <Text align="left" fontWeight="bold" fontSize="lg" mb="0">
+                                        <Text id="ecoFlightTitle" align="left" fontWeight="bold" fontSize="lg" mb="0">
                                             <span style={{ color: 'green' }}>Eco Flight</span>
                                         </Text>
                                         <Text align="left">

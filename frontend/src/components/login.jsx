@@ -67,14 +67,18 @@ export const Login = ({ onLogin }) => {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </Form.Group>
-                        <Button variant="primary" type="submit" style={{ width: '100%' }}>
+                        <Button id="submitBtn" variant="primary" type="submit" style={{ width: '100%' }}>
                             Submit
                         </Button>
+                        
                         {msg && (
-                            <p className="text-danger fw-bold" style={{ textAlign: 'left' }}>
+                            <p id="errorMsg" className="text-danger fw-bold" style={{ textAlign: 'left' }}>
                                 {msg}
                             </p>
                         )}
+
+                       
+                        
                         <div style={{ marginTop: '10px' }}>
                             <Link to="/forgotpassword">Forgot Password?</Link>
                         </div>
