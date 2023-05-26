@@ -366,7 +366,7 @@ export const Dashboard = ({ isNavbarOpen }) => {
                 </Carousel>
               ) : (
                 <Box className='m-auto' p="3" boxShadow="lg" rounded="md" bg="white" mb="4" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}>
-                  <Text textAlign="center">You currently don't have any saved flights.</Text>
+                  <Text textAlign="center" fontWeight="bold">You currently don't have any saved flights.</Text>
                 </Box>
               )}
             </Col>
