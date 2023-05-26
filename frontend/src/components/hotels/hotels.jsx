@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CircularProgress, ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image, HStack, useNumberInput } from '@chakra-ui/react';
+import { CircularProgress, ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image, HStack, useNumberInput, IconButton } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton } from '@chakra-ui/react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import dashBackground from '../../dashbkg.jpg';
 import cities from './cities';
-import { FaHeart } from 'react-icons/fa';
+import { FaHeart, FaSortAmountDownAlt } from 'react-icons/fa';
 import sustainabilityIcon from './planet-earth.png';
 
 export const Hotels = () => {
@@ -292,6 +292,12 @@ export const Hotels = () => {
 
                 {/* Hotels Search Results */}
                 <Container className="hotel-results" maxWidth="6xl">
+                    <Box p="4" boxShadow="lg" rounded="md" bg="white" mb="4">
+                        <Heading textAlign="center">Search Results</Heading>
+                        <Text fontWeight="bold" textAlign="center">Sorted by Price: Lowest to Highest</Text>
+                    </Box>
+
+                                
                     {Object.keys(hotels).map((hotelId) => {
                         const hotel = hotels[hotelId];
                         const roundedPrice = hotel.min_total_price.toFixed(2);
