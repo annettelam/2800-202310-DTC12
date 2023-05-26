@@ -46,7 +46,7 @@ const speedLimiter = slowDown({
     delayMs: 100, // Delay each subsequent request by 100ms
 });
 
-// Apply the rate limiter and request throttling middleware to all routes
+
 router.use(limiter);
 router.use(speedLimiter);
 
@@ -127,8 +127,9 @@ router.post('/', async (req, res) => {
         const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(cityName)}&key=${googleMapsApiKey}`;
         
 
-        let lat, lng;
-
+    let lat, lng;
+    
+    // Get latitude & longitude for the city from Google Maps API
     try {
         const googleMapsResponse = await fetch(googleMapsApiUrl);
         const googleMapsData = await googleMapsResponse.json();
@@ -168,7 +169,7 @@ router.post('/', async (req, res) => {
 
         // Get description & image for each attraction
         for (let i = 0; i < attractions.length; i++) {
-            /* Get description for each attraction */
+            // Get description for each attraction from OpenAI API
             const attraction = attractions[i];
             const attractionName = attraction.name;
             const prompt = `You: Give me a description of ${attractionName} in ${cityName} in 75 words.`;
@@ -187,13 +188,12 @@ router.post('/', async (req, res) => {
                 });
                 const description = response.data.choices[0].text.trim();
                 attraction.description = description;
-                // console.log('description', description);
             } catch (err) {
                 console.error(`Failed to fetch OpenAI data: ${err}`);
                 attraction.description = 'Description not available.';
             }
 
-            /* Get image for each attraction */
+            // Get image for each attraction 
             const cityNameId = attraction.location_id;
             try {
                 const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(cityNameId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`;
