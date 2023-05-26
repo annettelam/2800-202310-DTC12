@@ -44,7 +44,7 @@ import { formatTime, formatDuration, formatStopDisplay } from '../flights/flight
 import sustainabilityIcon from '../hotels/planet-earth.png';
 
 
-export const Dashboard = () => {
+export const Dashboard = ({ isNavbarOpen }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [savedFlights, setSavedFlights] = useState([]);
@@ -196,7 +196,8 @@ export const Dashboard = () => {
       >
         <Box // Create a box for Eco-Assistant
           position="absolute"
-          top="5rem"
+          top={isNavbarOpen ? '18rem' : '5rem'}
+          transition="top 0.22s ease-in-out"
           right="1rem"
           display="flex"
           alignItems="center"
@@ -204,6 +205,7 @@ export const Dashboard = () => {
           padding="0.5rem 1rem"
           borderRadius="md"
           boxShadow="md"
+          zIndex="999"
         >
           <Ecopacking />
         </Box>

@@ -22,6 +22,11 @@ import { PrivacyPolicy } from "./components/privacy-policy";
 
 const Planetpass = () => {
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem('loggedIn'));
+  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
+
+  const toggleNavbar = () => {
+    setIsNavbarOpen((prevState) => !prevState);
+  };
 
   const handleLogin = (user) => {
     localStorage.setItem('loggedIn', 'true');
@@ -32,7 +37,7 @@ const Planetpass = () => {
 
   return (
     <Router>
-      <CustomNavbar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
+      <CustomNavbar loggedIn={loggedIn} setLoggedIn={setLoggedIn} isNavbarOpen={isNavbarOpen} toggleNavbar={toggleNavbar} />
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -41,7 +46,7 @@ const Planetpass = () => {
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard isNavbarOpen={isNavbarOpen} />} />
           <Route path="/flights" element={<Flights />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/profile" element={<Profile />} />

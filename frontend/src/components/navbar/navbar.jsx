@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import navlogo from '../../navlogo.png';
 
-export const CustomNavbar = ({ loggedIn, setLoggedIn }) => {
+export const CustomNavbar = ({ loggedIn, setLoggedIn, toggleNavbar }) => {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -36,7 +36,7 @@ export const CustomNavbar = ({ loggedIn, setLoggedIn }) => {
             <Container>
                 <Navbar.Brand href="#home"><img src={navlogo} alt="logo" className="App-logo" style={{ width: '75px' }} />
                 </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0">
+                <Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0" onClick={toggleNavbar}>
                     <FaBars />
                 </Navbar.Toggle>
                 <Navbar.Collapse id="basic-navbar-nav">
