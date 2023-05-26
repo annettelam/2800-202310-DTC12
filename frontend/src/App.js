@@ -57,8 +57,6 @@ const Planetpass = () => {
           <Route path="*" element={<NotFoundPage />} />
           {/* Profile page */}
           <Route path="/profile" element={<Profile />} />
-          {/* Suggestions page */}
-          <Route path="/suggestions" element={<Suggestions />} />
           {/* Flights page */}
           <Route path="/flights" element={<Flights />} />
           {/* Hotels page */}
