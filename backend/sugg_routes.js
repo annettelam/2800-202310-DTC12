@@ -148,7 +148,11 @@ router.post('/', async (req, res) => {
     let tripAdvisorApiUrl = `https://api.content.tripadvisor.com/api/v1/location/nearby_search?latLong=${lat}%2C${lng}&key=${tripAdvisorApiKey}&category=attractions&language=en`;
   
     try {
-        const tripAdvisorResponse = await fetch(tripAdvisorApiUrl);
+        const tripAdvisorResponse = await fetch(tripAdvisorApiUrl, {
+            headers: {
+                Referer: 'http://planetpass-backend.onrender.com' // Add the Referer header with your domain
+            }
+        });
         const tripAdvisorData = await tripAdvisorResponse.json();
         console.log(tripAdvisorData);
 
