@@ -1,4 +1,3 @@
-const { searchFlights } = require("./skyscanner.js");
 // Requiring files
 require("./utils.js");
 require("dotenv").config();
@@ -15,12 +14,11 @@ const cors = require("cors");
 const axios = require("axios");
 const { ObjectId } = require("mongodb");
 const suggRoutes = require("./sugg_routes.js");
-const fs = require("fs");
 const redis = require("redis");
 
 // API files
 const cities = require("../frontend/src/components/hotels/cities");
-const { application } = require("express");
+const { searchFlights } = require("./skyscanner.js");
 
 // Constants
 const saltRounds = 10;
@@ -51,7 +49,6 @@ let redisClient;
 })();
 
 const { database, getUserCollection } = require("./databaseConnection");
-const e = require("express");
 const userCollection = getUserCollection();
 database.connect((err) => {
   if (err) {
