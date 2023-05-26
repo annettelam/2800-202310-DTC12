@@ -2,6 +2,7 @@ const axios = require('axios');
 axios.defaults.withCredentials = true
 const { response } = require('express');
 
+// Function to search flights from Skyscanner API using the provided parameters
 const searchFlights = async (params) => {
     try {
         const options = {
@@ -13,8 +14,8 @@ const searchFlights = async (params) => {
                 'X-RapidAPI-Host': 'skyscanner50.p.rapidapi.com'
             }
         };
+        // Send the request and wait for the response
         const response = await axios.request(options);
-        // console.log(response.data.data);
         return response;
     } catch (error) {
         console.error(error);
