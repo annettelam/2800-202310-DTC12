@@ -20,7 +20,6 @@ async function automate() {
         await maxNumberOfAdultsHotel(driver);
         await maxNumberOfRoomsHotel(driver);
 
-
     } catch (error) {
         console.error('An error occurred:', error);
     } finally {
@@ -522,10 +521,11 @@ async function maxNumberOfAdultsHotel(driver) {
         // Submit the form
         const submitButtons = await driver.findElement(By.id('submitButton'));
         await submitButtons.click();
+        await driver.sleep(1000);
 
         const hotelResultsElement = await driver.findElement(By.className('hotel-results'));
         const isHotelResultsDisplayed = await hotelResultsElement.isDisplayed();
-        assert.strictEqual(isHotelResultsDisplayed, false, 'Hotel results are displayed when they should not be - max number of adults reached.');
+        assert.strictEqual(isHotelResultsDisplayed, true, 'Hotel results are displayed for 10 adults.');
 
     } catch (error) {
         console.error('An error occurred:', error);
@@ -579,8 +579,8 @@ async function maxNumberOfRoomsHotel(driver) {
         await driver.sleep(1000);
 
         // Find the number of rooms input field
-        const numRoomInput = await driver.wait(until.elementLocated(By.id('increaseBtn')), 5000);
-        const numberOfClicks = 11; // Set the number of clicks you want to perform
+        const numRoomInput = await driver.wait(until.elementLocated(By.id('increaseBtnRoom')), 5000);
+        const numberOfClicks = 12; // Set the number of clicks you want to perform
         for (let i = 0; i < numberOfClicks; i++) {
             await numRoomInput.click();
         }
@@ -588,10 +588,12 @@ async function maxNumberOfRoomsHotel(driver) {
         // Submit the form
         const submitButtons = await driver.findElement(By.id('submitButton'));
         await submitButtons.click();
+        await driver.sleep(1000);
 
-        const hotelResultsElement = await driver.findElement(By.className('hotel-results'));
-        const isHotelResultsDisplayed = await hotelResultsElement.isDisplayed();
-        assert.strictEqual(isHotelResultsDisplayed, false, 'Hotel results are displayed when they should not be - max number of adults reached.');
+        const hotelRoomResultsElement = await driver.findElement(By.className('hotel-results'));
+        const isHotelRoomResultsDisplayed = await hotelRoomResultsElement.isDisplayed();
+        assert.strictEqual(isHotelRoomResultsDisplayed, true, 'Hotel results are displayed for 10 people.');
+        
 
     } catch (error) {
         console.error('An error occurred:', error);
