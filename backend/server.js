@@ -375,7 +375,7 @@ app.post("/reset-password", async (req, res) => {
     subject: "Password reset request",
     html: `
       <header>
-        <img src="cid:logo" alt="PlanetPass Logo" />
+        <img src="cid:logo" alt="PlanetPass Logo" style="max-width: 300px;" />
       </header>
 
       <!-- Email Content -->
