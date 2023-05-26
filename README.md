@@ -123,3 +123,6 @@ Welcome to aether! We are a dynamic venture brought to life by four BCIT CST stu
 
 **test.js:**
 - This code uses Selenium WebDriver to automate login and form submission on a web application. It performs various login scenarios, such as normal user login, special character login, and language-specific characters login. Additionally, it tests different inputs for flight and hotel bookings, including checking for errors such as invalid email, maximum number of adults, decimal number input, negative number input, and no flights found. The code demonstrates how to interact with web elements, enter data, and verify expected outcomes using assertions. It can serve as a foundation for automated testing and can be customized further based on specific test cases.
+
+**utils.js:**
+- This section enables easy inclusion of files using relative paths by setting up global variables and functions. It allows you to include files in your project using the include() function, which resolves the relative path and imports the specified file. The include() function is also used in the server.js file to include the routes and modules.
