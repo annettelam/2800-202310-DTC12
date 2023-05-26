@@ -32,6 +32,7 @@ export const Suggestions = () => {
   useEffect(() => {
     const fetchAttractions = async () => {
       try {
+        // Fetch suggestions and city name based on user data
         const suggResponse = await axios.post('http://localhost:4000/suggestions', { 
           user 
         });
