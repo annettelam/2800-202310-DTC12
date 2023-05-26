@@ -54,9 +54,11 @@ export const SignUp = ({ onLogin }) => {
 
       if (data) {
         if (data.message === 'Success') {
+          // If sign up is successful, call the onLogin function and navigate to the profile page
           onLogin(JSON.stringify(data.user));
           navigate('/profile');
         } else {
+          // Set the error message if sign up is unsuccessful
           setMsg(data);
         }
       }
@@ -77,6 +79,7 @@ export const SignUp = ({ onLogin }) => {
                 <form onSubmit={handleSubmit}>
                   <FormControl isRequired>
                       <FormLabel>First Name</FormLabel>
+                      {/* Input field for entering the first name */}
                       <Input
                           type="text"
                           name="firstName"
@@ -90,6 +93,7 @@ export const SignUp = ({ onLogin }) => {
                   <br />
                   <FormControl isRequired>
                       <FormLabel>Last Name</FormLabel>
+                      {/* Input field for entering the last name */}
                       <Input
                           type="text"
                           name="lastName"
@@ -103,6 +107,7 @@ export const SignUp = ({ onLogin }) => {
                   <br />
                   <FormControl isRequired>
                     <FormLabel>Email address</FormLabel>
+                    {/* Input field for entering the email */}
                     <Input
                       type="email"
                       name="email"
@@ -116,6 +121,7 @@ export const SignUp = ({ onLogin }) => {
                   <br />
                   <FormControl isRequired>
                       <FormLabel>Username</FormLabel>
+                      {/* Input field for entering the username */}
                       <Input
                           type="text"
                           name="username"
@@ -129,6 +135,7 @@ export const SignUp = ({ onLogin }) => {
                   <br />
                   <FormControl isRequired>
                     <FormLabel>Password</FormLabel>
+                    {/* Input field for entering the password */}
                     <Input
                       type="password"
                       name="password"
@@ -141,6 +148,7 @@ export const SignUp = ({ onLogin }) => {
                   </FormControl>
                   <br />
                   <FormLabel>City</FormLabel>
+                    {/* Input field for entering the city */}
                     <Input
                       type="text"
                       name="city"
@@ -156,6 +164,7 @@ export const SignUp = ({ onLogin }) => {
                     Sign Up
                   </Button>
                 </form>
+                {/* Display the error message if it exists */}
                 {msg && (
                   <p className="text-danger fw-bold" style={{ textAlign: 'left' }}>
                     {msg}
