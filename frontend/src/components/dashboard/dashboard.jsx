@@ -132,7 +132,18 @@ export const Dashboard = () => {
       setSavedHotels(newSavedHotels);
     }
     // Find hotel object
-    const hotel = savedHotels.find((hotel) => hotel.hotel_id === hotelId);
+    var hotel = savedHotels.find((hotel) => hotel.hotel_id === hotelId);
+    // Create hotel object
+    hotel = {
+      hotel_id: hotelId,
+      hotel_name: hotel.hotel_name,
+      address: hotel.address,
+      min_total_price: hotel.min_total_price,
+      review_score: hotel.review_score,
+      max_photo_url: hotel.max_photo_url,
+      url: hotel.url,
+      details: hotel.details
+    };
     // Update database
     console.log(hotel);
     try {
@@ -360,147 +371,151 @@ export const Dashboard = () => {
               <Flex justifyContent="center">
                 <h2 className="mb-4">Your Saved Hotels</h2>
               </Flex>
-              <Carousel
-                showThumbs={false}
-                showStatus={false}
-                infiniteLoop={true}
-                selectedItem={0}
-                interval={3000}
-                emulateTouch={true}
-                swipeable={true}
-              >
-                {savedHotels.map((hotel) => {
-                  const roundedPrice = hotel.min_total_price.toFixed(2);
-                  const sustainability = hotel.details?.sustainability;
-                  return (
-                    <Box key={hotel.hotel_id} className='m-auto' p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%"}}>
-                      <Flex direction="column" align="center">
-                        <Box position="absolute" top="15px" right="15px" onClick={() => handleSaveHotel(hotel.hotel_id)}>
-                          <FaHeart
-                            size={30}
-                            color={isHotelSaved(hotel.hotel_id) ? 'red' : 'black'}
-                            fill={isHotelSaved(hotel.hotel_id) ? 'red' : 'none'}
-                            stroke={isHotelSaved(hotel.hotel_id) ? 'none' : 'currentColor'}
-                            strokeWidth="10"
-                            style={{ cursor: 'pointer' }} />
-                        </Box>
-
-                        {/* Hotel Name */}
-                        <Heading size={{ base: 'md', lg: 'lg' }} w='75%' textAlign="center" mb="4">
-                          {hotel.hotel_name}
-                        </Heading>
-
-                        {/* Hotel Image */}
-                        <Image src={hotel.max_photo_url} alt={hotel.hotel_name} w={{ base: '80%', sm: '65%', md: '55%', lg: '40%' }} h="auto" rounded="md" mb="4" />
-
-                        {/* Booking Button */}
-                        <ChakraButton
-                          size="md"
-                          onClick={() => (window.location.href = hotel.url)}
-                          className="mb-3"
-                          colorScheme="teal"
-                        >
-                          Book at Booking.com
-                        </ChakraButton>
-
-                        {/* Hotel Details */}
-                        <Text fontSize="lg" textAlign="center" mb="2">
-                          <b>Price:</b> ${roundedPrice} CAD
-                        </Text>
-                        <Text fontSize="lg" textAlign="center" mb="2">
-                          <b>Address:</b> {hotel.address}
-                        </Text>
-                        <Text fontSize="lg" textAlign="center" mb="2">
-                          <b>Rating:</b> {hotel.review_score !== null ? `${hotel.review_score} / 10` : 'No reviews yet'}
-                        </Text>
-
-                        {/* Sustainability Initiatives */}
-                        {sustainability && (
-                          <Box textAlign="center" mb="4" style={{ width: "100%" }}>
-                            <Text fontSize="lg" fontWeight="bold" mb="2" style={{ color: 'green' }}>
-                              Eco-Friendly Property
-                            </Text>
-                            <Box display="flex" alignItems="center" justifyContent="center">
-                              {sustainability.sustainability_page.tier === 'bronze' && (
-                                <img
-                                  src={sustainabilityIcon}
-                                  alt="Sustainability Icon"
-                                  style={{ width: "20px", height: "20px", marginRight: "4px" }}
-                                />
-                              )}
-                              {sustainability.sustainability_page.tier === 'silver' && (
-                                <>
-                                  <img
-                                    src={sustainabilityIcon}
-                                    alt="Sustainability Icon"
-                                    style={{ width: "20px", height: "20px", marginRight: "4px" }}
-                                  />
-                                  <img
-                                    src={sustainabilityIcon}
-                                    alt="Sustainability Icon"
-                                    style={{ width: "20px", height: "20px", marginRight: "4px" }}
-                                  />
-                                </>
-                              )}
-                              {sustainability.sustainability_page.tier === 'gold' && (
-                                <>
-                                  <img
-                                    src={sustainabilityIcon}
-                                    alt="Sustainability Icon"
-                                    style={{ width: "20px", height: "20px", marginRight: "4px" }}
-                                  />
-                                  <img
-                                    src={sustainabilityIcon}
-                                    alt="Sustainability Icon"
-                                    style={{ width: "20px", height: "20px", marginRight: "4px" }}
-                                  />
-                                  <img
-                                    src={sustainabilityIcon}
-                                    alt="Sustainability Icon"
-                                    style={{ width: "20px", height: "20px", marginRight: "4px" }}
-                                  />
-                                </>
-                              )}
-                            </Box>
-                            
-                            {/* Open Modal Button */}
-                            <ChakraButton colorScheme="green" height={8} size="md" borderRadius="md" _hover={{ bg: 'green.600' }} _active={{ bg: 'green.700' }} mt={2}
-                              onClick={() => openModal(hotel.hotel_id)}>
-                              Read More
-                            </ChakraButton>
-
-                            {/* Modal for Sustainability Intiatives */}
-                            <Modal isOpen={isModalOpen && selectedHotelId === hotel.hotel_id} onClose={closeModal} size="2xl">
-                              <ModalOverlay />
-                              <ModalContent bg="green.300">
-                                <ModalHeader>{hotel.name}</ModalHeader>
-                                <ModalCloseButton />
-                                <ModalBody>
-                                  <h4 mb="2" style={{ fontWeight: 'bold' }}>Sustainability Initiatives</h4>
-                                  {sustainability.sustainability_page.efforts.map((effort) => (
-                                    <Box key={effort.title} mb="4">
-                                      <Text fontSize="lg" fontWeight="bold" mb="2">{effort.title}</Text>
-                                      <ul style={{ listStyleType: "none" }}>
-                                        {effort.steps.map((step) => (
-                                          <li key={step} style={{ marginTop: 5 }}>{step}.</li>
-                                        ))}
-                                      </ul>
-                                    </Box>
-                                  ))}
-                                </ModalBody>
-                                <ModalFooter>
-                                  <ChakraButton colorScheme='blue' mr={3} onClick={closeModal}>Close</ChakraButton>
-                                </ModalFooter>
-                              </ModalContent>
-                            </Modal>
+              {savedHotels.length > 0 ? (
+                <Carousel
+                  showThumbs={false}
+                  showStatus={false}
+                  infiniteLoop={true}
+                  selectedItem={0}
+                  interval={3000}
+                  emulateTouch={true}
+                  swipeable={true}
+                >
+                  {savedHotels.map((hotel) => {
+                    const roundedPrice = hotel.min_total_price.toFixed(2);
+                    const sustainability = hotel.details?.sustainability;
+                    return (
+                      <Box key={hotel.hotel_id} className='m-auto' p="4" boxShadow="lg" rounded="md" bg="white" mb="4" position="relative" w={{ base: "100%", sm: "60%", md: "40%", lg: "30%"}}>
+                        <Flex direction="column" align="center">
+                          <Box position="absolute" top="15px" right="15px" onClick={() => handleSaveHotel(hotel.hotel_id)}>
+                            <FaHeart
+                              size={30}
+                              color={isHotelSaved(hotel.hotel_id) ? 'red' : 'black'}
+                              fill={isHotelSaved(hotel.hotel_id) ? 'red' : 'none'}
+                              stroke={isHotelSaved(hotel.hotel_id) ? 'none' : 'currentColor'}
+                              strokeWidth="10"
+                              style={{ cursor: 'pointer' }} />
                           </Box>
-                        )}
-                      </Flex>
-                    </Box>
-                  );
-                })}
-                
-              </Carousel>
+
+                          {/* Hotel Name */}
+                          <Heading size={{ base: 'md', lg: 'lg' }} w='75%' textAlign="center" mb="4">
+                            {hotel.hotel_name}
+                          </Heading>
+
+                          {/* Hotel Image */}
+                          <Image src={hotel.max_photo_url} alt={hotel.hotel_name} w={{ base: '80%', sm: '65%', md: '55%', lg: '40%' }} h="auto" rounded="md" mb="4" />
+
+                          {/* Booking Button */}
+                          <ChakraButton
+                            size="md"
+                            onClick={() => (window.location.href = hotel.url)}
+                            className="mb-3"
+                            colorScheme="teal"
+                          >
+                            Book at Booking.com
+                          </ChakraButton>
+
+                          {/* Hotel Details */}
+                          <Text fontSize="lg" textAlign="center" mb="2">
+                            <b>Price:</b> ${roundedPrice} CAD
+                          </Text>
+                          <Text fontSize="lg" textAlign="center" mb="2">
+                            <b>Address:</b> {hotel.address}
+                          </Text>
+                          <Text fontSize="lg" textAlign="center" mb="2">
+                            <b>Rating:</b> {hotel.review_score !== null ? `${hotel.review_score} / 10` : 'No reviews yet'}
+                          </Text>
+
+                          {/* Sustainability Initiatives */}
+                          {sustainability && (
+                            <Box textAlign="center" mb="4" style={{ width: "100%" }}>
+                              <Text fontSize="lg" fontWeight="bold" mb="2" style={{ color: 'green' }}>
+                                Eco-Friendly Property
+                              </Text>
+                              <Box display="flex" alignItems="center" justifyContent="center">
+                                {sustainability.sustainability_page.tier === 'bronze' && (
+                                  <img
+                                    src={sustainabilityIcon}
+                                    alt="Sustainability Icon"
+                                    style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                  />
+                                )}
+                                {sustainability.sustainability_page.tier === 'silver' && (
+                                  <>
+                                    <img
+                                      src={sustainabilityIcon}
+                                      alt="Sustainability Icon"
+                                      style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                    />
+                                    <img
+                                      src={sustainabilityIcon}
+                                      alt="Sustainability Icon"
+                                      style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                    />
+                                  </>
+                                )}
+                                {sustainability.sustainability_page.tier === 'gold' && (
+                                  <>
+                                    <img
+                                      src={sustainabilityIcon}
+                                      alt="Sustainability Icon"
+                                      style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                    />
+                                    <img
+                                      src={sustainabilityIcon}
+                                      alt="Sustainability Icon"
+                                      style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                    />
+                                    <img
+                                      src={sustainabilityIcon}
+                                      alt="Sustainability Icon"
+                                      style={{ width: "20px", height: "20px", marginRight: "4px" }}
+                                    />
+                                  </>
+                                )}
+                              </Box>
+                              
+                              {/* Open Modal Button */}
+                              <ChakraButton colorScheme="green" height={8} size="md" borderRadius="md" _hover={{ bg: 'green.600' }} _active={{ bg: 'green.700' }} mt={2}
+                                onClick={() => openModal(hotel.hotel_id)}>
+                                Read More
+                              </ChakraButton>
+
+                              {/* Modal for Sustainability Intiatives */}
+                              <Modal isOpen={isModalOpen && selectedHotelId === hotel.hotel_id} onClose={closeModal} size="2xl">
+                                <ModalOverlay />
+                                <ModalContent bg="green.300">
+                                  <ModalHeader>{hotel.name}</ModalHeader>
+                                  <ModalCloseButton />
+                                  <ModalBody>
+                                    <h4 mb="2" style={{ fontWeight: 'bold' }}>Sustainability Initiatives</h4>
+                                    {sustainability.sustainability_page.efforts.map((effort) => (
+                                      <Box key={effort.title} mb="4">
+                                        <Text fontSize="lg" fontWeight="bold" mb="2">{effort.title}</Text>
+                                        <ul style={{ listStyleType: "none" }}>
+                                          {effort.steps.map((step) => (
+                                            <li key={step} style={{ marginTop: 5 }}>{step}.</li>
+                                          ))}
+                                        </ul>
+                                      </Box>
+                                    ))}
+                                  </ModalBody>
+                                  <ModalFooter>
+                                    <ChakraButton colorScheme='blue' mr={3} onClick={closeModal}>Close</ChakraButton>
+                                  </ModalFooter>
+                                </ModalContent>
+                              </Modal>
+                            </Box>
+                          )}
+                        </Flex>
+                      </Box>
+                    );
+                  })}
+                  
+                </Carousel>
+              ) : (
+                <Text textAlign="center">You currently don't have any saved hotels.</Text>
+              )}
             </Col>
           </Row>
     

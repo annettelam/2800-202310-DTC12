@@ -99,7 +99,18 @@ export const Hotels = () => {
             setSavedHotels(newSavedHotels);
         }
         // Find hotel object
-        const hotel = hotels.find((hotel) => hotel.hotel_id === hotelId);
+        var hotel = hotels.find((hotel) => hotel.hotel_id === hotelId);
+        // Create hotel object
+        hotel = {
+            hotel_id: hotelId,
+            hotel_name: hotel.hotel_name,
+            address: hotel.address,
+            min_total_price: hotel.min_total_price,
+            review_score: hotel.review_score,
+            max_photo_url: hotel.max_photo_url,
+            url: hotel.url,
+            details: hotel.details
+        };
         // Update database
         try {
             const response = await axios.post('http://localhost:4000/save-hotel', {
