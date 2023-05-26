@@ -1,9 +1,11 @@
 # 2800-202310-DTC12
 Welcome to aether! We are a dynamic venture brought to life by four BCIT CST students: Michelle Kwok, Annette Lam, Lisa Jung, and Mikko Sio. As individuals who share a passion for the environment and a deep love for traveling, we have come together to create something different.
 
-This repository contains the following files and directories:
+<br>
 
-# Files
+# Frontend 
+
+## Files
 
 - forgotpassword.jsx: handles the functionality for resetting a user's password.
 - login.jsx: implements the login feature of the application.
@@ -13,14 +15,13 @@ This repository contains the following files and directories:
 
 <br>
 
-# Directories:
+## Directories:
 
 **dashboard**: Contains files related to the dashboard feature of the application.
 
 - The "Dashboard" component is a React page that represents a user's dashboard in a web application. It displays saved flights, saved hotels, and attractions. The component utilizes various dependencies, including React, Chakra UI, Bootstrap, and axios for API calls. 
 
 - The component initializes state variables using the useState hook to manage user data, saved flights, saved hotels, city names, and attractions. It also uses the useEffect hook to handle initializations and side effects, such as checking if the user is logged in and fetching attractions data.
-
 - The component includes functionality to save and unsave flights and hotels, with corresponding functions handleSaveFlight and handleSaveHotel. It also provides a modal to display hotel details and sustainability initiatives.
 
 - It displays saved flights and hotels, allows users to interact with them, and showcases attractions.
@@ -87,3 +88,27 @@ This repository contains the following files and directories:
 - It requires the user to be logged in. It fetches attractions and the city name from the server using an HTTP POST request. The fetched attractions are displayed in a grid layout, with each attraction showing an image and its name. 
 - If there are no attractions available, a message is displayed. The component also includes a heading for the packing list section. 
 - The component uses Chakra UI for styling and includes a background image.
+
+<br>
+
+# Backend 
+
+## Files
+
+**recommendations.js:** 
+- This is a Node.js server application that provides an API endpoint for generating environmentally friendly packing recommendations. It utilizes the OpenAI GPT-3 language model to generate personalized recommendations based on the provided travel destination and dates. The server listens on port 3000 and accepts POST requests to the '/recommendations' endpoint, where the request body should include the 'city' and 'dates' parameters. The server then sends a request to the OpenAI API, processes the response, and returns the recommendations as a JSON response.
+
+**server.js:**
+- This is a Node.js server application that provides API endpoints for user authentication, flight and hotel search, and fetching attractions. It utilizes the Express.js framework and listens on port 3001. The server provides the following endpoints:
+
+
+| Endpoint | Method | Description | 
+| --- | --- | --- |
+| /login | POST | Authenticates the user and creates a session. |
+| /logout | POST | Destroys the user's session. |
+| /register | POST | Registers a new user. |
+| /flights | POST | Searches for flights based on the provided parameters. |
+| /hotels | POST | Searches for hotels based on the provided parameters. |
+| /attractions | POST | Fetches attractions based on the provided city. |
+
+<br>
