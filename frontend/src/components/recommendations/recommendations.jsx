@@ -100,7 +100,7 @@ export const Recommendations = ({ flightId }) => {
                 </Box>
             </Container>
             {recommendations.length > 0 && (
-                <Container maxW="lg" mt={2}>
+                <Container maxW="xs" mt={2}>
                     <SimpleGrid columns={1} spacing={4}>
                         {recommendations.map((recommendation, index) => {
                             const hasHyphen = recommendation.includes('-');
