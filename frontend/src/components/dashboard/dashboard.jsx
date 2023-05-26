@@ -132,7 +132,18 @@ export const Dashboard = () => {
       setSavedHotels(newSavedHotels);
     }
     // Find hotel object
-    const hotel = savedHotels.find((hotel) => hotel.hotel_id === hotelId);
+    var hotel = savedHotels.find((hotel) => hotel.hotel_id === hotelId);
+    // Create hotel object
+    hotel = {
+      hotel_id: hotelId,
+      hotel_name: hotel.hotel_name,
+      address: hotel.address,
+      min_total_price: hotel.min_total_price,
+      review_score: hotel.review_score,
+      max_photo_url: hotel.max_photo_url,
+      url: hotel.url,
+      details: hotel.details
+    };
     // Update database
     console.log(hotel);
     try {
