@@ -19,34 +19,36 @@ import '../fonts.css';
 import navlogo from '../navlogo.png';
 
 export const Login = ({ onLogin }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [msg, setMsg] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [msg, setMsg] = useState('');
 
-    const handleSubmit = async (e) => {
-        e.preventDefault(); 
-        console.log(email, password);
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
+    console.log(email, password);
 
-        try {
-            await axios.post('http://localhost:4000/login', {
-                email, password
-            }).then((res) => {
-                console.log(res.data);
-                if (res.data) {
-                    if (res.data.message === 'Success') {
-                        onLogin(JSON.stringify(res.data.user));
-                        navigate('/profile');
-                    } else {
-                        setMsg(res.data);
-                    }
-                }
-            })
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    try {
+        await axios.post('http://localhost:4000/login', {
+            email, password
+        }).then((res) => {
+            console.log(res.data);
+            if (res.data) {
+              if (res.data.message === 'Success') {
+                // If login is successful, call the onLogin function and navigate to the profile page
+                onLogin(JSON.stringify(res.data.user));
+                navigate('/profile');
+              } else {
+                // Set the error message if login is unsuccessful
+                setMsg(res.data);
+              }
+            }
+        })
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
     return (
         <ChakraProvider>
@@ -60,6 +62,7 @@ export const Login = ({ onLogin }) => {
                   <form onSubmit={handleSubmit}>
                     <FormControl isRequired>
                       <FormLabel>Email address</FormLabel>
+                      {/* Input field for entering the email */}
                       <Input
                         type="email"
                         name="email"
@@ -74,6 +77,7 @@ export const Login = ({ onLogin }) => {
                     <br />
                     <FormControl isRequired>
                       <FormLabel>Password</FormLabel>
+                      {/* Input field for entering the password */}
                       <Input
                         type="password"
                         name="password"
@@ -90,6 +94,7 @@ export const Login = ({ onLogin }) => {
                     </Button>
                   </form>
                   {msg && (
+                    // Display the error message if it exists
                     <p id="errorMsg" className="text-danger fw-bold" style={{ textAlign: 'left' }}>
                       {msg}
                     </p>
