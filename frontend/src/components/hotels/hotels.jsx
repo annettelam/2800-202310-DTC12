@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CircularProgress, ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image, HStack, useNumberInput, IconButton } from '@chakra-ui/react';
+import { CircularProgress, ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image, HStack, useNumberInput } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton } from '@chakra-ui/react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import dashBackground from '../../dashbkg.jpg';
 import cities from './cities';
-import { FaHeart, FaSortAmountDownAlt } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa';
 import sustainabilityIcon from './planet-earth.png';
 
 export const Hotels = () => {
@@ -128,7 +128,7 @@ export const Hotels = () => {
             console.log(error);
         }
     };
-    
+
     // Get hotels on form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -179,7 +179,7 @@ export const Hotels = () => {
                 style={{
                     backgroundImage: `url(${dashBackground})`,
                     backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center top 50px', 
+                    backgroundPosition: 'center top 50px',
                     backgroundAttachment: 'fixed',
                     backgroundSize: 'cover',
                     fontFamily: 'Questrial',
@@ -205,7 +205,7 @@ export const Hotels = () => {
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
                                     required
                                 >
-                                    <option value="" style={{color:'grey'}}>Select a city</option>
+                                    <option value="" style={{ color: 'grey' }}>Select a city</option>
                                     {Object.keys(cities).map((cityOption) => (
                                         <option key={cityOption} value={cityOption}>
                                             {cityOption}
@@ -434,7 +434,7 @@ export const Hotels = () => {
                         );
                     })}
                 </Container>
-                
+
                 {/* Load More Button */}
                 {hasNextPage && (
                     <Flex justify="center" mt="4">
