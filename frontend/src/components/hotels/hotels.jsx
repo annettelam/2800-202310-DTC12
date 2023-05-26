@@ -90,8 +90,6 @@ export const Hotels = () => {
 
     // Save hotel
     const handleSaveHotel = async (hotelId) => {
-        // console.log(hotelId);
-        // console.log(isHotelSaved(hotelId));
         if (!isHotelSaved(hotelId)) {
             // Update useState
             setSavedHotels([...savedHotels, hotelId]);
@@ -103,12 +101,10 @@ export const Hotels = () => {
         // Find hotel object
         const hotel = hotels.find((hotel) => hotel.hotel_id === hotelId);
         // Update database
-        // console.log(hotel);
         try {
             const response = await axios.post('http://localhost:4000/save-hotel', {
                 hotel, user
             });
-            // console.log(response.data);
             // Update localStorage
             if (response.data === "Hotel saved") {
                 user.savedHotels.push(hotel);
@@ -125,7 +121,6 @@ export const Hotels = () => {
     // Get hotels on form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // console.log(city, checkInDate, checkOutDate, numAdults, numRooms);
         setIsLoading(true);
         try {
             const response = await axios.post('http://localhost:4000/hotels', {
@@ -136,7 +131,6 @@ export const Hotels = () => {
                 numRooms,
                 page: 1 // Start on page 1 (First 4 hotels)
             });
-            // console.log(response.data);
             // Update useState
             setHotels(response.data.hotels);
             setHasNextPage(response.data.hasNextPage);
@@ -158,7 +152,6 @@ export const Hotels = () => {
                 numRooms,
                 page: Math.ceil(hotels.length / 4) + 1 // Calculate the next page based on the current number of hotels
             });
-            // console.log(response.data);
             // Update useState
             setHotels((prevHotels) => [...prevHotels, ...response.data.hotels]);
             setHasNextPage(response.data.hasNextPage);
