@@ -203,7 +203,11 @@ router.post('/', async (req, res) => {
             const cityNameId = attraction.location_id;
             try {
                 const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(cityNameId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`;
-                const tripAdvisorImgResponse = await fetch(tripAdvisorImgUrl);
+                const tripAdvisorImgResponse = await fetch(tripAdvisorImgUrl, {
+                    headers: {
+                        Referer: 'http://planetpass-backend.onrender.com' // Add the Referer header with your domain
+                    }
+                });
                 const tripAdvisorImgData = await tripAdvisorImgResponse.json();
 
                 if (!tripAdvisorImgData.data || !Array.isArray(tripAdvisorImgData.data) || tripAdvisorImgData.data.length === 0) {
