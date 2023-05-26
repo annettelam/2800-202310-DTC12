@@ -18,8 +18,6 @@ import { Recommendations } from "./components/recommendations/recommendations";
 import { PrivacyPolicy } from "./components/privacy-policy";
 
 
-
-
 const Planetpass = () => {
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem('loggedIn'));
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
@@ -37,22 +35,35 @@ const Planetpass = () => {
 
   return (
     <Router>
+      {/* Custom Navbar component */}
       <CustomNavbar loggedIn={loggedIn} setLoggedIn={setLoggedIn} isNavbarOpen={isNavbarOpen} toggleNavbar={toggleNavbar} />
       <div className="App">
         <Routes>
+          {/* Home page */}
           <Route path="/" element={<Home />} />
+          {/* Login page */}
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          {/* Sign up page */}
           <Route path="/signup" element={<SignUp onLogin={handleLogin} />} />
+          {/* Forgot password page */}
           <Route path="/forgotpassword" element={<ForgotPassword />} />
+          {/* Reset password page */}
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          {/* Privacy policy page */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          {/* Dashboard page */}
           <Route path="/dashboard" element={<Dashboard isNavbarOpen={isNavbarOpen} />} />
-          <Route path="/flights" element={<Flights />} />
+          {/* 404 Not Found page */}
           <Route path="*" element={<NotFoundPage />} />
+          {/* Profile page */}
           <Route path="/profile" element={<Profile />} />
+          {/* Suggestions page */}
           <Route path="/suggestions" element={<Suggestions />} />
+          {/* Flights page */}
           <Route path="/flights" element={<Flights />} />
+          {/* Hotels page */}
           <Route path="/hotels" element={<Hotels />} />
+          {/* Recommendations page */}
           <Route path="/recommendations" element={<Recommendations />} />
         </Routes >
       </div >
