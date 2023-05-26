@@ -4,7 +4,6 @@ const assert = require('assert');
 
 async function automate() {
     let driver;
-
     try {
         driver = await new Builder().forBrowser('chrome').build();
 
@@ -114,17 +113,20 @@ async function invalidEmailLogin(driver) {
     try {
         await driver.get('http://localhost:3000/login');
 
+        // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
         const passwordInput = await driver.findElement(By.name('password'));
 
-        await emailInput.sendKeys('sampletemail123@test.ca'); // Enter an invalid email
+        // Enter an invalid email
+        await emailInput.sendKeys('sampletemail123@test.ca');
         await passwordInput.sendKeys('12345');
 
+        // Find and click the submit button
         const submitButton = await driver.findElement(By.id('submitBtn'));
         await submitButton.click();
         await driver.sleep(3000);
 
-        // Example assertion: Verify error message for invalid login
+        // Assertion: Verify error message for invalid login
         const errorMessage = await driver.wait(until.elementLocated(By.id('errorMsg')), 5000);
         const errorMessageText = await errorMessage.getText();
         assert.strictEqual(errorMessageText, 'Invalid Email/Password!', 'Error message mismatch');
@@ -154,29 +156,28 @@ async function characterInNumberFieldFlying(driver) {
         await driver.get('http://localhost:3000/flights');
 
         // Fill out the form
+        // Enter origin
         const originSelect = await driver.wait(until.elementLocated(By.name('originDisplayCode')), 80000);
         const originDropdown = await driver.wait(until.elementIsVisible(originSelect));
         const originSelectObject = new Select(originDropdown);
         await originSelectObject.selectByValue('ORD');
 
+        // Enter destination
         const destinationSelect = await driver.wait(until.elementLocated(By.name('destinationDisplayCode')), 5000);
         const destinationDropdown = await driver.wait(until.elementIsVisible(destinationSelect));
         const destinationSelectObject = new Select(destinationDropdown);
         await destinationSelectObject.selectByValue('MIA');
         await destinationDropdown.sendKeys(Key.TAB);
 
-
+        // Enter departure date
         const departureDateField = await driver.wait(until.elementLocated(By.name('departureDate')), 5000);
         await departureDateField.click();
-        await departureDateField.sendKeys(06); // Fill in the month
-        await departureDateField.sendKeys(Key.TAB); // Move the cursor to the day field
-        await departureDateField.sendKeys(2023); // Fill in the day
-        await departureDateField.sendKeys(Key.TAB); // Move the cursor to the year field
-        await departureDateField.sendKeys(1101); // Fill in the year
+        await departureDateField.sendKeys(06);
+        await departureDateField.sendKeys(Key.TAB);
+        await departureDateField.sendKeys(2023);
+        await departureDateField.sendKeys(Key.TAB);
+        await departureDateField.sendKeys(1101);
 
-
-        // const oneWayRadio = await driver.findElement(By.id('oneWay'));
-        // await oneWayRadio.click();
 
         // Set "Number of Adults" to 1
         const adultsInput = await driver.findElement(By.name('adults'));
@@ -189,11 +190,12 @@ async function characterInNumberFieldFlying(driver) {
         await cabinClassSelect.sendKeys('Economy');
         await driver.sleep(1000);
 
-
+        // Find and click the submit button
         const submitButtons = await driver.findElement(By.id('submitBtn'));
         await submitButtons.click();
         await driver.sleep(3000);
 
+        // Assertion: Verify that flight results are not displayed
         const flightResultsElement = await driver.findElement(By.id('flightResults'));
         const isFlightResultsDisplayed = await flightResultsElement.isDisplayed();
         assert.strictEqual(isFlightResultsDisplayed, false, 'Flight results are displayed when they should not be - character in number field.');
@@ -224,18 +226,20 @@ async function maxNumberOfAdultsFlying(driver) {
         await driver.get('http://localhost:3000/flights');
 
         // Fill out the form
+        // Enter origin
         const originSelect = await driver.wait(until.elementLocated(By.name('originDisplayCode')), 80000);
         const originDropdown = await driver.wait(until.elementIsVisible(originSelect));
         const originSelectObject = new Select(originDropdown);
         await originSelectObject.selectByValue('ORD');
 
+        // Enter destination
         const destinationSelect = await driver.wait(until.elementLocated(By.name('destinationDisplayCode')), 5000);
         const destinationDropdown = await driver.wait(until.elementIsVisible(destinationSelect));
         const destinationSelectObject = new Select(destinationDropdown);
         await destinationSelectObject.selectByValue('MIA');
         await destinationDropdown.sendKeys(Key.TAB);
 
-
+        // Enter departure date
         const departureDateField = await driver.wait(until.elementLocated(By.name('departureDate')), 5000);
         await departureDateField.click();
         await departureDateField.sendKeys(06); // Fill in the month
@@ -255,11 +259,12 @@ async function maxNumberOfAdultsFlying(driver) {
         await cabinClassSelect.sendKeys('Economy');
         await driver.sleep(1000);
 
-
+        // Find and click the submit button
         const submitButtons = await driver.findElement(By.id('submitBtn'));
         await submitButtons.click();
         await driver.sleep(3000);
 
+        // Assertion: Verify that flight results are not displayed
         const flightResultsElement = await driver.findElement(By.id('flightResults'));
         const isFlightResultsDisplayed = await flightResultsElement.isDisplayed();
         assert.strictEqual(isFlightResultsDisplayed, false, 'Flight results are displayed when they should not be - max adults reached.');
@@ -289,18 +294,20 @@ async function decimalNumberInputFlight(driver) {
         await driver.get('http://localhost:3000/flights');
 
         // Fill out the form
+        // Enter origin
         const originSelect = await driver.wait(until.elementLocated(By.name('originDisplayCode')), 80000);
         const originDropdown = await driver.wait(until.elementIsVisible(originSelect));
         const originSelectObject = new Select(originDropdown);
         await originSelectObject.selectByValue('ORD');
 
+        // Enter destination
         const destinationSelect = await driver.wait(until.elementLocated(By.name('destinationDisplayCode')), 5000);
         const destinationDropdown = await driver.wait(until.elementIsVisible(destinationSelect));
         const destinationSelectObject = new Select(destinationDropdown);
         await destinationSelectObject.selectByValue('MIA');
         await destinationDropdown.sendKeys(Key.TAB);
 
-
+        // Enter departure date
         const departureDateField = await driver.wait(until.elementLocated(By.name('departureDate')), 5000);
         await departureDateField.click();
         await departureDateField.sendKeys(06); // Fill in the month
@@ -320,11 +327,12 @@ async function decimalNumberInputFlight(driver) {
         await cabinClassSelect.sendKeys('Economy');
         await driver.sleep(1000);
 
-
+        // Find and click the submit button
         const submitButtons = await driver.findElement(By.id('submitBtn'));
         await submitButtons.click();
         await driver.sleep(3000);
 
+        // Assertion: Verify that flight results are not displayed
         const flightResultsElement = await driver.findElement(By.id('flightResults'));
         const isFlightResultsDisplayed = await flightResultsElement.isDisplayed();
         assert.strictEqual(isFlightResultsDisplayed, false, 'Flight results are displayed when they should not be- decimal number.');
@@ -354,18 +362,20 @@ async function negativeNumberInputFlight(driver) {
         await driver.get('http://localhost:3000/flights');
 
         // Fill out the form
+        // Enter origin
         const originSelect = await driver.wait(until.elementLocated(By.name('originDisplayCode')), 80000);
         const originDropdown = await driver.wait(until.elementIsVisible(originSelect));
         const originSelectObject = new Select(originDropdown);
         await originSelectObject.selectByValue('ORD');
 
+        // Enter destination
         const destinationSelect = await driver.wait(until.elementLocated(By.name('destinationDisplayCode')), 5000);
         const destinationDropdown = await driver.wait(until.elementIsVisible(destinationSelect));
         const destinationSelectObject = new Select(destinationDropdown);
         await destinationSelectObject.selectByValue('MIA');
         await destinationDropdown.sendKeys(Key.TAB);
 
-
+        // Enter departure date
         const departureDateField = await driver.wait(until.elementLocated(By.name('departureDate')), 5000);
         await departureDateField.click();
         await departureDateField.sendKeys(06); // Fill in the month
@@ -385,11 +395,12 @@ async function negativeNumberInputFlight(driver) {
         await cabinClassSelect.sendKeys('Economy');
         await driver.sleep(1000);
 
-
+        // Find and click the submit button
         const submitButtons = await driver.findElement(By.id('submitBtn'));
         await submitButtons.click();
         await driver.sleep(3000);
 
+        // Assertion: Verify that flight results are not displayed
         const flightResultsElement = await driver.findElement(By.id('flightResults'));
         const isFlightResultsDisplayed = await flightResultsElement.isDisplayed();
         assert.strictEqual(isFlightResultsDisplayed, false, 'Flight results are displayed when they should not be - negative number.');
@@ -418,18 +429,20 @@ async function noFlightsFoundError(driver) {
         await driver.get('http://localhost:3000/flights');
 
         // Fill out the form
+        // Enter origin
         const originSelect = await driver.wait(until.elementLocated(By.name('originDisplayCode')), 80000);
         const originDropdown = await driver.wait(until.elementIsVisible(originSelect));
         const originSelectObject = new Select(originDropdown);
         await originSelectObject.selectByValue('ORD');
 
+        // Enter destination
         const destinationSelect = await driver.wait(until.elementLocated(By.name('destinationDisplayCode')), 5000);
         const destinationDropdown = await driver.wait(until.elementIsVisible(destinationSelect));
         const destinationSelectObject = new Select(destinationDropdown);
         await destinationSelectObject.selectByValue('MIA');
         await destinationDropdown.sendKeys(Key.TAB);
 
-
+        // Enter departure date
         const departureDateField = await driver.wait(until.elementLocated(By.name('departureDate')), 5000);
         await departureDateField.click();
         await departureDateField.sendKeys(06); // Fill in the month
@@ -449,12 +462,12 @@ async function noFlightsFoundError(driver) {
         await cabinClassSelect.sendKeys('Economy');
         await driver.sleep(1000);
 
-
+        // Find and click the submit button
         const submitButtons = await driver.findElement(By.id('submitBtn'));
         await submitButtons.click();
         await driver.sleep(3000);
 
-        // Example assertion: Verify error message for invalid login
+        // Assertion: Verify error message for no flights found
         const errorMessage = await driver.wait(until.elementLocated(By.id('errorMsg')), 5000);
         const errorMessageText = await errorMessage.getText();
         assert.strictEqual(errorMessageText, 'No flights found.', 'Error message mismatch');
@@ -494,26 +507,26 @@ async function maxNumberOfAdultsHotel(driver) {
         // Find the check-in date input field
         const checkInDateInput = await driver.wait(until.elementLocated(By.name('checkInDate')), 5000);
         await checkInDateInput.click();
-        await checkInDateInput.sendKeys(06); // Fill in the month
-        await checkInDateInput.sendKeys(Key.TAB); // Move the cursor to the day field
-        await checkInDateInput.sendKeys(2023); // Fill in the day
-        await checkInDateInput.sendKeys(Key.TAB); // Move the cursor to the year field
-        await checkInDateInput.sendKeys(1101); // Fill in the year
+        await checkInDateInput.sendKeys(06);
+        await checkInDateInput.sendKeys(Key.TAB); 
+        await checkInDateInput.sendKeys(2023); 
+        await checkInDateInput.sendKeys(Key.TAB); 
+        await checkInDateInput.sendKeys(1101); 
         await driver.sleep(1000);
 
 
         // Find the check-out date input field
         const checkOutDateInput = await driver.wait(until.elementLocated(By.name('checkOutDate')), 5000);
-        await checkOutDateInput.sendKeys(06); // Fill in the month
-        await checkOutDateInput.sendKeys(Key.TAB); // Move the cursor to the day field
-        await checkOutDateInput.sendKeys(2023); // Fill in the day
-        await checkOutDateInput.sendKeys(Key.TAB); // Move the cursor to the year field
-        await checkOutDateInput.sendKeys(1105); // Fill in the year
+        await checkOutDateInput.sendKeys(06); 
+        await checkOutDateInput.sendKeys(Key.TAB); 
+        await checkOutDateInput.sendKeys(2023); 
+        await checkOutDateInput.sendKeys(Key.TAB); 
+        await checkOutDateInput.sendKeys(1105); 
         await driver.sleep(1000);
 
         // Find the number of adults input field
         const numAdultsInput = await driver.wait(until.elementLocated(By.id('increaseBtn')), 5000);
-        const numClicks = 11; // Set the number of clicks you want to perform
+        const numClicks = 11; 
         for (let i = 0; i < numClicks; i++) {
             await numAdultsInput.click();
         }
@@ -523,6 +536,7 @@ async function maxNumberOfAdultsHotel(driver) {
         await submitButtons.click();
         await driver.sleep(1000);
 
+        // Assertion: Verify that hotel results are displayed
         const hotelResultsElement = await driver.findElement(By.className('hotel-results'));
         const isHotelResultsDisplayed = await hotelResultsElement.isDisplayed();
         assert.strictEqual(isHotelResultsDisplayed, true, 'Hotel results are displayed for 10 adults.');
@@ -561,26 +575,26 @@ async function maxNumberOfRoomsHotel(driver) {
         // Find the check-in date input field
         const checkInDateInput = await driver.wait(until.elementLocated(By.name('checkInDate')), 5000);
         await checkInDateInput.click();
-        await checkInDateInput.sendKeys(06); // Fill in the month
-        await checkInDateInput.sendKeys(Key.TAB); // Move the cursor to the day field
-        await checkInDateInput.sendKeys(2023); // Fill in the day
-        await checkInDateInput.sendKeys(Key.TAB); // Move the cursor to the year field
-        await checkInDateInput.sendKeys(1101); // Fill in the year
+        await checkInDateInput.sendKeys(06); 
+        await checkInDateInput.sendKeys(Key.TAB); 
+        await checkInDateInput.sendKeys(2023);
+        await checkInDateInput.sendKeys(Key.TAB); 
+        await checkInDateInput.sendKeys(1101); 
         await driver.sleep(1000);
 
 
         // Find the check-out date input field
         const checkOutDateInput = await driver.wait(until.elementLocated(By.name('checkOutDate')), 5000);
-        await checkOutDateInput.sendKeys(06); // Fill in the month
-        await checkOutDateInput.sendKeys(Key.TAB); // Move the cursor to the day field
-        await checkOutDateInput.sendKeys(2023); // Fill in the day
-        await checkOutDateInput.sendKeys(Key.TAB); // Move the cursor to the year field
-        await checkOutDateInput.sendKeys(1105); // Fill in the year
+        await checkOutDateInput.sendKeys(06); 
+        await checkOutDateInput.sendKeys(Key.TAB); 
+        await checkOutDateInput.sendKeys(2023); 
+        await checkOutDateInput.sendKeys(Key.TAB); 
+        await checkOutDateInput.sendKeys(1105); 
         await driver.sleep(1000);
 
         // Find the number of rooms input field
         const numRoomInput = await driver.wait(until.elementLocated(By.id('increaseBtnRoom')), 5000);
-        const numberOfClicks = 12; // Set the number of clicks you want to perform
+        const numberOfClicks = 12; 
         for (let i = 0; i < numberOfClicks; i++) {
             await numRoomInput.click();
         }
@@ -590,10 +604,11 @@ async function maxNumberOfRoomsHotel(driver) {
         await submitButtons.click();
         await driver.sleep(1000);
 
+        // Assertion: Verify that hotel results are displayed
         const hotelRoomResultsElement = await driver.findElement(By.className('hotel-results'));
         const isHotelRoomResultsDisplayed = await hotelRoomResultsElement.isDisplayed();
         assert.strictEqual(isHotelRoomResultsDisplayed, true, 'Hotel results are displayed for 10 people.');
-        
+
 
     } catch (error) {
         console.error('An error occurred:', error);
