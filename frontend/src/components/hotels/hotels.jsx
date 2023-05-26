@@ -296,12 +296,12 @@ export const Hotels = () => {
 
                 {/* Hotels Search Results */}
                 <Container className="hotel-results" maxWidth="6xl">
-                    <Box p="4" boxShadow="lg" rounded="md" bg="white" mb="4">
-                        <Heading textAlign="center">Search Results</Heading>
-                        <Text fontWeight="bold" textAlign="center">Sorted by Price: Lowest to Highest</Text>
-                    </Box>
-
-                                
+                    { Object.keys(hotels).length > 0 && (
+                        <Box p="4" boxShadow="lg" rounded="md" bg="white" mb="4">
+                            <Heading textAlign="center">Search Results</Heading>
+                            <Text fontWeight="bold" textAlign="center">Sorted by Price: Lowest to Highest</Text>
+                        </Box>
+                    )}
                     {Object.keys(hotels).map((hotelId) => {
                         const hotel = hotels[hotelId];
                         const roundedPrice = hotel.min_total_price.toFixed(2);
