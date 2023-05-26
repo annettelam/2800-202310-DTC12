@@ -190,7 +190,7 @@ export const Hotels = () => {
                             Search for Hotels here.
                         </Text>
                         <form onSubmit={handleSubmit}>
-                            <FormControl mt="4">
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>City</FormLabel>
                                 <Select
                                     id="city"
@@ -211,7 +211,7 @@ export const Hotels = () => {
                                 </Select>
                             </FormControl>
 
-                            <FormControl mt="4">
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>Check-In Date</FormLabel>
                                 <Input
                                 name="checkInDate"
@@ -228,7 +228,7 @@ export const Hotels = () => {
                                 />
                             </FormControl>
 
-                            <FormControl mt="4">
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>Check-Out Date</FormLabel>
                                 <Input
                                 name="checkOutDate"
@@ -244,7 +244,7 @@ export const Hotels = () => {
                                 />
                             </FormControl>
 
-                            <FormControl mt="4">
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>Number of Adults</FormLabel>
                                 <HStack maxW='250px' className='m-auto'>
                                     <ChakraButton colorScheme="teal"{...adultsDec} >-</ChakraButton>
@@ -265,7 +265,7 @@ export const Hotels = () => {
                                 </HStack>
                             </FormControl>
 
-                            <FormControl mt="4">
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>Number of Rooms</FormLabel>
                                 <HStack maxW='250px' className='m-auto'>
                                     <ChakraButton colorScheme="teal"{...roomsDec} >-</ChakraButton>

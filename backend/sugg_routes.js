@@ -10,13 +10,28 @@ const { getUserCollection } = require('./databaseConnection');
 const { ObjectId } = require('mongodb');
 const openai = require('openai');
 const axios = require('axios');
+const redis = require("redis");
 require('dotenv').config();
 
 const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 const tripAdvisorApiKey = process.env.TRIP_ADVISOR_API_KEY;
 const openaiApiKey = process.env.REACT_APP_OPENAI;
+const redisUrl = process.env.REDIS_URL;
 
 const userCollection = getUserCollection();
+
+// Connect to Redis
+let redisClient;
+(async () => {
+    redisClient = redis.createClient({
+        url: redisUrl,
+    });
+    redisClient.on("error", (error) => {
+        console.error(error);
+    });
+    await redisClient.connect();
+    console.log("Connected to Redis");
+})();
 
 // Define rate limiter options
 const limiter = rateLimit({
@@ -37,6 +52,9 @@ router.use(speedLimiter);
 
 
 router.post('/', async (req, res) => {
+    // Start timer
+    console.time('tripadvisor-api');
+
     // Handle request throttling
     await new Promise((resolve) => setTimeout(resolve, req.slowDown.delay));
 
@@ -66,7 +84,7 @@ router.post('/', async (req, res) => {
     const airportCode = flightUser.savedFlights[savedFlightsLength - 1].legs[0].destination.display_code;
 
     let cityName = '';
-    const attractions = [];
+    let attractions = [];
 
     try {
         const getCityName = (airportCode) => {
@@ -97,11 +115,19 @@ router.post('/', async (req, res) => {
           return;
         }
     }
+    // Check if attractions is cached
+    const attractionsKey = `attractions:${cityName}`;
+    const cachedAttractions = await redisClient.get(attractionsKey);
+    if (cachedAttractions) {
+        console.log('Attractions found in cache');
+        attractions = JSON.parse(cachedAttractions);
+    // Else fetch attractions from TripAdvisor API
+    } else {
+        console.log('Attractions not found in cache');
+        const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(cityName)}&key=${googleMapsApiKey}`;
+        
 
-    const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(cityName)}&key=${googleMapsApiKey}`;
-    
-
-    let lat, lng;
+        let lat, lng;
 
     try {
         const googleMapsResponse = await fetch(googleMapsApiUrl);
@@ -123,62 +149,74 @@ router.post('/', async (req, res) => {
         const tripAdvisorResponse = await fetch(tripAdvisorApiUrl);
         const tripAdvisorData = await tripAdvisorResponse.json();
 
-        if (!tripAdvisorData.data || !Array.isArray(tripAdvisorData.data) || tripAdvisorData.data.length === 0) {
-            console.log('No attractions found');
-            return;
-        } else {
-            tripAdvisorData.data.forEach((attraction) => {
-                attractions.push({
-                    name: attraction.name,
-                    location_id: attraction.location_id,
-                    photoUrl: '',
-                    description: '',
-                });
-            });
-        }
-    } catch (err) {
-        console.error(`Failed to fetch TripAdvisor data: ${err}`);
-    }
-
-    // Get description & image for each attraction
-    for (let i = 0; i < attractions.length; i++) {
-        const attraction = attractions[i];
-        const attractionName = attraction.name;
-        const prompt = `You: Give me a description of ${attractionName} in ${cityName} in 75 words.`;
-        const openaiUrl = 'https://api.openai.com/v1/engines/text-davinci-002/completions';
-
-        try {
-            const response = await axios.post(openaiUrl, {
-                prompt: prompt,
-                max_tokens: 50,
-                temperature: 0.7,
-                n: 1
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${openaiApiKey}`
-                },
-            });
-
-            const description = response.data.choices[0].text.trim();
-            attraction.description = description;
-            const cityNameId = attraction.location_id;
-            const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(cityNameId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`;
-            const tripAdvisorImgResponse = await fetch(tripAdvisorImgUrl);
-            const tripAdvisorImgData = await tripAdvisorImgResponse.json();
-
-            if (!tripAdvisorImgData.data || !Array.isArray(tripAdvisorImgData.data) || tripAdvisorImgData.data.length === 0) {
-                attraction.photoUrl = '../../alicelogo.png';
+            if (!tripAdvisorData.data || !Array.isArray(tripAdvisorData.data) || tripAdvisorData.data.length === 0) {
+                console.log('No attractions found');
+                return;
             } else {
-                const photoUrl = tripAdvisorImgData.data[0].images.large.url;
-                attraction.photoUrl = photoUrl;
+                tripAdvisorData.data.forEach((attraction) => {
+                    attractions.push({
+                        name: attraction.name,
+                        location_id: attraction.location_id,
+                        photoUrl: '',
+                        description: '',
+                    });
+                });
             }
         } catch (err) {
-            console.error(`Failed to fetch data for ${attractionName}: ${err}`);
-            attraction.description = 'Description not available.';
-            attraction.photoUrl = '../../alicelogo.png'; 
+            console.error(`Failed to fetch TripAdvisor data: ${err}`);
         }
+
+        // Get description & image for each attraction
+        for (let i = 0; i < attractions.length; i++) {
+            /* Get description for each attraction */
+            const attraction = attractions[i];
+            const attractionName = attraction.name;
+            const prompt = `You: Give me a description of ${attractionName} in ${cityName} in 75 words.`;
+            const openaiUrl = 'https://api.openai.com/v1/engines/text-davinci-002/completions';
+            try {
+                const response = await axios.post(openaiUrl, {
+                    prompt: prompt,
+                    max_tokens: 50,
+                    temperature: 0.7,
+                    n: 1
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${openaiApiKey}`
+                    },
+                });
+                const description = response.data.choices[0].text.trim();
+                attraction.description = description;
+                // console.log('description', description);
+            } catch (err) {
+                console.error(`Failed to fetch OpenAI data: ${err}`);
+                attraction.description = 'Description not available.';
+            }
+
+            /* Get image for each attraction */
+            const cityNameId = attraction.location_id;
+            try {
+                const tripAdvisorImgUrl = `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(cityNameId)}/photos?key=${tripAdvisorApiKey}&category=attractions&language=en`;
+                const tripAdvisorImgResponse = await fetch(tripAdvisorImgUrl);
+                const tripAdvisorImgData = await tripAdvisorImgResponse.json();
+
+                if (!tripAdvisorImgData.data || !Array.isArray(tripAdvisorImgData.data) || tripAdvisorImgData.data.length === 0) {
+                    attraction.photoUrl = '../../alicelogo.png';
+                } else {
+                    const photoUrl = tripAdvisorImgData.data[0].images.large.url;
+                    attraction.photoUrl = photoUrl;
+                }
+            } catch (err) {
+                console.error(`Failed to fetch TripAdvisor image data: ${err}`);
+                attraction.photoUrl = '../../alicelogo.png'; 
+            }
+        }
+        // Set attractions in cache
+        await redisClient.set(attractionsKey, JSON.stringify(attractions));
     }
+
+    // End timer
+    console.timeEnd('tripadvisor-api');
 
     res.send({ cityName, attractions });
 });
