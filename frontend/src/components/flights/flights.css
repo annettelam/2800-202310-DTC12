@@ -9,6 +9,11 @@
     min-height: 100vh;
 }
 
+.required-asterisk {
+    color: red;
+    margin-left: 3px;
+  }
+
 .paper-airplane {
     position: absolute;
     width: 50px;
