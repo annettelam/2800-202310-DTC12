@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Checkbox, Heading, Text, Flex, Alert, AlertIcon, FormControl, FormLabel, Select, Input, Button as ChakraButton } from '@chakra-ui/react';
+import { Box, Container, Checkbox, Heading, Text, Flex, Radio, FormControl, FormLabel, Select, Input, Button as ChakraButton } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -212,7 +212,7 @@ export const Flights = () => {
                         </Text>
                         <Form className="text-center" onSubmit={handleSubmit}>
 
-                            <FormControl>
+                            <FormControl isRequired>
                                 <FormLabel>Origin</FormLabel>
                                 <Select
                                     name="originDisplayCode"
@@ -242,7 +242,7 @@ export const Flights = () => {
                                 </Select>
                             </FormControl>
 
-                            <FormControl mt="4">
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>Destination</FormLabel>
                                 <Select
                                     name="destinationDisplayCode"
@@ -273,7 +273,7 @@ export const Flights = () => {
                                 </Select>
                             </FormControl>
 
-                            <FormControl mt="4">
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>Departure Date</FormLabel>
                                 <Input
                                     type="date"
@@ -290,50 +290,54 @@ export const Flights = () => {
                                 />
                             </FormControl>
 
-                            <div>
+                            <div style={{ marginTop: '15px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <Form.Check
-                                        type="radio"
+                                    <Radio
                                         id="oneWay"
                                         name="tripType"
                                         value="oneWay"
-                                        label="One Way"
-                                        checked={tripType === 'oneWay'}
+                                        isChecked={tripType === 'oneWay'}
                                         onChange={() => setTripType('oneWay')}
-                                        style={{ marginRight: '5px', marginTop: '10px' }}
-                                    />
+                                        colorScheme="teal"
+                                        ml="3"
+                                    >
+                                        One Way
+                                    </Radio>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center'}}>
-                                    <Form.Check
-                                        type="radio"
+
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Radio
                                         id="roundTrip"
                                         name="tripType"
                                         value="roundTrip"
-                                        label="Round Trip"
-                                        checked={tripType === 'roundTrip'}
+                                        isChecked={tripType === 'roundTrip'}
                                         onChange={() => setTripType('roundTrip')}
-                                        style={{ marginRight: '5px', marginTop: '10px' }}
-                                    />
+                                        colorScheme="teal"
+                                        ml="3"
+                                        mt="1"
+                                    >
+                                        Round Trip
+                                    </Radio>
                                 </div>
                             </div>
 
-
                             {tripType === 'roundTrip' && (
-                                <Form.Group controlId="formReturnDate">
-                                    <Form.Label>Return Date</Form.Label>
+                                <Form.Group controlId="formReturnDate" >
+                                    <Form.Label>Return Date<span className="required-asterisk">  *</span></Form.Label>
                                     <Form.Control
                                         type="date"
                                         name="returnDate"
                                         min={departureDate} // Set min date to checkInDate
                                         value={returnDate}
                                         onChange={(e) => setReturnDate(e.target.value)}
+                                        required
                                     />
                                 </Form.Group>
                             )}
 
                             <div className="d-flex">
-                                <Form.Group controlId="formAdults" style={{ width: '48%',  paddingTop: '10px' }}>
-                                    <Form.Label>Number of Adults</Form.Label>
+                                <Form.Group controlId="formAdults" style={{ width: '48%', paddingTop: '10px' }}>
+                                    <Form.Label>Number of Adults<span className="required-asterisk">  *</span></Form.Label>
                                     <Form.Control
                                         type="number"
                                         name="adults"
@@ -346,7 +350,7 @@ export const Flights = () => {
                                 </Form.Group>
 
                                 <Form.Group controlId="formCabinClass" style={{ width: '48%', paddingTop: '10px', paddingBottom: '20px' }}>
-                                    <Form.Label>Cabin Class</Form.Label>
+                                    <Form.Label>Cabin Class<span className="required-asterisk">  *</span></Form.Label>
                                     <Form.Control
                                         as="select"
                                         name="cabinClass"
@@ -360,14 +364,17 @@ export const Flights = () => {
                                     </Form.Control>
                                 </Form.Group>
                             </div>
+                            <ChakraButton type="submit" colorScheme="teal" w="100%">
+                                Search
+                            </ChakraButton>
 
-                            <Button variant="primary" type="submit" style={{ width: '100%' }}>
+                            {/* <Button colorScheme="teal" variant="primary" type="submit" style={{ width: '100%' }}>
                                 Submit
-                            </Button>
+                            </Button> */}
                             {errorMessage && (
                                 <p className="text-danger fw-bold" style={{ textAlign: 'left' }}>
-                                {errorMessage}
-                            </p>
+                                    {errorMessage}
+                                </p>
                             )}
                         </Form>
                     </Box>
@@ -386,6 +393,14 @@ export const Flights = () => {
                         <div className="paper-airplane falling"></div>
                     </div>
                 )}
+
+                {/* Sorted by price */}
+                {flights.length > 0 && (
+                    <Text align="center" mt="4" fontWeight="bold" fontSize="xl">
+                        Sorted by price: lowest to highest
+                    </Text>
+                )}
+
 
                 {/* Filter option */}
                 {formSubmitted && (
@@ -493,9 +508,9 @@ export const Flights = () => {
                         ))}
                 </Container>
 
-                {hasNextPage && flights.length > displayResultsCount &&(
+                {hasNextPage && flights.length > displayResultsCount && (
                     <Flex justify="center" mt="4">
-                        <ChakraButton onClick={loadMoreFlights} colorScheme="blue">
+                        <ChakraButton onClick={loadMoreFlights} colorScheme="teal">
                             Load More
                         </ChakraButton>
                     </Flex>
