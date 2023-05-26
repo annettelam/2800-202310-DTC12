@@ -30,6 +30,7 @@ export const ResetPassword = () => {
     }
 
     try {
+      // Send a POST request to reset the password using the provided token
       await axios.post(`http://localhost:4000/reset-password/${token}`, { password });
       toast({
         title: 'Password reset successfully',
@@ -58,6 +59,7 @@ export const ResetPassword = () => {
               <form onSubmit={handleSubmit}>
                 <FormControl isRequired>
                   <FormLabel>New Password</FormLabel>
+                  {/* Input field for entering the new password */}
                   <Input
                     type="password"
                     name="password"
@@ -71,6 +73,7 @@ export const ResetPassword = () => {
                 <br />
                 <FormControl isRequired>
                   <FormLabel>Confirm Password</FormLabel>
+                  {/* Input field for confirming the new password */}
                   <Input
                     type="password"
                     name="confirmPassword"
@@ -81,6 +84,7 @@ export const ResetPassword = () => {
                     color="black"
                   />
                 </FormControl>
+                {/* Display the error message if it exists */}
                 {error && <Box color="red">{error}</Box>}
                 <br />
                 <Button colorScheme="teal" variant="solid" type="submit" style={{ width: '100%' }}>
