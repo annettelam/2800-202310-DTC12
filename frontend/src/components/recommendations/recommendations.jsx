@@ -15,12 +15,13 @@ import {
 } from '@chakra-ui/react';
 
 export const Recommendations = ({ flightId }) => {
-    const [recommendations, setRecommendations] = useState([]);
-    const [city, setCity] = useState('');
-    const [dates, setDates] = useState('');
+    const [recommendations, setRecommendations] = useState([]); // State variable to store the generated recommendations
+    const [city, setCity] = useState(''); // State variable to store the city input value
+    const [dates, setDates] = useState(''); // State variable to store the dates input value
 
     const generateRecommendations = async () => {
         if (city && dates) {
+            // Ensure both city and dates are provided
             const url = 'https://api.openai.com/v1/completions';
             const prompt = `You: I am traveling to ${city} from ${dates}. What environmentally friendly items should I pack?`;
             const payload = {
@@ -41,7 +42,7 @@ export const Recommendations = ({ flightId }) => {
                 const recommendations = response_data.choices.map((choice) =>
                     choice.text.trim()
                 );
-                setRecommendations(recommendations);
+                setRecommendations(recommendations); // Set the generated recommendations in state
             } catch (error) {
                 console.error(error);
             }
@@ -49,9 +50,9 @@ export const Recommendations = ({ flightId }) => {
     };
 
     const clearFields = () => {
-        setCity('');
-        setDates('');
-        setRecommendations([]);
+        setCity(''); // Clear the city input value
+        setDates(''); // Clear the dates input value
+        setRecommendations([]); // Clear the generated recommendations
     };
 
     return (
@@ -67,7 +68,7 @@ export const Recommendations = ({ flightId }) => {
                             id="city"
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
-                            placeholder="Enter city *"
+                            placeholder="Enter city *" // Placeholder for city input
                             required // Make the input field required
                             bg="gray.100" // Add background color to the input
                         />
@@ -77,7 +78,7 @@ export const Recommendations = ({ flightId }) => {
                             value={dates}
                             onChange={(e) => setDates(e.target.value)}
                             min={new Date().toISOString().split('T')[0]}
-                            placeholder="Enter date *"
+                            placeholder="Enter date *" // Placeholder for dates input
                             required // Make the input field required
                             bg="gray.100" // Add background color to the input
                         />
