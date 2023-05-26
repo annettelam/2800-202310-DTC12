@@ -24,7 +24,7 @@ async function automate() {
 async function normalUserLogin(driver) {
     try {
         // Open the login page
-        await driver.get('https://planetpass-sjfh.onrender.com/login');
+        await driver.get('http://localhost:3000/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -40,7 +40,7 @@ async function normalUserLogin(driver) {
 
         // Verify the redirection
         const currentUrl = await driver.getCurrentUrl();
-        const expectedUrl = 'https://planetpass-sjfh.onrender.com/profile';
+        const expectedUrl = 'http://localhost:3000/profile';
         assert.equal(currentUrl, expectedUrl);
 
     } catch (error) {
@@ -51,7 +51,7 @@ async function normalUserLogin(driver) {
 async function specialCharacterLogin(driver) {
     try {
         // Open the login page
-        await driver.get('https://planetpass-sjfh.onrender.com/login');
+        await driver.get('http://localhost:3000/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -67,7 +67,7 @@ async function specialCharacterLogin(driver) {
 
         // Verify the redirection
         const currentUrl = await driver.getCurrentUrl();
-        const expectedUrl = 'https://planetpass-sjfh.onrender.com/login';
+        const expectedUrl = 'http://localhost:3000/login';
         assert.equal(currentUrl, expectedUrl);
 
     } catch (error) {
@@ -78,7 +78,7 @@ async function specialCharacterLogin(driver) {
 async function languageSpecificCharactersLogin(driver) {
     try {
         // Open the login page
-        await driver.get('https://planetpass-sjfh.onrender.com/login');
+        await driver.get('http://localhost:3000/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -94,7 +94,7 @@ async function languageSpecificCharactersLogin(driver) {
 
         // Verify the redirection
         const currentUrl = await driver.getCurrentUrl();
-        const expectedUrl = 'https://planetpass-sjfh.onrender.com/login';
+        const expectedUrl = 'http://localhost:3000/login';
         assert.equal(currentUrl, expectedUrl);
 
     } catch (error) {
@@ -105,7 +105,7 @@ async function languageSpecificCharactersLogin(driver) {
 
 async function invalidEmailLogin(driver) {
     try {
-        await driver.get('https://planetpass-sjfh.onrender.com/login');
+        await driver.get('http://localhost:3000/login');
 
         const emailInput = await driver.findElement(By.name('email'));
         const passwordInput = await driver.findElement(By.name('password'));
@@ -127,83 +127,3 @@ async function invalidEmailLogin(driver) {
     }
 }
 automate();
-
-
-// const { Builder, By, until, Select, Key } = require('selenium-webdriver');
-// const assert = require('assert');
-// const { DateTime } = require('luxon');  // Assuming you have the Luxon library installed
-// const { WebDriver } = require('selenium-webdriver');
-
-
-
-// async function automateFlightsSearch(driver) {
-//     try {
-//         await driver.get('http://localhost:3000/flights');
-
-//         // Fill out the form
-//         const originSelect = await driver.wait(until.elementLocated(By.name('originDisplayCode')), 80000);
-//         const originDropdown = await driver.wait(until.elementIsVisible(originSelect));
-//         const originSelectObject = new Select(originDropdown);
-//         await originSelectObject.selectByValue('ORD');
-
-//         const destinationSelect = await driver.wait(until.elementLocated(By.name('destinationDisplayCode')), 5000);
-//         const destinationDropdown = await driver.wait(until.elementIsVisible(destinationSelect));
-//         const destinationSelectObject = new Select(destinationDropdown);
-//         await destinationSelectObject.selectByValue('MIA');
-//         await destinationDropdown.sendKeys(Key.TAB);
-
-
-//         const departureDateField = await driver.wait(until.elementLocated(By.name('departureDate')), 5000);
-//         await departureDateField.click();
-//         await departureDateField.sendKeys(06); // Fill in the month
-//         await departureDateField.sendKeys(Key.TAB); // Move the cursor to the day field
-//         await departureDateField.sendKeys(2023); // Fill in the day
-//         await departureDateField.sendKeys(Key.TAB); // Move the cursor to the year field
-//         await departureDateField.sendKeys(1101); // Fill in the year
-
-
-//         const oneWayRadio = await driver.findElement(By.id('oneWay'));
-//         await oneWayRadio.click();
-
-//         // Set "Number of Adults" to 1
-//         const adultsInput = await driver.findElement(By.name('adults'));
-//         await adultsInput.clear();
-//         await adultsInput.sendKeys('2');
-
-
-//         // Set "Cabin Class" to "Economy"
-//         const cabinClassSelect = await driver.findElement(By.name('cabinClass'));
-//         await cabinClassSelect.sendKeys('Economy');
-//         await driver.sleep(1000);
-
-
-//         const submitButton = await driver.findElement(By.id('submitBtn'));
-//         await submitButton.click();
-
-//         // Click on "Show Eco Flights Only" filter
-//         const ecoFlightsCheckbox = await driver.wait(
-//             until.elementLocated(By.id('ecoFlightsCheckbox')),
-//             7000
-//         );
-//         await driver.executeScript('arguments[0].click()', ecoFlightsCheckbox);
-
-
-//         // Wait for the filter to take effect
-//         await driver.sleep(20000);
-
-
-//         // Example assertion: Verify that the first flight is an eco flight
-
-//         console.log('Flights search automation completed!');
-//     } catch (error) {
-//         console.error('An error occurred:', error);
-//     }
-// }
-
-
-
-
-
-
-
-// automate();
