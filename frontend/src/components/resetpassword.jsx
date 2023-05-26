@@ -14,10 +14,17 @@ import {
   useToast } from '@chakra-ui/react';
 import navlogo from '../navlogo.png';
 
+
 export const ResetPassword = () => {
+
+  // Token from the URL
   const { token } = useParams();
+
+  // Password and confirm password fields
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  // Error message to display if the password reset fails
   const [error, setError] = useState('');
   const toast = useToast();
 
