@@ -147,7 +147,7 @@ export const Dashboard = ({ isNavbarOpen }) => {
     // Update database
     console.log(hotel);
     try {
-      const response = await axios.post('http://localhost:4000/save-hotel', {
+      const response = await axios.post('https://planetpass-backend.onrender.com/save-hotel', {
         hotel, user
       });
       console.log(response.data);

@@ -392,7 +392,7 @@ app.post("/reset-password", async (req, res) => {
       </p>
       <br>
       <footer>
-        <a href="http://localhost:3000/privacy-policy">Read our Privacy Policy here</a>
+        <a href="https://planetpass-sjfh.onrender.com/privacy-policy">Read our Privacy Policy here</a>
         <br>
         <p>
           This app uses resources from <a href="https://logo.com">Logo.com</a>.
