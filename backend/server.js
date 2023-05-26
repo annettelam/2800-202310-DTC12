@@ -363,12 +363,43 @@ app.post("/reset-password", async (req, res) => {
   );
 
   // Send an email to the user with a link to reset their password
+
   const resetUrl = `http://localhost:3000/reset-password/${token}`;
+  const logoPath = "./navlogo.png";
+  const logoDataUrl = `cid:logo`;
+
   const mailOptions = {
     from: process.env.EMAIL_ADDRESS,
     to: email,
     subject: "Password reset request",
-    html: `<p>Please click the link below to reset your password:</p><p><a href="${resetUrl}">${resetUrl}</a></p>`,
+    html: `
+      <header>
+        <img src="cid:logo" alt="PlanetPass Logo" />
+      </header>
+
+      <!-- Email Content -->
+      <p>
+        Please click the link below to reset your password:
+      </p>
+      <p>
+        <a href="${resetUrl}">${resetUrl}</a>
+      </p>
+      <br>
+      <footer>
+        <a href="http://localhost:3000/privacy-policy">To read our Privacy Policy</a>
+        <br>
+        <p>
+          This app uses resources from <a href="https://example.com">Example</a> under the <a href="https://example.com/license">License</a>.
+        </p>
+      </footer>
+    `,
+    attachments: [
+      {
+        filename: "navlogo.png",
+        path: logoPath,
+        cid: "logo",
+      },
+    ],
   };
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {

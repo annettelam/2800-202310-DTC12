@@ -15,6 +15,7 @@ import { Profile } from "./components/profile/profile";
 import { Suggestions } from "./components/suggestions/suggestions";
 import { Hotels } from "./components/hotels/hotels.jsx";
 import { Recommendations } from "./components/recommendations/recommendations";
+import { PrivacyPolicy } from "./components/privacy-policy";
 
 
 
@@ -39,6 +40,7 @@ const Planetpass = () => {
           <Route path="/signup" element={<SignUp onLogin={handleLogin} />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/flights" element={<Flights />} />
           <Route path="*" element={<NotFoundPage />} />
