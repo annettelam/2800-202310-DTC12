@@ -408,7 +408,7 @@ app.post("/reset-password", async (req, res) => {
     attachments: [
       {
         filename: "navlogo.png",
-        path: "./navlogo.png",
+        path: __dirname + "/navlogo.png",
         cid: "logo",
       },
     ],
