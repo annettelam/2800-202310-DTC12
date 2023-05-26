@@ -11,6 +11,7 @@ const { ObjectId } = require('mongodb');
 const openai = require('openai');
 const axios = require('axios');
 const redis = require("redis");
+const { log } = require('util');
 require('dotenv').config();
 
 const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
@@ -149,6 +150,7 @@ router.post('/', async (req, res) => {
     try {
         const tripAdvisorResponse = await fetch(tripAdvisorApiUrl);
         const tripAdvisorData = await tripAdvisorResponse.json();
+        console.log(tripAdvisorData);
 
             if (!tripAdvisorData.data || !Array.isArray(tripAdvisorData.data) || tripAdvisorData.data.length === 0) {
                 console.log('No attractions found');
