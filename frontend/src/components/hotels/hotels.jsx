@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image, HStack, useNumberInput } from '@chakra-ui/react';
+import { CircularProgress, ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image, HStack, useNumberInput } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton } from '@chakra-ui/react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import dashBackground from '../../dashbkg.jpg';
 import cities from './cities';
-import { Button } from 'react-bootstrap';
 import { FaHeart } from 'react-icons/fa';
 import sustainabilityIcon from './planet-earth.png';
 
@@ -56,6 +55,7 @@ export const Hotels = () => {
     const [hotels, setHotels] = useState({});
     const [savedHotels, setSavedHotels] = useState([]);
     const [hasNextPage, setHasNextPage] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Modal for hotel details
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -90,8 +90,8 @@ export const Hotels = () => {
 
     // Save hotel
     const handleSaveHotel = async (hotelId) => {
-        console.log(hotelId);
-        console.log(isHotelSaved(hotelId));
+        // console.log(hotelId);
+        // console.log(isHotelSaved(hotelId));
         if (!isHotelSaved(hotelId)) {
             // Update useState
             setSavedHotels([...savedHotels, hotelId]);
@@ -103,12 +103,12 @@ export const Hotels = () => {
         // Find hotel object
         const hotel = hotels.find((hotel) => hotel.hotel_id === hotelId);
         // Update database
-        console.log(hotel);
+        // console.log(hotel);
         try {
             const response = await axios.post('http://localhost:4000/save-hotel', {
                 hotel, user
             });
-            console.log(response.data);
+            // console.log(response.data);
             // Update localStorage
             if (response.data === "Hotel saved") {
                 user.savedHotels.push(hotel);
@@ -125,7 +125,8 @@ export const Hotels = () => {
     // Get hotels on form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(city, checkInDate, checkOutDate, numAdults, numRooms);
+        // console.log(city, checkInDate, checkOutDate, numAdults, numRooms);
+        setIsLoading(true);
         try {
             const response = await axios.post('http://localhost:4000/hotels', {
                 city,
@@ -135,17 +136,19 @@ export const Hotels = () => {
                 numRooms,
                 page: 1 // Start on page 1 (First 4 hotels)
             });
-            console.log(response.data);
+            // console.log(response.data);
             // Update useState
             setHotels(response.data.hotels);
             setHasNextPage(response.data.hasNextPage);
         } catch (error) {
             console.log(error);
         }
+        setIsLoading(false);
     };
 
     // Load more hotels
     const loadMoreHotels = async () => {
+        setIsLoading(true);
         try {
             const response = await axios.post('http://localhost:4000/hotels', {
                 city,
@@ -155,13 +158,14 @@ export const Hotels = () => {
                 numRooms,
                 page: Math.ceil(hotels.length / 4) + 1 // Calculate the next page based on the current number of hotels
             });
-            console.log(response.data);
+            // console.log(response.data);
             // Update useState
             setHotels((prevHotels) => [...prevHotels, ...response.data.hotels]);
             setHasNextPage(response.data.hasNextPage);
         } catch (error) {
             console.log(error);
         }
+        setIsLoading(false);
     };
 
     return (
@@ -240,7 +244,7 @@ export const Hotels = () => {
                             <FormControl mt="4">
                                 <FormLabel>Number of Adults</FormLabel>
                                 <HStack maxW='250px' className='m-auto'>
-                                    <Button {...adultsDec} >-</Button>
+                                    <ChakraButton colorScheme="teal"{...adultsDec} >-</ChakraButton>
                                     <Input
                                         type="number"
                                         value={numAdults}
@@ -253,14 +257,14 @@ export const Hotels = () => {
                                         {...adultsInput}
                                         required
                                     />
-                                    <Button {...adultsInc} >+</Button>
+                                    <ChakraButton colorScheme="teal"{...adultsInc} >+</ChakraButton>
                                 </HStack>
                             </FormControl>
 
                             <FormControl mt="4">
                                 <FormLabel>Number of Rooms</FormLabel>
                                 <HStack maxW='250px' className='m-auto'>
-                                    <Button {...roomsDec} >-</Button>
+                                    <ChakraButton colorScheme="teal"{...roomsDec} >-</ChakraButton>
                                     <Input
                                         type="number"
                                         value={numRooms}
@@ -273,13 +277,15 @@ export const Hotels = () => {
                                         {...roomsInput}
                                         required
                                     />
-                                    <Button {...roomsInc} >+</Button>
+                                    <ChakraButton colorScheme="teal"{...roomsInc} >+</ChakraButton>
                                 </HStack>
                             </FormControl>
 
-                            <ChakraButton type="submit" colorScheme="blue" mt="4">
-                                Search
-                            </ChakraButton>
+                            <Flex justifyContent="center">
+                                <ChakraButton type="submit" colorScheme="teal" mt="4" w="50%">
+                                    Search
+                                </ChakraButton>
+                            </Flex>
                         </form>
                     </Box>
                 </Container>
@@ -312,9 +318,14 @@ export const Hotels = () => {
                                     <Image src={hotel.max_photo_url} alt={hotel.hotel_name} w={{ base: '80%', sm: '65%', md: '55%', lg: '40%' }} h="auto" rounded="md" mb="4" />
 
                                     {/* Booking Button */}
-                                    <Button size="md" onClick={() => window.location.href = hotel.url} className='mb-3'>
+                                    <ChakraButton
+                                        size="md"
+                                        onClick={() => (window.location.href = hotel.url)}
+                                        className="mb-3"
+                                        colorScheme="teal"
+                                    >
                                         Book at Booking.com
-                                    </Button>
+                                    </ChakraButton>
 
                                     {/* Hotel Details */}
                                     <Text fontSize="lg" textAlign="center" mb="2">
@@ -417,9 +428,16 @@ export const Hotels = () => {
                 {/* Load More Button */}
                 {hasNextPage && (
                     <Flex justify="center" mt="4">
-                        <ChakraButton onClick={loadMoreHotels} colorScheme="blue">
+                        <ChakraButton onClick={loadMoreHotels} colorScheme="teal">
                             Load More
                         </ChakraButton>
+                    </Flex>
+                )}
+
+                {/* Loading Indicator */}
+                {isLoading && (
+                    <Flex justify="center" mt="4">
+                        <CircularProgress isIndeterminate color="teal" />
                     </Flex>
                 )}
             </div>

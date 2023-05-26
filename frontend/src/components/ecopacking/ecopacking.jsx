@@ -35,7 +35,7 @@ export const Ecopacking = ({ flightId }) => {
                             </Flex>
                         </IconButton>
                     </PopoverTrigger>
-                    <PopoverContent width="500px" boxShadow="md" p={2} borderRadius="md">
+                    <PopoverContent width="98%" boxShadow="md" p={2} borderRadius="md">
                         <PopoverArrow />
                         <PopoverCloseButton />
                         <PopoverBody>

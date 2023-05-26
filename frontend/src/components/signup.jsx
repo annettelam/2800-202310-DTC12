@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { ChakraProvider, Box, FormControl, FormLabel, Input, Button, Container, Flex, Image } from '@chakra-ui/react';
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../fonts.css';
-import alicelogo from '../alicelogo.png';
+import navlogo from '../navlogo.png';
 
 export const SignUp = ({ onLogin }) => {
     const navigate = useNavigate();
@@ -49,59 +49,106 @@ export const SignUp = ({ onLogin }) => {
     };
 
     return (
-        <div style={{ backgroundColor: '#E6F7FF', fontFamily: 'Questrial', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <header>
-                {/* Your navbar code here */}
-            </header>
-
-            <main style={{ flex: '1' }}>
-                <div className="text-center my-5">
-                    <img src={alicelogo} alt="logo" className="App-logo" style={{ width: '300px' }} />
-                    <Form className="text-center my-5" onSubmit={handleSubmit}>
-                        <Form.Group controlId="formBasicEmail" style={{ width: '100%' }}>
-                            <Form.Label>Email Address</Form.Label>
-                            <Form.Control type="email" name="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                        </Form.Group>
-                        <Row>
-                            <Col md={6} className="mb-3 mb-md-0"> {/* Add margin bottom for non-responsive view */}
-                                <Form.Group controlId="formBasicFirstName">
-                                    <Form.Label>First Name</Form.Label>
-                                    <Form.Control type="text" name="firstName" placeholder="Enter first name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-                                </Form.Group>
-                            </Col>
-                            <Col md={6}>
-                                <Form.Group controlId="formBasicLastName">
-                                    <Form.Label>Last Name</Form.Label>
-                                    <Form.Control type="text" name="lastName" placeholder="Enter last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <br></br>
-                        <Form.Group controlId="formBasicUsername" style={{ width: '100%' }}>
-                            <Form.Label>Username</Form.Label>
-                            <Form.Control type="text" name="username" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} />
-                        </Form.Group>
-                        <br></br>
-                        <Form.Group controlId="formBasicCity" style={{ width: '100%' }}>
-                            <Form.Label>City</Form.Label>
-                            <Form.Control type="text" name="city" placeholder="Enter city" value={city} onChange={(e) => setCity(e.target.value)} />
-                        </Form.Group>
-                        <br></br>
-                        <Form.Group controlId="formBasicPassword" style={{ width: '100%' }}>
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                        </Form.Group>
-                        <Button variant="primary" type="submit" style={{ width: '100%' }}>
-                            Submit
-                        </Button>
-                        {msg && (
-                            <p className="text-danger fw-bold" style={{ textAlign: 'left' }}>
-                                {msg}
-                            </p>
-                        )}
-                    </Form>
-                </div>
-            </main>
-        </div>
+        <ChakraProvider>
+          <Box bgGradient="linear(to bottom right, aliceblue, teal)" fontFamily="Questrial" minHeight="100vh">
+            <Container maxWidth="container.xl">
+              <Flex direction="column" align="center" justify="center" minHeight="50vh">
+                <Box bg="aliceblue.500" color="white" py="8" px="12" borderRadius="xl" textAlign="center">
+                  <Flex justify="center">
+                    <Image src={navlogo} alt="Planetpass Logo" boxSize="300px" objectFit="contain" />
+                  </Flex>
+                  <form onSubmit={handleSubmit}>
+                    <FormControl isRequired>
+                        <FormLabel>First Name</FormLabel>
+                        <Input
+                            type="text"
+                            name="firstName"
+                            placeholder="Enter first name"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            bg="white"
+                            color="black"
+                        />
+                    </FormControl>
+                    <br />
+                    <FormControl isRequired>
+                        <FormLabel>Last Name</FormLabel>
+                        <Input
+                            type="text"
+                            name="lastName"
+                            placeholder="Enter last name"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            bg="white"
+                            color="black"
+                        />
+                    </FormControl>
+                    <br />
+                    <FormControl isRequired>
+                      <FormLabel>Email address</FormLabel>
+                      <Input
+                        type="email"
+                        name="email"
+                        placeholder="Enter email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        bg="white"
+                        color="black"
+                      />
+                    </FormControl>
+                    <br />
+                    <FormControl isRequired>
+                        <FormLabel>Username</FormLabel>
+                        <Input
+                            type="text"
+                            name="username"
+                            placeholder="Enter username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            bg="white"
+                            color="black"
+                        />
+                    </FormControl>
+                    <br />
+                    <FormControl isRequired>
+                      <FormLabel>Password</FormLabel>
+                      <Input
+                        type="password"
+                        name="password"
+                        placeholder="Enter password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        bg="white"
+                        color="black"
+                      />
+                    </FormControl>
+                    <br />
+                    <FormLabel>City</FormLabel>
+                      <Input
+                        type="text"
+                        name="city"
+                        placeholder="Enter city"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        bg="white"
+                        color="black"
+                      />
+                    <br />
+                    <br />
+                    <Button colorScheme="teal" variant="solid" type="submit" style={{ width: '100%' }}>
+                      Sign Up
+                    </Button>
+                  </form>
+                  {msg && (
+                    <p className="text-danger fw-bold" style={{ textAlign: 'left' }}>
+                      {msg}
+                    </p>
+                  )}
+                  
+                </Box>
+              </Flex>
+            </Container>
+          </Box>
+        </ChakraProvider>
     );
 };

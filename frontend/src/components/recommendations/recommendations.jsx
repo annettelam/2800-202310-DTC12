@@ -70,19 +70,13 @@ export const Recommendations = ({ flightId }) => {
                             onChange={(e) => setCity(e.target.value)}
                             placeholder="Enter city"
                         />
-                        <Tooltip
-                            label="Enter a single date (YYYY-MM-DD) or a range of dates (e.g. 'YYYY-MM-DD - YYYY-MM-DD')"
-                            hasArrow
-                            placement="bottom"
-                        >
                             <Input
-                                type="text"
+                                type="date"
                                 id="dates"
                                 value={dates}
                                 onChange={(e) => setDates(e.target.value)}
-                                placeholder="Enter dates"
+                                min={new Date().toISOString().split('T')[0]}
                             />
-                        </Tooltip>
                         <Flex justify="space-between" align="center">
                             <Button colorScheme="blue" onClick={generateRecommendations} w="80%">
                                 Generate List

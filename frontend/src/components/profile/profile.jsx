@@ -82,7 +82,7 @@ export const Profile = () => {
                                 <Text align="center" mt="2">
                                     If you would like to change your password, click the button below.
                                 </Text>
-                                <Button colorScheme="blue" onClick={() => navigate('/forgotpassword')}>
+                                <Button colorScheme="teal" onClick={() => navigate('/forgotpassword')}>
                                     Change Password
                                 </Button>
                             </Box>
