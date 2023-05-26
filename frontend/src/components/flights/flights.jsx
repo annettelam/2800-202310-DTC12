@@ -364,7 +364,7 @@ export const Flights = () => {
                                     </Form.Control>
                                 </Form.Group>
                             </div>
-                            <ChakraButton type="submit" colorScheme="teal" w="100%">
+                            <ChakraButton id="submitBtn" type="submit" colorScheme="teal" w="100%">
                                 Search
                             </ChakraButton>
 

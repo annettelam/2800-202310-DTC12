@@ -45,7 +45,7 @@ export const Hotels = () => {
         step: 1,
         defaultValue: 1,
         min: 1,
-        max: 29,
+        max: 10,
     });
     const roomsInput = getRoomsInputProps();
     const roomsInc = getRoomsIncProps();
@@ -281,7 +281,7 @@ export const Hotels = () => {
                                         {...roomsInput}
                                         required
                                     />
-                                    <ChakraButton colorScheme="teal"{...roomsInc} >+</ChakraButton>
+                                    <ChakraButton id="increaseBtnRoom" colorScheme="teal"{...roomsInc} >+</ChakraButton>
                                 </HStack>
                             </FormControl>
 
