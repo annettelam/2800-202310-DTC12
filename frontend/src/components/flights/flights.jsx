@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Checkbox, Heading, Text, Flex, FormControl, FormLabel, Select, Input, Button as ChakraButton } from '@chakra-ui/react';
+import { Box, Container, Checkbox, Heading, Text, Flex, Radio, FormControl, FormLabel, Select, Input, Button as ChakraButton, CircularProgress } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
-import { Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import './flights.css';
@@ -11,7 +11,6 @@ import bkg3 from '../../bkg3.jpg';
 import landingPlane from './landing-airplane.png';
 import takeoffPlane from './takeoff-airplane.png';
 import { FaHeart } from 'react-icons/fa';
-
 
 
 // Format time
@@ -29,7 +28,6 @@ export function formatTime(timeString) {
 export function formatDuration(minutes) {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
-
     return `${hours}h ${remainingMinutes}m`;
 }
 
@@ -63,7 +61,7 @@ export const Flights = () => {
     const [savedFlights, setSavedFlights] = useState([]);
     const [hasNextPage, setHasNextPage] = useState(false);
     const [showEcoFlights, setShowEcoFlights] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(false);
 
     // Easter Egg Animation
     const [isLeafAnimationEnabled, setLeafAnimationEnabled] = useState(false);
@@ -72,18 +70,21 @@ export const Flights = () => {
     const batchCount = 4;
     const [displayResultsCount, setDisplayResultsCount] = useState(batchCount);
 
+    //Error message
+    const [errorMessage, setErrorMessage] = useState('');
+
     useEffect(() => {
-        // Check is user is logged in
+        // Check if user is logged in
         if (localStorage.getItem('loggedIn') !== 'true') {
             navigate('/login');
         }
+
         // Save user from localStorage
         const userFromLocalStorage = JSON.parse(localStorage.getItem('user'));
         setUser(JSON.parse(localStorage.getItem('user')));
 
         // Get saved flights from localStorage
         if (userFromLocalStorage && userFromLocalStorage.savedFlights) {
-            // Get saved flights from localStorage
             const savedFlights = JSON.parse(localStorage.getItem('user')).savedFlights;
             const savedFlightIds = savedFlights.map((savedFlight) => savedFlights.id);
             setSavedFlights(savedFlightIds);
@@ -92,14 +93,11 @@ export const Flights = () => {
 
     // Check if flight is saved
     const isFlightSaved = (flightId) => {
-        //console.log("Flight id for saved:", flightId);
         return savedFlights.includes(flightId);
     };
 
     // Save flight
     const handleSaveFlight = async (flightId) => {
-        console.log(flightId);
-        console.log(isFlightSaved(flightId));
         if (!isFlightSaved(flightId)) {
             // Update useState
             setSavedFlights([...savedFlights, flightId]);
@@ -112,12 +110,10 @@ export const Flights = () => {
         // Find flight object
         const flight = flights.find((flight) => flight.id === flightId);
         // Update database
-        console.log(flight);
         try {
             const response = await axios.post('https://planetpass-backend.onrender.com/save-flight', {
                 flight, user
             });
-            console.log(response.data);
 
             // Update localStorage
             if (response.data === "Flight saved") {
@@ -138,7 +134,6 @@ export const Flights = () => {
         // Check if Easter Egg is triggered
         if (e.target.value === 'Earth') {
             setLeafAnimationEnabled(true);
-            console.log(isLeafAnimationEnabled)
         } else {
             setLeafAnimationEnabled(false);
         }
@@ -147,30 +142,44 @@ export const Flights = () => {
     // Get flights on form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass);
+        setIsLoading(true);
+        if (destinationDisplayCode === 'Earth') {
+            setErrorMessage('Sorry, we do not fly to Earth yet. Please try another destination.')
+            setFlights({});
+            setFormSubmitted(false);
+            setHasNextPage(false);
+            return
+        }
         try {
             await axios.post('https://planetpass-backend.onrender.com/flights', {
                 originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass
             }).then((res) => {
                 console.log(res.data);
                 if (res.data) {
+                    // Update useState
                     setFlights(res.data);
                     setHasNextPage(displayResultsCount < res.data.length);
                     setFormSubmitted(true);
+                    setErrorMessage('');
 
                 }
             });
         } catch (err) {
             console.log(err);
+            setErrorMessage(err.response.data);
+            setFlights({});
+            setFormSubmitted(false);
+            setHasNextPage(false);
         }
+        setIsLoading(false);
     };
 
     // Load more flights
     const loadMoreFlights = () => {
+        setIsLoading(false);
         setDisplayResultsCount(displayResultsCount + batchCount);
         setHasNextPage(displayResultsCount < flights.length);
     }
-
 
     return (
         <ChakraProvider>
@@ -179,14 +188,14 @@ export const Flights = () => {
                 style={{
                     backgroundImage: `url(${bkg3})`,
                     backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center top 50px', // Move background down 50 pixels
+                    backgroundPosition: 'center top 50px',
                     backgroundAttachment: 'fixed',
                     backgroundSize: 'cover',
                     fontFamily: 'Questrial',
                     minHeight: '100vh',
                 }}
             >
-
+                {/* Find flight form */}
                 <Container maxWidth="xl">
                     <Box p="4" boxshadow="lg" rounded="md" bg="aliceblue" mb="4">
                         <Heading align="center">Flights</Heading>
@@ -195,7 +204,8 @@ export const Flights = () => {
                         </Text>
                         <Form className="text-center" onSubmit={handleSubmit}>
 
-                            <FormControl>
+                            {/* Origin field */}
+                            <FormControl isRequired>
                                 <FormLabel>Origin</FormLabel>
                                 <Select
                                     name="originDisplayCode"
@@ -225,7 +235,8 @@ export const Flights = () => {
                                 </Select>
                             </FormControl>
 
-                            <FormControl mt="4">
+                            {/* Destination field */}
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>Destination</FormLabel>
                                 <Select
                                     name="destinationDisplayCode"
@@ -256,7 +267,8 @@ export const Flights = () => {
                                 </Select>
                             </FormControl>
 
-                            <FormControl mt="4">
+                            {/* Departure Date */}
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>Departure Date</FormLabel>
                                 <Input
                                     type="date"
@@ -267,47 +279,63 @@ export const Flights = () => {
                                     color="gray.800"
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
+                                    min={new Date().toISOString().split('T')[0]} // Set min date to today
+                                    max={departureDate}
                                     required
                                 />
                             </FormControl>
 
-                            <div>
-                                <Form.Check
-                                    type="radio"
-                                    id="oneWay"
-                                    name="tripType"
-                                    value="oneWay"
-                                    label="One Way"
-                                    checked={tripType === 'oneWay'}
-                                    onChange={() => setTripType('oneWay')}
-                                />
+                            {/* Trip Type */}
+                            <div style={{ marginTop: '15px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Radio
+                                        id="oneWay"
+                                        name="tripType"
+                                        value="oneWay"
+                                        isChecked={tripType === 'oneWay'}
+                                        onChange={() => setTripType('oneWay')}
+                                        colorScheme="teal"
+                                        ml="3"
+                                    >
+                                        One Way
+                                    </Radio>
+                                </div>
 
-                                <Form.Check
-                                    type="radio"
-                                    id="roundTrip"
-                                    name="tripType"
-                                    value="roundTrip"
-                                    label="Round Trip"
-                                    checked={tripType === 'roundTrip'}
-                                    onChange={() => setTripType('roundTrip')}
-                                />
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Radio
+                                        id="roundTrip"
+                                        name="tripType"
+                                        value="roundTrip"
+                                        isChecked={tripType === 'roundTrip'}
+                                        onChange={() => setTripType('roundTrip')}
+                                        colorScheme="teal"
+                                        ml="3"
+                                        mt="1"
+                                    >
+                                        Round Trip
+                                    </Radio>
+                                </div>
                             </div>
 
+                            {/* Return Trip Date*/}
                             {tripType === 'roundTrip' && (
-                                <Form.Group controlId="formReturnDate">
-                                    <Form.Label>Return Date</Form.Label>
+                                <Form.Group controlId="formReturnDate" >
+                                    <Form.Label>Return Date<span className="required-asterisk">  *</span></Form.Label>
                                     <Form.Control
                                         type="date"
                                         name="returnDate"
+                                        min={departureDate}
                                         value={returnDate}
                                         onChange={(e) => setReturnDate(e.target.value)}
+                                        required
                                     />
                                 </Form.Group>
                             )}
 
+                            {/* Number of Adults */}
                             <div className="d-flex">
-                                <Form.Group controlId="formAdults" style={{ width: '48%' }}>
-                                    <Form.Label>Number of Adults</Form.Label>
+                                <Form.Group controlId="formAdults" style={{ width: '48%', paddingTop: '10px' }}>
+                                    <Form.Label>Number of Adults<span className="required-asterisk">  *</span></Form.Label>
                                     <Form.Control
                                         type="number"
                                         name="adults"
@@ -319,8 +347,9 @@ export const Flights = () => {
                                     />
                                 </Form.Group>
 
-                                <Form.Group controlId="formCabinClass" style={{ width: '48%' }}>
-                                    <Form.Label>Cabin Class</Form.Label>
+                                {/* Cabin Class */}
+                                <Form.Group controlId="formCabinClass" style={{ width: '48%', paddingTop: '10px', paddingBottom: '20px' }}>
+                                    <Form.Label>Cabin Class<span className="required-asterisk">  *</span></Form.Label>
                                     <Form.Control
                                         as="select"
                                         name="cabinClass"
@@ -334,41 +363,55 @@ export const Flights = () => {
                                     </Form.Control>
                                 </Form.Group>
                             </div>
-                            <Button variant="primary" type="submit" style={{ width: '100%' }}>
-                                Submit
-                            </Button>
+                            <ChakraButton id="submitBtn" type="submit" colorScheme="teal" w="100%">
+                                Search
+                            </ChakraButton>
+
+                            {/* Error message for server down and no flights */}
+                            {errorMessage && (
+                                <p id="errorMsg" className="text-danger fw-bold" style={{ textAlign: 'left' }}>
+                                    {errorMessage}
+                                </p>
+                            )}
                         </Form>
                     </Box>
                 </Container>
 
+                {/* Easter Egg Triggered*/}
                 {isLeafAnimationEnabled && (
                     <div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
                     </div>
                 )}
 
-                {/* Filter option */}
-                {formSubmitted && (
-                    <Flex justify="center" mt="4" mb="2">
-                        <Checkbox
-                            isChecked={showEcoFlights}
-                            onChange={() => setShowEcoFlights(!showEcoFlights)}
-                            style={{ borderColor: 'aliceblue', color: 'black' }}
-                        >
-                            Show Eco Flights Only
-                        </Checkbox>
-                    </Flex>
-                )}
-
                 {/* Display Flight Results */}
-                <Container maxWidth="6xl">
+                <Container id="flightResults" maxWidth="6xl">
+                    {/* Sorted by price header */}
+                    {flights.length > 0 && (
+                        <Box p="4" boxShadow="lg" rounded="md" bg="white" mb="4">
+                            <Heading textAlign="center">Flight Results</Heading>
+                            <Text fontWeight="bold" textAlign="center">Sorted by Price: Lowest to Highest</Text>
+                        </Box>
+                    )}
+                    {/* Ecoflight Filter */}
+                    {formSubmitted && (
+                        <Flex justify="center" mt="4" mb="2">
+                            <Checkbox id="ecoFlightsCheckbox"
+                                isChecked={showEcoFlights}
+                                onChange={() => setShowEcoFlights(!showEcoFlights)}
+                                style={{ borderColor: 'aliceblue', color: 'black' }}
+                            >
+                                Show Eco Flights Only
+                            </Checkbox>
+                        </Flex>
+                    )}
                     {Object.keys(flights)
                         .filter((key) => !showEcoFlights || flights[key].is_eco_contender)
                         .slice(0, displayResultsCount)
@@ -389,7 +432,7 @@ export const Flights = () => {
                                 {/* Eco flight information */}
                                 {flights[key].is_eco_contender && (
                                     <Box>
-                                        <Text align="left" fontWeight="bold" fontSize="lg" mb="0">
+                                        <Text id="ecoFlightTitle" align="left" fontWeight="bold" fontSize="lg" mb="0">
                                             <span style={{ color: 'green' }}>Eco Flight</span>
                                         </Text>
                                         <Text align="left">
@@ -400,7 +443,7 @@ export const Flights = () => {
                                     </Box>
                                 )}
 
-                                {/* Iterate over legs and display departure times */}
+                                {/* Iterate over flight and display departure times */}
                                 {flights[key].legs.map((leg, index) => (
                                     <Box key={index}>
                                         <hr />
@@ -423,6 +466,7 @@ export const Flights = () => {
                                             {leg.stop_count > 0 &&
                                                 leg.stops.map((stop, index) => (
                                                     <g key={index}>
+
                                                         {/* Dot for stop */}
                                                         <circle cx={`${((index + 1) / (leg.stop_count + 1)) * 80 + 10}%`} cy="50%" r="4" fill="red" />
 
@@ -460,11 +504,19 @@ export const Flights = () => {
                         ))}
                 </Container>
 
-                {hasNextPage && (
+                {/* Load More Button */}
+                {hasNextPage && flights.length > displayResultsCount && (
                     <Flex justify="center" mt="4">
-                        <ChakraButton onClick={loadMoreFlights} colorScheme="blue">
+                        <ChakraButton onClick={loadMoreFlights} colorScheme="teal">
                             Load More
                         </ChakraButton>
+                    </Flex>
+                )}
+
+                {/* Loading Indicator */}
+                {isLoading && (
+                    <Flex justify="center" mt="4">
+                        <CircularProgress isIndeterminate color="teal" />
                     </Flex>
                 )}
             </div>

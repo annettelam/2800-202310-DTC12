@@ -22,13 +22,16 @@ export const NotFoundPage = () => {
                     <Container className='error-container'>
                         <Row>
                             <Col>
+                                {/* Display the error heading */}
                                 <Heading as="h1" size="2xl" mt={5} color="white">
                                     Oops! We've lost our way.
                                 </Heading>
+                                {/* Display the error message */}
                                 <Text fontSize="2xl" mt={2} color="white">
                                     Let's get back on track and continue our travel journey together.
                                 </Text>
-                                <Button colorScheme="blue" mt={5} onClick={goBack}>
+                                {/* Button to go back */}
+                                <Button colorScheme="teal" mt={5} onClick={goBack}>
                                     Go Back
                                 </Button>
                             </Col>

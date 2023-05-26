@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
 import { ChakraProvider, Box, Heading, Text, Button, Container, SimpleGrid, Flex, Image, Divider, Collapse } from '@chakra-ui/react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../fonts.css';
-import navlogo from '../../navlogo.png';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import CSS styles from Bootstrap
+import '../../fonts.css'; // Import CSS styles for the fonts used in the component
+import navlogo from '../../navlogo.png'; // Import an image for the logo
 
 export const Home = (props) => {
-    const [isOpen1, setIsOpen1] = useState(false);
-    const [isOpen2, setIsOpen2] = useState(false);
-    const [isOpen3, setIsOpen3] = useState(false);
+    const [isOpen1, setIsOpen1] = useState(false); // State variable for the first collapse panel
+    const [isOpen2, setIsOpen2] = useState(false); // State variable for the second collapse panel
+    const [isOpen3, setIsOpen3] = useState(false); // State variable for the third collapse panel
 
     const onToggle1 = () => {
-        setIsOpen1(!isOpen1);
+        setIsOpen1(!isOpen1); // Function to toggle the first collapse panel
     };
 
     const onToggle2 = () => {
-        setIsOpen2(!isOpen2);
+        setIsOpen2(!isOpen2); // Function to toggle the second collapse panel
     };
 
     const onToggle3 = () => {
-        setIsOpen3(!isOpen3);
+        setIsOpen3(!isOpen3); // Function to toggle the third collapse panel
     };
+
 
     return (
         <ChakraProvider>
@@ -36,83 +37,80 @@ export const Home = (props) => {
                             <Text fontSize="xl" mb="4">
                                 Explore the world with ease.
                             </Text>
-                            {/* <Button colorScheme="whiteAlpha" size="lg">
-                                Get Started
-                            </Button> */}
                         </Box>
                     </Flex>
                     <Divider />
                     <br></br>
                     <Box>
-                        {/* Features Section */}
                         <SimpleGrid columns={[1, 2, 3]} spacing="8" align="center">
-                            {/* Feature 1 */}
                             <Box>
-                                {/* Add icon */}
-                                <Heading as="h3" size="md" mb="2" color="white">
-                                    Affordability
-                                </Heading>
                                 <>
-                                    <Button onClick={onToggle1}>Discover</Button>
+                                    <Button onClick={onToggle1} bg="teal.50"> Our Story </Button>
                                     <Collapse in={isOpen1} animateOpacity>
                                         <Box
                                             p="20px"
                                             color="black"
                                             mt="4"
-                                            bg="gray.300"
+                                            bg="teal.50"
                                             rounded="md"
                                             shadow="md"
                                         >
-                                            Placeholder content for Feature 1.
+                                            Welcome to aether, a dynamic venture brought to life by four BCIT CST students: Michelle Kwok, Annette Lam, Lisa Jung, and Mikko Sio. Bound by their shared passion for coding and their deep love for traveling, these aspiring individuals have come together to create something different.
+                                            <br />
+                                            <br />
+                                            Driven by the belief that technology has the power to transform the way we explore the world, aether combines their technical expertise with their insatiable wanderlust.
+                                            <br />
+                                            <br />
+                                            Join us on this exhilarating journey as aether revolutionizes the intersection of coding and travel, providing unforgettable experiences that inspire, inform, and connect people from all corners of the globe.
                                         </Box>
                                     </Collapse>
                                 </>
                             </Box>
-                            {/* Feature 2 */}
                             <Box>
-                                {/* Add icon */}
-                                <Heading as="h3" size="md" mb="2" color="white">
-                                    Sustainability
-                                </Heading>
                                 <>
-                                    <Button onClick={onToggle2}>Discover</Button>
+                                    <Button onClick={onToggle2} bg="teal.50"> Our Mission </Button>
                                     <Collapse in={isOpen2} animateOpacity>
                                         <Box
                                             p="20px"
                                             color="black"
                                             mt="4"
-                                            bg="gray.300"
+                                            bg="teal.50"
                                             rounded="md"
                                             shadow="md"
                                         >
-                                            Placeholder content for Feature 2.
+                                            At aether, our mission is to harness the power of AI for the betterment of humanity.
+                                            Recognizing the significant environmental impact generated by the travel industry, we are committed to promoting the concept of sustainable travel without compromising convenience or breaking the bank.
                                         </Box>
                                     </Collapse>
                                 </>
                             </Box>
-                            {/* Feature 3 */}
                             <Box>
-                                {/* Add icon */}
-                                <Heading as="h3" size="md" mb="2" color="white">
-                                    Convenience
-                                </Heading>
                                 <>
-                                    <Button onClick={onToggle3}>Discover</Button>
+                                    <Button onClick={onToggle3} bg="teal.50"> Our App </Button>
                                     <Collapse in={isOpen3} animateOpacity>
                                         <Box
                                             p="20px"
                                             color="black"
                                             mt="4"
-                                            bg="gray.300"
+                                            bg="teal.50"
                                             rounded="md"
                                             shadow="md"
                                         >
-                                            Placeholder content for Feature 3.
+                                            Leveraging cutting-edge AI technologies, our platform offers innovative features that make eco-conscious choices easier for travelers:
+                                            <br />
+                                            <br />
+                                            With our flight search, users can compare options based on carbon emissions, ensuring they can make informed decisions to reduce their carbon footprint.
+                                            <br />
+                                            <br />
+                                            Our hotel search showcases accommodations with sustainability initiatives, allowing users to choose environmentally friendly lodging.
+                                            <br />
+                                            <br />
+                                            We provide personalized recommendations for attractions based on destination. Additionally, our AI-powered packing list suggests sustainable and minimalist options, reducing waste.
                                         </Box>
                                     </Collapse>
                                 </>
                             </Box>
-                            <br></br>
+                            <br />
                         </SimpleGrid>
                     </Box>
                 </Container>

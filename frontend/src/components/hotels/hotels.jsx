@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image, HStack, useNumberInput } from '@chakra-ui/react';
+import { CircularProgress, ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image, HStack, useNumberInput } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton } from '@chakra-ui/react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import dashBackground from '../../dashbkg.jpg';
 import cities from './cities';
-import { Button } from 'react-bootstrap';
 import { FaHeart } from 'react-icons/fa';
 import sustainabilityIcon from './planet-earth.png';
 
 export const Hotels = () => {
-    // Navigate
     const navigate = useNavigate();
-    // User
     const [user, setUser] = useState({});
 
     // Search form
@@ -32,7 +29,7 @@ export const Hotels = () => {
         step: 1,
         defaultValue: 1,
         min: 1,
-        max: 29,
+        max: 10,
     });
     const adultsInput = getAdultsInputProps();
     const adultsInc = getAdultsIncProps();
@@ -46,7 +43,7 @@ export const Hotels = () => {
         step: 1,
         defaultValue: 1,
         min: 1,
-        max: 29,
+        max: 10,
     });
     const roomsInput = getRoomsInputProps();
     const roomsInc = getRoomsIncProps();
@@ -56,6 +53,7 @@ export const Hotels = () => {
     const [hotels, setHotels] = useState({});
     const [savedHotels, setSavedHotels] = useState([]);
     const [hasNextPage, setHasNextPage] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Modal for hotel details
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -92,8 +90,6 @@ export const Hotels = () => {
 
     // Save hotel
     const handleSaveHotel = async (hotelId) => {
-        console.log(hotelId);
-        console.log(isHotelSaved(hotelId));
         if (!isHotelSaved(hotelId)) {
             // Update useState
             setSavedHotels([...savedHotels, hotelId]);
@@ -103,14 +99,23 @@ export const Hotels = () => {
             setSavedHotels(newSavedHotels);
         }
         // Find hotel object
-        const hotel = hotels.find((hotel) => hotel.hotel_id === hotelId);
+        var hotel = hotels.find((hotel) => hotel.hotel_id === hotelId);
+        // Create hotel object
+        hotel = {
+            hotel_id: hotelId,
+            hotel_name: hotel.hotel_name,
+            address: hotel.address,
+            min_total_price: hotel.min_total_price,
+            review_score: hotel.review_score,
+            max_photo_url: hotel.max_photo_url,
+            url: hotel.url,
+            details: hotel.details
+        };
         // Update database
-        console.log(hotel);
         try {
             const response = await axios.post('https://planetpass-backend.onrender.com/save-hotel', {
                 hotel, user
             });
-            console.log(response.data);
             // Update localStorage
             if (response.data === "Hotel saved") {
                 user.savedHotels.push(hotel);
@@ -127,7 +132,7 @@ export const Hotels = () => {
     // Get hotels on form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(city, checkInDate, checkOutDate, numAdults, numRooms);
+        setIsLoading(true);
         try {
             const response = await axios.post('https://planetpass-backend.onrender.com/hotels', {
                 city,
@@ -137,17 +142,18 @@ export const Hotels = () => {
                 numRooms,
                 page: 1 // Start on page 1 (First 4 hotels)
             });
-            console.log(response.data);
             // Update useState
             setHotels(response.data.hotels);
             setHasNextPage(response.data.hasNextPage);
         } catch (error) {
             console.log(error);
         }
+        setIsLoading(false);
     };
 
     // Load more hotels
     const loadMoreHotels = async () => {
+        setIsLoading(true);
         try {
             const response = await axios.post('https://planetpass-backend.onrender.com/hotels', {
                 city,
@@ -157,13 +163,13 @@ export const Hotels = () => {
                 numRooms,
                 page: Math.ceil(hotels.length / 4) + 1 // Calculate the next page based on the current number of hotels
             });
-            console.log(response.data);
             // Update useState
             setHotels((prevHotels) => [...prevHotels, ...response.data.hotels]);
             setHasNextPage(response.data.hasNextPage);
         } catch (error) {
             console.log(error);
         }
+        setIsLoading(false);
     };
 
     return (
@@ -173,7 +179,7 @@ export const Hotels = () => {
                 style={{
                     backgroundImage: `url(${dashBackground})`,
                     backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center top 50px', // Move background down 50 pixels
+                    backgroundPosition: 'center top 50px',
                     backgroundAttachment: 'fixed',
                     backgroundSize: 'cover',
                     fontFamily: 'Questrial',
@@ -188,9 +194,10 @@ export const Hotels = () => {
                             Search for Hotels here.
                         </Text>
                         <form onSubmit={handleSubmit}>
-                            <FormControl mt="4">
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>City</FormLabel>
                                 <Select
+                                    id="city"
                                     value={city}
                                     onChange={(e) => setCity(e.target.value)}
                                     bg="white"
@@ -208,9 +215,10 @@ export const Hotels = () => {
                                 </Select>
                             </FormControl>
 
-                            <FormControl mt="4">
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>Check-In Date</FormLabel>
                                 <Input
+                                name="checkInDate"
                                     type="date"
                                     value={checkInDate}
                                     onChange={(e) => setCheckInDate(e.target.value)}
@@ -224,9 +232,10 @@ export const Hotels = () => {
                                 />
                             </FormControl>
 
-                            <FormControl mt="4">
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>Check-Out Date</FormLabel>
                                 <Input
+                                name="checkOutDate"
                                     type="date"
                                     value={checkOutDate}
                                     onChange={(e) => setCheckOutDate(e.target.value)}
@@ -239,11 +248,12 @@ export const Hotels = () => {
                                 />
                             </FormControl>
 
-                            <FormControl mt="4">
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>Number of Adults</FormLabel>
                                 <HStack maxW='250px' className='m-auto'>
-                                    <Button {...adultsDec} >-</Button>
+                                    <ChakraButton colorScheme="teal"{...adultsDec} >-</ChakraButton>
                                     <Input
+                            
                                         type="number"
                                         value={numAdults}
                                         onChange={(e) => setNumAdults(e.target.value)}
@@ -255,14 +265,14 @@ export const Hotels = () => {
                                         {...adultsInput}
                                         required
                                     />
-                                    <Button {...adultsInc} >+</Button>
+                                    <ChakraButton id="increaseBtn" colorScheme="teal"{...adultsInc} >+</ChakraButton>
                                 </HStack>
                             </FormControl>
 
-                            <FormControl mt="4">
+                            <FormControl mt="4" isRequired>
                                 <FormLabel>Number of Rooms</FormLabel>
                                 <HStack maxW='250px' className='m-auto'>
-                                    <Button {...roomsDec} >-</Button>
+                                    <ChakraButton colorScheme="teal"{...roomsDec} >-</ChakraButton>
                                     <Input
                                         type="number"
                                         value={numRooms}
@@ -275,19 +285,27 @@ export const Hotels = () => {
                                         {...roomsInput}
                                         required
                                     />
-                                    <Button {...roomsInc} >+</Button>
+                                    <ChakraButton id="increaseBtnRoom" colorScheme="teal"{...roomsInc} >+</ChakraButton>
                                 </HStack>
                             </FormControl>
 
-                            <ChakraButton type="submit" colorScheme="blue" mt="4">
-                                Search
-                            </ChakraButton>
+                            <Flex justifyContent="center">
+                                <ChakraButton id="submitButton" type="submit" colorScheme="teal" mt="4" w="50%">
+                                    Search
+                                </ChakraButton>
+                            </Flex>
                         </form>
                     </Box>
                 </Container>
 
                 {/* Hotels Search Results */}
                 <Container className="hotel-results" maxWidth="6xl">
+                    { Object.keys(hotels).length > 0 && (
+                        <Box p="4" boxShadow="lg" rounded="md" bg="white" mb="4">
+                            <Heading textAlign="center">Hotel Results</Heading>
+                            <Text fontWeight="bold" textAlign="center">Sorted by Price: Lowest to Highest</Text>
+                        </Box>
+                    )}
                     {Object.keys(hotels).map((hotelId) => {
                         const hotel = hotels[hotelId];
                         const roundedPrice = hotel.min_total_price.toFixed(2);
@@ -314,9 +332,14 @@ export const Hotels = () => {
                                     <Image src={hotel.max_photo_url} alt={hotel.hotel_name} w={{ base: '80%', sm: '65%', md: '55%', lg: '40%' }} h="auto" rounded="md" mb="4" />
 
                                     {/* Booking Button */}
-                                    <Button size="md" onClick={() => window.location.href = hotel.url} className='mb-3'>
+                                    <ChakraButton
+                                        size="md"
+                                        onClick={() => (window.location.href = hotel.url)}
+                                        className="mb-3"
+                                        colorScheme="teal"
+                                    >
                                         Book at Booking.com
-                                    </Button>
+                                    </ChakraButton>
 
                                     {/* Hotel Details */}
                                     <Text fontSize="lg" textAlign="center" mb="2">
@@ -419,9 +442,16 @@ export const Hotels = () => {
                 {/* Load More Button */}
                 {hasNextPage && (
                     <Flex justify="center" mt="4">
-                        <ChakraButton onClick={loadMoreHotels} colorScheme="blue">
+                        <ChakraButton onClick={loadMoreHotels} colorScheme="teal">
                             Load More
                         </ChakraButton>
+                    </Flex>
+                )}
+
+                {/* Loading Indicator */}
+                {isLoading && (
+                    <Flex justify="center" mt="4">
+                        <CircularProgress isIndeterminate color="teal" />
                     </Flex>
                 )}
             </div>

@@ -2,14 +2,20 @@
     padding: 1rem;
     background-repeat: no-repeat;
     background-position: center top 50px;
-    /* Move background down 50 pixels */
     background-attachment: fixed;
     background-size: cover;
     font-family: Questrial;
     min-height: 100vh;
 }
 
-.paper-airplane {
+/* Styles for required asterisk */
+.required-asterisk {
+    color: red;
+    margin-left: 3px;
+  }
+
+ 
+.leaf {
     position: absolute;
     width: 50px;
     height: 50px;
@@ -19,60 +25,62 @@
     animation: none;
 }
 
-.paper-airplane.falling {
-    animation: fall-paper-airplane 5s linear;
+/* Falling leaf animation */
+.leaf.falling {
+    animation: fall-leaf 5s linear;
 }
 
-.paper-airplane {
+/* Leaf position for individual leaves */
+.leaf {
     top: -50px;
     left: 50px;
     background-image: url('./leaf.png');
 }
 
-.paper-airplane:nth-child(2) {
+.leaf:nth-child(2) {
     top: -300px;
     left: 150px;
     background-image: url('./leaf.png');
 }
 
-.paper-airplane:nth-child(3) {
+.leaf:nth-child(3) {
     top: -450px;
     left: 250px;
     background-image: url('./leaf2.png');
 }
 
-.paper-airplane:nth-child(4) {
+.leaf:nth-child(4) {
     top: -110px;
     left: 250px;
     background-image: url('./leaf2.png');
 }
 
-.paper-airplane:nth-child(5) {
+.leaf:nth-child(5) {
     top: -220px;
     left: 350px;
     background-image: url('./leaf.png'); 
 }
 
-.paper-airplane:nth-child(6) {
+.leaf:nth-child(6) {
     top: -350px;
     left: 475px;
     background-image: url('./leaf2.png');
 }
 
-.paper-airplane:nth-child(7) {
+.leaf:nth-child(7) {
     top: -150px;
     left: 600px;
     background-image: url('./leaf4.png');
 }
 
-.paper-airplane:nth-child(8) {
+.leaf:nth-child(8) {
     top: -450px;
     left: 550px;
     background-image: url('./leaf.png');
 }  
 
-
-@keyframes fall-paper-airplane {
+/* Keyframes for falling leaf animation */
+@keyframes fall-leaf {
     0% {
         transform: translateY(-50px) rotateZ(0deg);
         opacity: 0;

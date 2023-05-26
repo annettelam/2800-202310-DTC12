@@ -1,52 +1,107 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Form, Button } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
+import { 
+  ChakraProvider, 
+  Box, 
+  FormControl, 
+  FormLabel, 
+  Input, 
+  Button, 
+  Container, 
+  Flex, 
+  Image, 
+  useToast } from '@chakra-ui/react';
+import navlogo from '../navlogo.png';
+
 
 export const ResetPassword = () => {
-    const { token } = useParams();
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState(false);
 
-    const handleSubmit = async (e) => {
-        console.log("1");
-        e.preventDefault();
-        console.log("2");
-        if (password !== confirmPassword) {
-            console.log("passwords don't match")
-            setError('Passwords do not match');
-            return;
-        }
-        try {
+  // Token from the URL
+  const { token } = useParams();
 
-            await axios.post(`https://planetpass-backend.onrender.com/reset-password/${token}`, { password });
-            setSuccess(true);
-        } catch (err) {
-            setError('Failed to reset password');
-        }
-    };
+  // Password and confirm password fields
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-    return (
-        <div>
-            <h2>Reset Password</h2>
-            {error && <div className="alert alert-danger">{error}</div>}
-            {success ? (
-                <div className="alert alert-success">Password reset successfully</div>
-            ) : (
-                <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId="formBasicPassword">
-                        <Form.Label>New Password</Form.Label>
-                        <Form.Control type="password" name="password" placeholder="Enter new password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicConfirmPassword">
-                        <Form.Label>Confirm New Password</Form.Label>
-                        <Form.Control type="password" name="confirmPassword" placeholder="Confirm new password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-                    </Form.Group>
-                    <Button variant="primary" type="submit">Reset Password</Button>
-                </Form>
-            )}
-        </div>
-    );
+  // Error message to display if the password reset fails
+  const [error, setError] = useState('');
+  const toast = useToast();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    try {
+      // Send a POST request to reset the password using the provided token
+      await axios.post(`https://planetpass-backend.onrender.com/reset-password/${token}`, { password });
+      toast({
+        title: 'Password reset successfully',
+        status: 'success',
+        isClosable: true,
+      });
+    } catch (err) {
+      setError('Failed to reset password');
+      toast({
+        title: 'Failed to reset password',
+        status: 'error',
+        isClosable: true,
+      });
+    }
+  };
+
+  return (
+    <ChakraProvider>
+      <Box bgGradient="linear(to bottom right, aliceblue, teal)" fontFamily="Questrial" minHeight="100vh">
+        <Container maxWidth="container.xl">
+          <Flex direction="column" align="center" justify="center" minHeight="50vh">
+            <Box bg="aliceblue.500" color="white" py="8" px="12" borderRadius="xl" textAlign="center">
+              <Flex justify="center">
+                <Image src={navlogo} alt="Planetpass Logo" boxSize="300px" objectFit="contain" />
+              </Flex>
+              <form onSubmit={handleSubmit}>
+                <FormControl isRequired>
+                  <FormLabel>New Password</FormLabel>
+                  {/* Input field for entering the new password */}
+                  <Input
+                    type="password"
+                    name="password"
+                    placeholder="Enter new password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    bg="white"
+                    color="black"
+                  />
+                </FormControl>
+                <br />
+                <FormControl isRequired>
+                  <FormLabel>Confirm Password</FormLabel>
+                  {/* Input field for confirming the new password */}
+                  <Input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Confirm password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    bg="white"
+                    color="black"
+                  />
+                </FormControl>
+                {/* Display the error message if it exists */}
+                {error && <Box color="red">{error}</Box>}
+                <br />
+                <Button colorScheme="teal" variant="solid" type="submit" style={{ width: '100%' }}>
+                  Reset Password
+                </Button>
+              </form>
+            </Box>
+          </Flex>
+        </Container>
+      </Box>
+    </ChakraProvider>
+  );
 };
