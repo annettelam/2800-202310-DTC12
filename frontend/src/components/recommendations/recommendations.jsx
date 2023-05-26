@@ -67,17 +67,26 @@ export const Recommendations = ({ flightId }) => {
                             id="city"
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
-                            placeholder="Enter city"
+                            placeholder="Enter city *"
+                            required // Make the input field required
+                            bg="gray.100" // Add background color to the input
                         />
-                            <Input
-                                type="date"
-                                id="dates"
-                                value={dates}
-                                onChange={(e) => setDates(e.target.value)}
-                                min={new Date().toISOString().split('T')[0]}
-                            />
+                        <Input
+                            type="date"
+                            id="dates"
+                            value={dates}
+                            onChange={(e) => setDates(e.target.value)}
+                            min={new Date().toISOString().split('T')[0]}
+                            placeholder="Enter date *"
+                            required // Make the input field required
+                            bg="gray.100" // Add background color to the input
+                        />
                         <Flex justify="space-between" align="center">
-                            <Button colorScheme="blue" onClick={generateRecommendations} w="80%">
+                            <Button
+                                colorScheme="teal" // Change the color scheme to teal
+                                onClick={generateRecommendations}
+                                w="80%"
+                            >
                                 Generate List
                             </Button>
 
@@ -87,7 +96,6 @@ export const Recommendations = ({ flightId }) => {
                                 </Button>
                             </Flex>
                         </Flex>
-
                     </VStack>
                 </Box>
             </Container>
@@ -97,7 +105,7 @@ export const Recommendations = ({ flightId }) => {
                         {recommendations.map((recommendation, index) => {
                             const hasHyphen = recommendation.includes('-');
                             if (hasHyphen) {
-                                const items = recommendation.split('-').map(item => item.trim());
+                                const items = recommendation.split('-').map((item) => item.trim());
                                 return (
                                     <Card key={index} bg="white" rounded="md" p={4}>
                                         <UnorderedList>
