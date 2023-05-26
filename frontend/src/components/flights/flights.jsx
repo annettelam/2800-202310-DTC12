@@ -391,29 +391,27 @@ export const Flights = () => {
                     </div>
                 )}
 
-                {/* Sorted by price header */}
-                {flights.length > 0 && (
-                    <Text align="center" mt="4" fontWeight="bold" fontSize="xl">
-                        Sorted by price: lowest to highest
-                    </Text>
-                )}
-
-
-                {/* Ecoflight Filter */}
-                {formSubmitted && (
-                    <Flex justify="center" mt="4" mb="2">
-                        <Checkbox id="ecoFlightsCheckbox"
-                            isChecked={showEcoFlights}
-                            onChange={() => setShowEcoFlights(!showEcoFlights)}
-                            style={{ borderColor: 'aliceblue', color: 'black' }}
-                        >
-                            Show Eco Flights Only
-                        </Checkbox>
-                    </Flex>
-                )}
-
                 {/* Display Flight Results */}
                 <Container id="flightResults" maxWidth="6xl">
+                    {/* Sorted by price header */}
+                    {flights.length > 0 && (
+                        <Box p="4" boxShadow="lg" rounded="md" bg="white" mb="4">
+                            <Heading textAlign="center">Flight Results</Heading>
+                            <Text fontWeight="bold" textAlign="center">Sorted by Price: Lowest to Highest</Text>
+                        </Box>
+                    )}
+                    {/* Ecoflight Filter */}
+                    {formSubmitted && (
+                        <Flex justify="center" mt="4" mb="2">
+                            <Checkbox id="ecoFlightsCheckbox"
+                                isChecked={showEcoFlights}
+                                onChange={() => setShowEcoFlights(!showEcoFlights)}
+                                style={{ borderColor: 'aliceblue', color: 'black' }}
+                            >
+                                Show Eco Flights Only
+                            </Checkbox>
+                        </Flex>
+                    )}
                     {Object.keys(flights)
                         .filter((key) => !showEcoFlights || flights[key].is_eco_contender)
                         .slice(0, displayResultsCount)
