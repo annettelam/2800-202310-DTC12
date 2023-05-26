@@ -380,14 +380,14 @@ export const Flights = () => {
                 {/* Easter Egg Triggered*/}
                 {isLeafAnimationEnabled && (
                     <div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
-                        <div className="paper-airplane falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
+                        <div className="leaf falling"></div>
                     </div>
                 )}
 
