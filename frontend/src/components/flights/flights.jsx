@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Checkbox, Heading, Text, Flex, Radio, FormControl, FormLabel, Select, Input, Button as ChakraButton } from '@chakra-ui/react';
+import { Box, Container, Checkbox, Heading, Text, Flex, Radio, FormControl, FormLabel, Select, Input, Button as ChakraButton, CircularProgress} from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -63,6 +63,7 @@ export const Flights = () => {
     const [savedFlights, setSavedFlights] = useState([]);
     const [hasNextPage, setHasNextPage] = useState(false);
     const [showEcoFlights, setShowEcoFlights] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
 
     // Easter Egg Animation
@@ -149,8 +150,8 @@ export const Flights = () => {
 
     // Get flights on form submit
     const handleSubmit = async (e) => {
-
         e.preventDefault();
+        setIsLoading(true);
         if (destinationDisplayCode === 'Earth') {
             setErrorMessage('Sorry, we do not fly to Earth yet. Please try another destination.')
             setFlights({});
@@ -179,10 +180,12 @@ export const Flights = () => {
             setFormSubmitted(false);
             setHasNextPage(false);
         }
+        setIsLoading(false);
     };
 
     // Load more flights
     const loadMoreFlights = () => {
+        setIsLoading(false);
         setDisplayResultsCount(displayResultsCount + batchCount);
         setHasNextPage(displayResultsCount < flights.length);
     }
@@ -510,6 +513,13 @@ export const Flights = () => {
                         <ChakraButton onClick={loadMoreFlights} colorScheme="teal">
                             Load More
                         </ChakraButton>
+                    </Flex>
+                )}
+
+                {/* Loading Indicator */}
+                {isLoading && (
+                    <Flex justify="center" mt="4">
+                        <CircularProgress isIndeterminate color="teal" />
                     </Flex>
                 )}
             </div>
