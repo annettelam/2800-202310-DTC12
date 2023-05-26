@@ -1,22 +1,35 @@
 const { Builder, By, until, Select, Key } = require('selenium-webdriver');
 const assert = require('assert');
 
-
+// Function to automate the testing of the website
 async function automate() {
     let driver;
     try {
+        // Create a new WebDriver instance using Chrome
         driver = await new Builder().forBrowser('chrome').build();
 
+
+        // Perform normal user login
         await normalUserLogin(driver);
+        // Perform login with special characters in credentials
         await specialCharacterLogin(driver);
+        // Perform login with language specific characters in credentials
         await languageSpecificCharactersLogin(driver);
+        // Perform login with invalid email
         await invalidEmailLogin(driver);
+        // Perform scenario with maximum number of adults flying
         await maxNumberOfAdultsFlying(driver);
+        // Perform scenario with character input in number field for flight
         await characterInNumberFieldFlying(driver);
+        // Perform scenario with decimal input in number field for flight
         await decimalNumberInputFlight(driver);
+        // Perform scenario with negative number input in number field for flight
         await negativeNumberInputFlight(driver);
+        // Perform scenario with no flights found
         await noFlightsFoundError(driver);
+        // Perform scenario with maximum number of adults for hotel
         await maxNumberOfAdultsHotel(driver);
+        // Perform scenario with maximum number of rooms for hotel
         await maxNumberOfRoomsHotel(driver);
 
     } catch (error) {
