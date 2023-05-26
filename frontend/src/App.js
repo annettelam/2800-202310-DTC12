@@ -12,7 +12,6 @@ import { ResetPassword } from "./components/resetpassword";
 import { Dashboard } from "./components/dashboard/dashboard";
 import { NotFoundPage } from "./components/404/404";
 import { Profile } from "./components/profile/profile";
-import { Suggestions } from "./components/suggestions/suggestions";
 import { Hotels } from "./components/hotels/hotels.jsx";
 import { Recommendations } from "./components/recommendations/recommendations";
 import { PrivacyPolicy } from "./components/privacy-policy";
