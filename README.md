@@ -3,6 +3,16 @@ Welcome to aether! We are a dynamic venture brought to life by four BCIT CST stu
 
 <br>
 
+# App.js
+- The Planetpass component serves as the main entry point for the Aether application.
+- It utilizes React Router to handle different routes and navigation within the application. The component manages the user authentication state using the loggedIn variable and provides functions for handling login and storing user data.
+- It renders the CustomNavbar component for navigation and the Footer component at the bottom of the page.
+- Each component is associated with a specific route and is rendered accordingly when the corresponding route is accessed.
+- The code structure follows the principles of component-based development, with reusable components imported and used within the Planetpass component.
+- The application provides a user-friendly interface and seamless navigation experience for users interested in exploring eco-friendly travel options and managing their bookings and profiles.
+
+<br>
+
 # Frontend 
 
 ## Files
@@ -126,3 +136,8 @@ Welcome to aether! We are a dynamic venture brought to life by four BCIT CST stu
 
 **utils.js:**
 - This section enables easy inclusion of files using relative paths by setting up global variables and functions. It allows you to include files in your project using the include() function, which resolves the relative path and imports the specified file. The include() function is also used in the server.js file to include the routes and modules.
+
+<br>
+
+# Conclusion
+With aether, we aim to revolutionize the way people travel by promoting sustainability and eco-friendly practices. By utilizing React for our frontend, we ensure a clean and maintainable codebase, allowing us to develop and enhance our platform efficiently. With our combined passion for the environment and traveling, we are excited to make a positive impact and provide users with an enjoyable and sustainable travel experience.
