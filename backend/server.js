@@ -78,7 +78,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000", // or your frontend URL
+    origin: "http://localhost:3000", 
     credentials: true,
   })
 );
@@ -92,7 +92,6 @@ app.use(
 );
 
 app.use((req, res, next) => {
-  // console.log('Session:', req.session);
   next();
 });
 
@@ -229,8 +228,6 @@ app.post("/login", async (req, res) => {
 
   req.session.cookie.maxAge = expireTime;
 
-  // Log the session after setting the user data
-  // console.log('Session after login:', req.session);
 
   // Send response
   res.json({
@@ -242,7 +239,8 @@ app.post("/login", async (req, res) => {
 app.get("/profile", (req, res) => {
   // Check if user is logged in
   if (!req.session.authenticated) {
-    res.redirect("/login"); // Redirect to login if not logged in
+    // Redirect to login if not logged in
+    res.redirect("/login"); 
     return;
   }
 
@@ -259,7 +257,7 @@ app.get("/profile", (req, res) => {
   });
 });
 
-//flight results
+// Flight results
 app.post('/flights', async (req, res) => {
   // Start timer
   console.time('flightSearch');
@@ -289,6 +287,7 @@ app.post('/flights', async (req, res) => {
     if (flightsList) {
       console.log('Flights list found in cache');
       filteredResults = JSON.parse(flightsList);
+
     // Else fetch flights list from API
     } else {
       console.log('Flights list not found in cache');
@@ -301,6 +300,7 @@ app.post('/flights', async (req, res) => {
         res.status(404).send('No flights found.')
         return;
       }
+
       // Filter flights list
       filteredResults = results.data.data.filter((flight) => {
         var matchFlight = false;
@@ -316,6 +316,7 @@ app.post('/flights', async (req, res) => {
         }
         return matchFlight;
       });
+
       // Cache filtered flights list
       redisClient.set(flightsListKey, JSON.stringify(filteredResults));
     }
@@ -347,7 +348,6 @@ const transporter = nodemailer.createTransport({
 
 app.post("/reset-password", async (req, res) => {
   const { email } = req.body;
-  // console.log(`backend: Reset password requested for ${email}`);
 
   // Check if email exists in database
   const user = await userCollection.findOne({ email: email });
@@ -359,7 +359,6 @@ app.post("/reset-password", async (req, res) => {
 
   // Generate a password reset token
   const token = crypto.randomBytes(20).toString("hex");
-  // console.log(token);
 
   // Save the token to the user's document in the database
   await userCollection.updateOne(
@@ -368,7 +367,6 @@ app.post("/reset-password", async (req, res) => {
   );
 
   // Send an email to the user with a link to reset their password
-
   const resetUrl = `http://localhost:3000/reset-password/${token}`;
 
   const mailOptions = {
@@ -401,7 +399,7 @@ app.post("/reset-password", async (req, res) => {
         <a href="http://localhost:3000/privacy-policy">Read our Privacy Policy here</a>
         <br>
         <p>
-          This app uses resources from <a href="https://example.com">Example</a> under the <a href="https://example.com/license">License</a>.
+          This app uses resources from <a href="https://logo.com">Logo.com</a>.
         </p>
       </footer>
     `,
@@ -415,7 +413,6 @@ app.post("/reset-password", async (req, res) => {
   };
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log(error);
       return res.status(500).json({ message: "Error sending email" });
     } else {
       console.log(`Email sent to ${email}: ${info.response}`);
@@ -426,7 +423,6 @@ app.post("/reset-password", async (req, res) => {
 
 app.post("/reset-password/:token", async (req, res) => {
   const { token } = req.params;
-  console.log(token);
   const { password } = req.body;
 
   const hashedPassword = bcrypt.hashSync(password, 10);
@@ -446,16 +442,18 @@ app.post("/hotels", async (req, res) => {
 
     // Get the hotel fields
     const { city, checkInDate, checkOutDate, numAdults, numRooms, page } = req.body;
-    console.log(`backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}, ${page}`);
     let hotels;
+
     // Get city id
     const cityId = cities[city];
     const hotelsListKey = `${cityId}-${checkInDate}-${checkOutDate}-${numAdults}-${numRooms}`;
+
     // Check if the hotels list is cached
     const cachedHotelsList = await redisClient.get(hotelsListKey);
     if (cachedHotelsList) {
       console.log("Hotels list found in cache");
       hotels = JSON.parse(cachedHotelsList);
+
     // Else fetch hotels list from the API
     } else {
       console.log("Hotels list not found in cache");
@@ -474,23 +472,28 @@ app.post("/hotels", async (req, res) => {
         },
       });
       hotels = hotels.data.result;
+
       // Cache the hotels list
       await redisClient.set(hotelsListKey, JSON.stringify(hotels));
     }
+
     // Slice the array to get the hotels for the current batch
     const batchSize = 4;
     const startIndex = (page - 1) * batchSize;
     const endIndex = page * batchSize;
     const hotelsData = hotels.slice(startIndex, endIndex);
+
     // Get hotel details for sliced hotels with a delay between each call
     const hotelDetails = hotelsData.map((hotel, index) => {
       return new Promise(async (resolve, reject) => {
         const hotelCacheKey = `${hotel.hotel_id}`;
+
         // Check if hotel details are cached
         const cachedHotelDetails = await redisClient.get(hotelCacheKey);
         if (cachedHotelDetails) {
           console.log("Hotel details found in cache");
           resolve(JSON.parse(cachedHotelDetails));
+
         // If not cached, fetch from API
         } else {
           console.log("Hotel details not found in cache");
@@ -505,6 +508,7 @@ app.post("/hotels", async (req, res) => {
                   checkin_date: checkInDate,
                 },
               });
+
               // Cache the hotel details
               await redisClient.set(hotelCacheKey, JSON.stringify(response.data));
               resolve(response);
@@ -515,14 +519,18 @@ app.post("/hotels", async (req, res) => {
         }
       });
     });
+
     // Wait for all API calls to finish
     const hotelDetailsData = await Promise.all(hotelDetails);
+
     // Add hotel details to hotels list
     hotelDetailsData.forEach((hotel, index) => {
       hotelsData[index].details = hotel.data;
     });
+
     // End timer
     console.timeEnd("hotels-api");
+
     // Send response
     res.json({
       hotels: hotelsData,
@@ -537,7 +545,6 @@ app.post("/hotels", async (req, res) => {
 app.post("/save-hotel", async (req, res) => {
   const { hotel, user } = req.body;
   const userId = new ObjectId(user.userId);
-  console.log(`backend: ${hotel}, ${userId}`);
 
   try {
     // Find hotel in user's saved hotels
@@ -553,7 +560,6 @@ app.post("/save-hotel", async (req, res) => {
         { $pull: { savedHotels: { hotel_id: hotel.hotel_id } } },
         { returnOriginal: false }
       );
-      console.log(result);
 
       res.send("Hotel removed");
     } else {
@@ -563,8 +569,6 @@ app.post("/save-hotel", async (req, res) => {
         { $push: { savedHotels: hotel } },
         { returnOriginal: false }
       );
-      console.log(result);
-
       res.send("Hotel saved");
     }
   } catch (error) {
@@ -576,7 +580,6 @@ app.post("/save-hotel", async (req, res) => {
 app.post("/save-flight", async (req, res) => {
   const { flight, user } = req.body;
   const userId = new ObjectId(user.userId);
-  console.log(`backend: ${flight}, ${userId}`);
 
   try {
     // Find flight in user's saved flights
@@ -592,7 +595,6 @@ app.post("/save-flight", async (req, res) => {
         { $pull: { savedFlights: { id: flight.id } } },
         { returnOriginal: false }
       );
-      console.log(result);
 
       res.send("Flight removed");
     } else {
@@ -602,8 +604,6 @@ app.post("/save-flight", async (req, res) => {
         { $push: { savedFlights: flight } },
         { returnOriginal: false }
       );
-      console.log(result);
-
       res.send("Flight saved");
     }
   } catch (error) {
@@ -612,10 +612,8 @@ app.post("/save-flight", async (req, res) => {
   }
 });
 
-///////////////////////////////////////////////////////////////////////////////////////
 
 app.post("/logout", (req, res) => {
-  // console.log(req);
   req.session.destroy();
   res.send("ok");
 });
