@@ -75,12 +75,12 @@ export const Login = ({ onLogin }) => {
                       />
                     </FormControl>
                     <br />
-                    <Button colorScheme="teal" variant="solid" type="submit" style={{ width: '100%' }}>
+                    <Button id="submitBtn" colorScheme="teal" variant="solid" type="submit" style={{ width: '100%' }}>
                       Log In
                     </Button>
                   </form>
                   {msg && (
-                    <p className="text-danger fw-bold" style={{ textAlign: 'left' }}>
+                    <p id="errorMsg" className="text-danger fw-bold" style={{ textAlign: 'left' }}>
                       {msg}
                     </p>
                   )}

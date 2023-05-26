@@ -365,7 +365,7 @@ export const Flights = () => {
                                 Submit
                             </Button>
                             {errorMessage && (
-                                <p className="text-danger fw-bold" style={{ textAlign: 'left' }}>
+                                <p id="errorMsg" className="text-danger fw-bold" style={{ textAlign: 'left' }}>
                                 {errorMessage}
                             </p>
                             )}
@@ -401,7 +401,7 @@ export const Flights = () => {
                 )}
 
                 {/* Display Flight Results */}
-                <Container maxWidth="6xl">
+                <Container id="flightResults" maxWidth="6xl">
                     {Object.keys(flights)
                         .filter((key) => !showEcoFlights || flights[key].is_eco_contender)
                         .slice(0, displayResultsCount)
