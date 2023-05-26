@@ -132,5 +132,24 @@ Welcome to aether! We are a dynamic venture brought to life by four BCIT CST stu
 
 <br>
 
+## Redis Caching for Improved API Performance
+
+The server application utilizes Redis caching to enhance the speed and performance of the flight, hotel, and attraction APIs. Redis is an in-memory data store that allows for fast data retrieval and caching.
+
+### Caching Mechanism
+
+- When a user performs a search, the server checks if the requested data is available in the Redis cache.
+- If the data is present, it is directly retrieved from the cache, eliminating the need for redundant API calls.
+- If the data is not found in the cache, it is retrieved from the respective API, stored in Redis for future use, and then returned to the user.
+
+### Benefits
+
+- Improved Performance: Faster data retrieval and better user experience.
+- Reduced API Calls: Minimizes API calls and improves system performance.
+- Lower Database Load: Offloads data retrieval operations from the database for better scalability.
+- Cost Optimization: Optimizes API usage and reduces unnecessary expenses.
+
+<br>
+
 # Conclusion
 With aether, we aim to revolutionize the way people travel by promoting sustainability and eco-friendly practices. By utilizing React for our frontend, we ensure a clean and maintainable codebase, allowing us to develop and enhance our platform efficiently. With our combined passion for the environment and traveling, we are excited to make a positive impact and provide users with an enjoyable and sustainable travel experience.
