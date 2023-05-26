@@ -112,3 +112,12 @@ Welcome to aether! We are a dynamic venture brought to life by four BCIT CST stu
 | /attractions | POST | Fetches attractions based on the provided city. |
 
 <br>
+
+**skyscanner.js:**
+- This code is a JavaScript module that exports a function called searchFlights. This function uses the Axios library to make an API request to the Skyscanner API for flight search. It takes in parameters for the search and returns a Promise that resolves to the API response.
+- The module sets the Axios configuration to include credentials and defines the API endpoint URL, parameters, and headers. It uses a RapidAPI key and host for authentication.
+- If the API request is successful, the function returns the response data. If there is an error, it logs the error and sends a 500 status response with an error message indicating an internal server error.
+
+**sugg_route.js:**
+- This code is an Express.js router module that fetches attractions for a city using the TripAdvisor API. It implements rate limiting, request throttling, and caching.
+- This code is an Express.js router module that efficiently fetches attractions for a city using the TripAdvisor API. It incorporates features such as rate limiting, request throttling, and caching using Redis. The module retrieves the user's saved flights, validates the user, and fetches the destination city from the most recent flight. It checks if the attractions data is already cached; if not, it retrieves it from the TripAdvisor API. Descriptions for the attractions are obtained from the OpenAI API, while images are fetched from the TripAdvisor API. The attractions data is then stored in the cache, and the module sends the city name and attractions data to the client. This module provides a streamlined solution for retrieving attractions with enhanced performance and security measures.
