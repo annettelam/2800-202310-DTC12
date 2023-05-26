@@ -16,6 +16,7 @@ const axios = require("axios");
 const { ObjectId } = require("mongodb");
 const suggRoutes = require("./sugg_routes.js");
 const fs = require("fs");
+const redis = require("redis");
 
 // API files
 const cities = require("../frontend/src/components/hotels/cities");
@@ -33,9 +34,24 @@ const mongodb_user = process.env.MONGODB_USER;
 const mongodb_password = process.env.MONGODB_PASSWORD;
 const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
+const redisUrl = process.env.REDIS_URL;
 /* END secret section */
 
+// Connect to Redis
+let redisClient;
+(async () => {
+  redisClient = redis.createClient({
+    url: redisUrl,
+  });
+  redisClient.on("error", (error) => {
+    console.error(error);
+  });
+  await redisClient.connect();
+  console.log("Connected to Redis");
+})();
+
 const { database, getUserCollection } = require("./databaseConnection");
+const e = require("express");
 const userCollection = getUserCollection();
 database.connect((err) => {
   if (err) {
@@ -245,19 +261,13 @@ app.get("/profile", (req, res) => {
 
 //flight results
 app.post('/flights', async (req, res) => {
-  // res.status(500).send('Searching for flights is currently unavailable. Please try again later.')
-  
   // Start timer
   console.time('flightSearch');
-
+  // Get flight search parameters
   const { originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass } = req.body;
-  console.log(req.body)
-  console.log(originDisplayCode)
-  console.log(destinationDisplayCode)
-  console.log(departureDate)
-  // console.log(returnDate)
-  console.log(tripType)
-  console.log(cabinClass)
+  console.log(`backend: ${originDisplayCode}, ${destinationDisplayCode}, ${departureDate}, ${returnDate}, ${tripType}, ${adults}, ${cabinClass}`);
+  const flightsListKey = `${originDisplayCode}-${destinationDisplayCode}-${departureDate}-${returnDate}-${tripType}-${adults}-${cabinClass}`;
+  let filteredResults;
 
   try {
     let params = {
@@ -274,45 +284,41 @@ app.post('/flights', async (req, res) => {
       params.returnDate = returnDate
     }
 
-    const results = await new Promise((resolve) => {
-      setTimeout(async () => {
-        resolve(await searchFlights(params));
-      }, 600)
-    })
-
-    console.log(results.data.message)
-    if(results.data.message === 'Session not found in state: UNKNOWN_SESSION_ID') {
-      res.status(404).send('No flights found.')
-      return;
-    }
-
-  
-    
-    // const flightResults = results
-    // console.log(flightResults)
-
-    const filteredResults = results.data.data.filter((flight) => {
-      var matchFlight = false;
-      console.log("filtering1")
-
-      if (tripType === 'roundTrip') {
-        console.log(flight.legs.length)
-        if (flight.legs.length === 2) {
-          matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
-        }
+    // Check if filtered flights list is cached
+    const flightsList = await redisClient.get(flightsListKey);
+    if (flightsList) {
+      console.log('Flights list found in cache');
+      filteredResults = JSON.parse(flightsList);
+    // Else fetch flights list from API
+    } else {
+      console.log('Flights list not found in cache');
+      const results = await new Promise((resolve) => {
+        setTimeout(async () => {
+          resolve(await searchFlights(params));
+        }, 600)
+      })
+      if (results.data.message === 'Session not found in state: UNKNOWN_SESSION_ID') {
+        res.status(404).send('No flights found.')
+        return;
       }
-      console.log("filtering2")
-      if (tripType === 'oneWay') {
-        if (flight.legs.length === 1) {
-          matchFlight = true;
+      // Filter flights list
+      filteredResults = results.data.data.filter((flight) => {
+        var matchFlight = false;
+        if (tripType === 'roundTrip') {
+          if (flight.legs.length === 2) {
+            matchFlight = flight.legs[1].departure.slice(0, 10) === returnDate;
+          }
         }
-      }
-      console.log("filtering3")
-      return matchFlight;
-
+        if (tripType === 'oneWay') {
+          if (flight.legs.length === 1) {
+            matchFlight = true;
+          }
+        }
+        return matchFlight;
+      });
+      // Cache filtered flights list
+      redisClient.set(flightsListKey, JSON.stringify(filteredResults));
     }
-    );
-    console.log(filteredResults)
 
     // End timer
     console.timeEnd('flightSearch');
@@ -323,8 +329,6 @@ app.post('/flights', async (req, res) => {
     res.status(500).send('Searching for flights is currently unavailable. Please try again later.');
   }
 });
-
-
 
 //password reset
 const transporter = nodemailer.createTransport({
@@ -404,7 +408,7 @@ app.post("/reset-password", async (req, res) => {
     attachments: [
       {
         filename: "navlogo.png",
-        path: "./navlogo.png",
+        path: __dirname + "/navlogo.png",
         cid: "logo",
       },
     ],
@@ -443,47 +447,72 @@ app.post("/hotels", async (req, res) => {
     // Get the hotel fields
     const { city, checkInDate, checkOutDate, numAdults, numRooms, page } = req.body;
     console.log(`backend: ${city}, ${checkInDate}, ${checkOutDate}, ${numAdults}, ${numRooms}, ${page}`);
+    let hotels;
     // Get city id
     const cityId = cities[city];
-    // Get Hotel list
-    const hotels = await hotelAPI.get("/v1/hotels/search", {
-      params: {
-        checkin_date: checkInDate,
-        dest_type: "city",
-        units: "metric",
-        checkout_date: checkOutDate,
-        adults_number: numAdults,
-        order_by: "price",
-        dest_id: cityId,
-        filter_by_currency: "CAD",
-        locale: "en-gb",
-        room_number: numRooms,
-      },
-    });
+    const hotelsListKey = `${cityId}-${checkInDate}-${checkOutDate}-${numAdults}-${numRooms}`;
+    // Check if the hotels list is cached
+    const cachedHotelsList = await redisClient.get(hotelsListKey);
+    if (cachedHotelsList) {
+      console.log("Hotels list found in cache");
+      hotels = JSON.parse(cachedHotelsList);
+    // Else fetch hotels list from the API
+    } else {
+      console.log("Hotels list not found in cache");
+      hotels = await hotelAPI.get("/v1/hotels/search", {
+        params: {
+          checkin_date: checkInDate,
+          dest_type: "city",
+          units: "metric",
+          checkout_date: checkOutDate,
+          adults_number: numAdults,
+          order_by: "price",
+          dest_id: cityId,
+          filter_by_currency: "CAD",
+          locale: "en-gb",
+          room_number: numRooms,
+        },
+      });
+      hotels = hotels.data.result;
+      // Cache the hotels list
+      await redisClient.set(hotelsListKey, JSON.stringify(hotels));
+    }
     // Slice the array to get the hotels for the current batch
     const batchSize = 4;
     const startIndex = (page - 1) * batchSize;
     const endIndex = page * batchSize;
-    const hotelsData = hotels.data.result.slice(startIndex, endIndex);
+    const hotelsData = hotels.slice(startIndex, endIndex);
     // Get hotel details for sliced hotels with a delay between each call
     const hotelDetails = hotelsData.map((hotel, index) => {
-      return new Promise((resolve, reject) => {
-        setTimeout(async () => {
-          try {
-            const response = await hotelAPI.get('/v2/hotels/details', {
-              params: {
-                hotel_id: hotel.hotel_id,
-                currency: 'CAD',
-                locale: 'en-gb',
-                checkout_date: checkOutDate,
-                checkin_date: checkInDate,
-              },
-            });
-            resolve(response);
-          } catch (error) {
-            reject(error);
-          }
-        }, index * 100);
+      return new Promise(async (resolve, reject) => {
+        const hotelCacheKey = `${hotel.hotel_id}`;
+        // Check if hotel details are cached
+        const cachedHotelDetails = await redisClient.get(hotelCacheKey);
+        if (cachedHotelDetails) {
+          console.log("Hotel details found in cache");
+          resolve(JSON.parse(cachedHotelDetails));
+        // If not cached, fetch from API
+        } else {
+          console.log("Hotel details not found in cache");
+          setTimeout(async () => {
+            try {
+              const response = await hotelAPI.get('/v2/hotels/details', {
+                params: {
+                  hotel_id: hotel.hotel_id,
+                  currency: 'CAD',
+                  locale: 'en-gb',
+                  checkout_date: checkOutDate,
+                  checkin_date: checkInDate,
+                },
+              });
+              // Cache the hotel details
+              await redisClient.set(hotelCacheKey, JSON.stringify(response.data));
+              resolve(response);
+            } catch (error) {
+              reject(error);
+            }
+          }, index * 100);
+        }
       });
     });
     // Wait for all API calls to finish
@@ -497,7 +526,7 @@ app.post("/hotels", async (req, res) => {
     // Send response
     res.json({
       hotels: hotelsData,
-      hasNextPage: endIndex < hotels.data.result.length,
+      hasNextPage: endIndex < hotels.length,
     });
   } catch (error) {
     console.error(error);

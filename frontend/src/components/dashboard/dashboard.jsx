@@ -208,7 +208,8 @@ export const Dashboard = () => {
               <Carousel
                 showThumbs={false}
                 showStatus={false}
-                infiniteLoop={false}
+                infiniteLoop={true}
+                selectedItem={0}
                 interval={3000} // Adjust the interval as needed
                 emulateTouch={true}
                 swipeable={true}
@@ -362,7 +363,8 @@ export const Dashboard = () => {
               <Carousel
                 showThumbs={false}
                 showStatus={false}
-                infiniteLoop={false}
+                infiniteLoop={true}
+                selectedItem={0}
                 interval={3000}
                 emulateTouch={true}
                 swipeable={true}
@@ -510,7 +512,8 @@ export const Dashboard = () => {
               <Carousel
                 showThumbs={false}
                 showStatus={false}
-                infiniteLoop={false}
+                infiniteLoop={true}
+                selectedItem={0}
                 interval={3000} 
                 emulateTouch={true}
                 swipeable={true}

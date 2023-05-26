@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CircularProgress, ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image, HStack, useNumberInput } from '@chakra-ui/react';
+import { CircularProgress, ChakraProvider, Container, Box, Heading, Text, FormControl, FormLabel, Input, Select, Button as ChakraButton, Flex, Image, HStack, useNumberInput, IconButton } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton } from '@chakra-ui/react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../fonts.css';
 import dashBackground from '../../dashbkg.jpg';
 import cities from './cities';
-import { FaHeart } from 'react-icons/fa';
+import { FaHeart, FaSortAmountDownAlt } from 'react-icons/fa';
 import sustainabilityIcon from './planet-earth.png';
 
 export const Hotels = () => {
@@ -90,8 +90,6 @@ export const Hotels = () => {
 
     // Save hotel
     const handleSaveHotel = async (hotelId) => {
-        // console.log(hotelId);
-        // console.log(isHotelSaved(hotelId));
         if (!isHotelSaved(hotelId)) {
             // Update useState
             setSavedHotels([...savedHotels, hotelId]);
@@ -103,12 +101,10 @@ export const Hotels = () => {
         // Find hotel object
         const hotel = hotels.find((hotel) => hotel.hotel_id === hotelId);
         // Update database
-        // console.log(hotel);
         try {
             const response = await axios.post('http://localhost:4000/save-hotel', {
                 hotel, user
             });
-            // console.log(response.data);
             // Update localStorage
             if (response.data === "Hotel saved") {
                 user.savedHotels.push(hotel);
@@ -125,7 +121,6 @@ export const Hotels = () => {
     // Get hotels on form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // console.log(city, checkInDate, checkOutDate, numAdults, numRooms);
         setIsLoading(true);
         try {
             const response = await axios.post('http://localhost:4000/hotels', {
@@ -136,7 +131,6 @@ export const Hotels = () => {
                 numRooms,
                 page: 1 // Start on page 1 (First 4 hotels)
             });
-            // console.log(response.data);
             // Update useState
             setHotels(response.data.hotels);
             setHasNextPage(response.data.hasNextPage);
@@ -158,7 +152,6 @@ export const Hotels = () => {
                 numRooms,
                 page: Math.ceil(hotels.length / 4) + 1 // Calculate the next page based on the current number of hotels
             });
-            // console.log(response.data);
             // Update useState
             setHotels((prevHotels) => [...prevHotels, ...response.data.hotels]);
             setHasNextPage(response.data.hasNextPage);
@@ -292,6 +285,12 @@ export const Hotels = () => {
 
                 {/* Hotels Search Results */}
                 <Container className="hotel-results" maxWidth="6xl">
+                    <Box p="4" boxShadow="lg" rounded="md" bg="white" mb="4">
+                        <Heading textAlign="center">Search Results</Heading>
+                        <Text fontWeight="bold" textAlign="center">Sorted by Price: Lowest to Highest</Text>
+                    </Box>
+
+                                
                     {Object.keys(hotels).map((hotelId) => {
                         const hotel = hotels[hotelId];
                         const roundedPrice = hotel.min_total_price.toFixed(2);
