@@ -15,6 +15,7 @@ const cors = require("cors");
 const axios = require("axios");
 const { ObjectId } = require("mongodb");
 const suggRoutes = require("./sugg_routes.js");
+const fs = require("fs");
 
 // API files
 const cities = require("../frontend/src/components/hotels/cities");
@@ -52,8 +53,8 @@ var mongoStore = MongoStore.create({
 const hotelAPI = axios.create({
     baseURL: 'https://booking-com.p.rapidapi.com',
     headers: {
-        'X-RapidAPI-Key': 'ef202a40a1msh84d101d331ea111p199b57jsne3be98f83a9a',
-        'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
+      'X-RapidAPI-Key': '35dccabe2bmshe9e38a9634ad4ebp1c7bc7jsnbc3aa35675b0',
+      'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
     }
 });
 
@@ -365,8 +366,6 @@ app.post("/reset-password", async (req, res) => {
   // Send an email to the user with a link to reset their password
 
   const resetUrl = `http://localhost:3000/reset-password/${token}`;
-  const logoPath = "./navlogo.png";
-  const logoDataUrl = `cid:logo`;
 
   const mailOptions = {
     from: process.env.EMAIL_ADDRESS,
@@ -379,6 +378,15 @@ app.post("/reset-password", async (req, res) => {
 
       <!-- Email Content -->
       <p>
+        Hi ${user.firstName} ${user.lastName},
+      </p>
+      <br>
+      <p>
+        You are receiving this email because you (or someone else) has requested to reset the password for your PlanetPass account.
+        If it wasn't you, you can safely ignore this email.
+      </p>
+      <br>
+      <p>
         Please click the link below to reset your password:
       </p>
       <p>
@@ -386,7 +394,7 @@ app.post("/reset-password", async (req, res) => {
       </p>
       <br>
       <footer>
-        <a href="http://localhost:3000/privacy-policy">To read our Privacy Policy</a>
+        <a href="http://localhost:3000/privacy-policy">Read our Privacy Policy here</a>
         <br>
         <p>
           This app uses resources from <a href="https://example.com">Example</a> under the <a href="https://example.com/license">License</a>.
@@ -396,7 +404,7 @@ app.post("/reset-password", async (req, res) => {
     attachments: [
       {
         filename: "navlogo.png",
-        path: logoPath,
+        path: "./navlogo.png",
         cid: "logo",
       },
     ],
