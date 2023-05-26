@@ -364,17 +364,14 @@ export const Flights = () => {
                                     </Form.Control>
                                 </Form.Group>
                             </div>
-                            <ChakraButton type="submit" colorScheme="teal" w="100%">
+                            <ChakraButton id="submitBtn" type="submit" colorScheme="teal" w="100%">
                                 Search
                             </ChakraButton>
 
-                            {/* <Button colorScheme="teal" variant="primary" type="submit" style={{ width: '100%' }}>
-                                Submit
-                            </Button> */}
                             {errorMessage && (
-                                <p className="text-danger fw-bold" style={{ textAlign: 'left' }}>
-                                    {errorMessage}
-                                </p>
+                                <p id="errorMsg" className="text-danger fw-bold" style={{ textAlign: 'left' }}>
+                                {errorMessage}
+                            </p>
                             )}
                         </Form>
                     </Box>
@@ -405,7 +402,7 @@ export const Flights = () => {
                 {/* Filter option */}
                 {formSubmitted && (
                     <Flex justify="center" mt="4" mb="2">
-                        <Checkbox
+                        <Checkbox id="ecoFlightsCheckbox"
                             isChecked={showEcoFlights}
                             onChange={() => setShowEcoFlights(!showEcoFlights)}
                             style={{ borderColor: 'aliceblue', color: 'black' }}
@@ -416,7 +413,7 @@ export const Flights = () => {
                 )}
 
                 {/* Display Flight Results */}
-                <Container maxWidth="6xl">
+                <Container id="flightResults" maxWidth="6xl">
                     {Object.keys(flights)
                         .filter((key) => !showEcoFlights || flights[key].is_eco_contender)
                         .slice(0, displayResultsCount)
@@ -437,7 +434,7 @@ export const Flights = () => {
                                 {/* Eco flight information */}
                                 {flights[key].is_eco_contender && (
                                     <Box>
-                                        <Text align="left" fontWeight="bold" fontSize="lg" mb="0">
+                                        <Text id="ecoFlightTitle" align="left" fontWeight="bold" fontSize="lg" mb="0">
                                             <span style={{ color: 'green' }}>Eco Flight</span>
                                         </Text>
                                         <Text align="left">

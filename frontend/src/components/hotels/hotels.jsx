@@ -20,7 +20,6 @@ export const Hotels = () => {
     const [checkOutDate, setCheckOutDate] = useState('');
     const [numAdults, setNumAdults] = useState(1);
     const [numRooms, setNumRooms] = useState(1);
-
     // Increment/Decrement for adults
     const {
         getInputProps: getAdultsInputProps,
@@ -30,12 +29,11 @@ export const Hotels = () => {
         step: 1,
         defaultValue: 1,
         min: 1,
-        max: 29,
+        max: 10,
     });
     const adultsInput = getAdultsInputProps();
     const adultsInc = getAdultsIncProps();
     const adultsDec = getAdultsDecProps();
-
     // Increment/Decrement for rooms
     const {
         getInputProps: getRoomsInputProps,
@@ -45,7 +43,7 @@ export const Hotels = () => {
         step: 1,
         defaultValue: 1,
         min: 1,
-        max: 29,
+        max: 10,
     });
     const roomsInput = getRoomsInputProps();
     const roomsInc = getRoomsIncProps();
@@ -197,6 +195,7 @@ export const Hotels = () => {
                             <FormControl mt="4" isRequired>
                                 <FormLabel>City</FormLabel>
                                 <Select
+                                    id="city"
                                     value={city}
                                     onChange={(e) => setCity(e.target.value)}
                                     bg="white"
@@ -217,6 +216,7 @@ export const Hotels = () => {
                             <FormControl mt="4" isRequired>
                                 <FormLabel>Check-In Date</FormLabel>
                                 <Input
+                                name="checkInDate"
                                     type="date"
                                     value={checkInDate}
                                     onChange={(e) => setCheckInDate(e.target.value)}
@@ -233,6 +233,7 @@ export const Hotels = () => {
                             <FormControl mt="4" isRequired>
                                 <FormLabel>Check-Out Date</FormLabel>
                                 <Input
+                                name="checkOutDate"
                                     type="date"
                                     value={checkOutDate}
                                     onChange={(e) => setCheckOutDate(e.target.value)}
@@ -250,6 +251,7 @@ export const Hotels = () => {
                                 <HStack maxW='250px' className='m-auto'>
                                     <ChakraButton colorScheme="teal"{...adultsDec} >-</ChakraButton>
                                     <Input
+                            
                                         type="number"
                                         value={numAdults}
                                         onChange={(e) => setNumAdults(e.target.value)}
@@ -261,7 +263,7 @@ export const Hotels = () => {
                                         {...adultsInput}
                                         required
                                     />
-                                    <ChakraButton colorScheme="teal"{...adultsInc} >+</ChakraButton>
+                                    <ChakraButton id="increaseBtn" colorScheme="teal"{...adultsInc} >+</ChakraButton>
                                 </HStack>
                             </FormControl>
 
@@ -281,12 +283,12 @@ export const Hotels = () => {
                                         {...roomsInput}
                                         required
                                     />
-                                    <ChakraButton colorScheme="teal"{...roomsInc} >+</ChakraButton>
+                                    <ChakraButton id="increaseBtnRoom" colorScheme="teal"{...roomsInc} >+</ChakraButton>
                                 </HStack>
                             </FormControl>
 
                             <Flex justifyContent="center">
-                                <ChakraButton type="submit" colorScheme="teal" mt="4" w="50%">
+                                <ChakraButton id="submitButton" type="submit" colorScheme="teal" mt="4" w="50%">
                                     Search
                                 </ChakraButton>
                             </Flex>
