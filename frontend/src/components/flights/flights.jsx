@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Checkbox, Heading, Text, Flex, Radio, FormControl, FormLabel, Select, Input, Button as ChakraButton, CircularProgress} from '@chakra-ui/react';
+import { Box, Container, Checkbox, Heading, Text, Flex, Radio, FormControl, FormLabel, Select, Input, Button as ChakraButton, CircularProgress } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -11,7 +11,6 @@ import bkg3 from '../../bkg3.jpg';
 import landingPlane from './landing-airplane.png';
 import takeoffPlane from './takeoff-airplane.png';
 import { FaHeart } from 'react-icons/fa';
-
 
 
 // Format time
@@ -29,7 +28,6 @@ export function formatTime(timeString) {
 export function formatDuration(minutes) {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
-
     return `${hours}h ${remainingMinutes}m`;
 }
 
@@ -65,7 +63,6 @@ export const Flights = () => {
     const [showEcoFlights, setShowEcoFlights] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-
     // Easter Egg Animation
     const [isLeafAnimationEnabled, setLeafAnimationEnabled] = useState(false);
 
@@ -77,17 +74,17 @@ export const Flights = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        // Check is user is logged in
+        // Check if user is logged in
         if (localStorage.getItem('loggedIn') !== 'true') {
             navigate('/login');
         }
+
         // Save user from localStorage
         const userFromLocalStorage = JSON.parse(localStorage.getItem('user'));
         setUser(JSON.parse(localStorage.getItem('user')));
 
         // Get saved flights from localStorage
         if (userFromLocalStorage && userFromLocalStorage.savedFlights) {
-            // Get saved flights from localStorage
             const savedFlights = JSON.parse(localStorage.getItem('user')).savedFlights;
             const savedFlightIds = savedFlights.map((savedFlight) => savedFlights.id);
             setSavedFlights(savedFlightIds);
@@ -96,14 +93,11 @@ export const Flights = () => {
 
     // Check if flight is saved
     const isFlightSaved = (flightId) => {
-        //console.log("Flight id for saved:", flightId);
         return savedFlights.includes(flightId);
     };
 
     // Save flight
     const handleSaveFlight = async (flightId) => {
-        console.log(flightId);
-        console.log(isFlightSaved(flightId));
         if (!isFlightSaved(flightId)) {
             // Update useState
             setSavedFlights([...savedFlights, flightId]);
@@ -116,12 +110,10 @@ export const Flights = () => {
         // Find flight object
         const flight = flights.find((flight) => flight.id === flightId);
         // Update database
-        console.log(flight);
         try {
             const response = await axios.post('http://localhost:4000/save-flight', {
                 flight, user
             });
-            console.log(response.data);
 
             // Update localStorage
             if (response.data === "Flight saved") {
@@ -142,7 +134,6 @@ export const Flights = () => {
         // Check if Easter Egg is triggered
         if (e.target.value === 'Earth') {
             setLeafAnimationEnabled(true);
-            console.log(isLeafAnimationEnabled)
         } else {
             setLeafAnimationEnabled(false);
         }
@@ -159,13 +150,13 @@ export const Flights = () => {
             setHasNextPage(false);
             return
         }
-        console.log(originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass);
         try {
             await axios.post('http://localhost:4000/flights', {
                 originDisplayCode, destinationDisplayCode, departureDate, returnDate, tripType, adults, cabinClass
             }).then((res) => {
                 console.log(res.data);
                 if (res.data) {
+                    // Update useState
                     setFlights(res.data);
                     setHasNextPage(displayResultsCount < res.data.length);
                     setFormSubmitted(true);
@@ -190,7 +181,6 @@ export const Flights = () => {
         setHasNextPage(displayResultsCount < flights.length);
     }
 
-
     return (
         <ChakraProvider>
             <div
@@ -198,15 +188,14 @@ export const Flights = () => {
                 style={{
                     backgroundImage: `url(${bkg3})`,
                     backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center top 50px', // Move background down 50 pixels
+                    backgroundPosition: 'center top 50px',
                     backgroundAttachment: 'fixed',
                     backgroundSize: 'cover',
                     fontFamily: 'Questrial',
                     minHeight: '100vh',
                 }}
             >
-
-
+                {/* Find flight form */}
                 <Container maxWidth="xl">
                     <Box p="4" boxshadow="lg" rounded="md" bg="aliceblue" mb="4">
                         <Heading align="center">Flights</Heading>
@@ -215,6 +204,7 @@ export const Flights = () => {
                         </Text>
                         <Form className="text-center" onSubmit={handleSubmit}>
 
+                            {/* Origin field */}
                             <FormControl isRequired>
                                 <FormLabel>Origin</FormLabel>
                                 <Select
@@ -245,6 +235,7 @@ export const Flights = () => {
                                 </Select>
                             </FormControl>
 
+                            {/* Destination field */}
                             <FormControl mt="4" isRequired>
                                 <FormLabel>Destination</FormLabel>
                                 <Select
@@ -276,6 +267,7 @@ export const Flights = () => {
                                 </Select>
                             </FormControl>
 
+                            {/* Departure Date */}
                             <FormControl mt="4" isRequired>
                                 <FormLabel>Departure Date</FormLabel>
                                 <Input
@@ -288,11 +280,12 @@ export const Flights = () => {
                                     borderColor="gray.300"
                                     _focus={{ borderColor: 'blue.500', boxShadow: 'none' }}
                                     min={new Date().toISOString().split('T')[0]} // Set min date to today
-                                    max={departureDate} // Set max date to checkOutDate
+                                    max={departureDate}
                                     required
                                 />
                             </FormControl>
 
+                            {/* Trip Type */}
                             <div style={{ marginTop: '15px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <Radio
@@ -324,13 +317,14 @@ export const Flights = () => {
                                 </div>
                             </div>
 
+                            {/* Return Trip Date*/}
                             {tripType === 'roundTrip' && (
                                 <Form.Group controlId="formReturnDate" >
                                     <Form.Label>Return Date<span className="required-asterisk">  *</span></Form.Label>
                                     <Form.Control
                                         type="date"
                                         name="returnDate"
-                                        min={departureDate} // Set min date to checkInDate
+                                        min={departureDate}
                                         value={returnDate}
                                         onChange={(e) => setReturnDate(e.target.value)}
                                         required
@@ -338,6 +332,7 @@ export const Flights = () => {
                                 </Form.Group>
                             )}
 
+                            {/* Number of Adults */}
                             <div className="d-flex">
                                 <Form.Group controlId="formAdults" style={{ width: '48%', paddingTop: '10px' }}>
                                     <Form.Label>Number of Adults<span className="required-asterisk">  *</span></Form.Label>
@@ -352,6 +347,7 @@ export const Flights = () => {
                                     />
                                 </Form.Group>
 
+                                {/* Cabin Class */}
                                 <Form.Group controlId="formCabinClass" style={{ width: '48%', paddingTop: '10px', paddingBottom: '20px' }}>
                                     <Form.Label>Cabin Class<span className="required-asterisk">  *</span></Form.Label>
                                     <Form.Control
@@ -371,16 +367,17 @@ export const Flights = () => {
                                 Search
                             </ChakraButton>
 
+                            {/* Error message for server down and no flights */}
                             {errorMessage && (
                                 <p id="errorMsg" className="text-danger fw-bold" style={{ textAlign: 'left' }}>
-                                {errorMessage}
-                            </p>
+                                    {errorMessage}
+                                </p>
                             )}
                         </Form>
                     </Box>
                 </Container>
 
-
+                {/* Easter Egg Triggered*/}
                 {isLeafAnimationEnabled && (
                     <div>
                         <div className="paper-airplane falling"></div>
@@ -394,7 +391,7 @@ export const Flights = () => {
                     </div>
                 )}
 
-                {/* Sorted by price */}
+                {/* Sorted by price header */}
                 {flights.length > 0 && (
                     <Text align="center" mt="4" fontWeight="bold" fontSize="xl">
                         Sorted by price: lowest to highest
@@ -402,7 +399,7 @@ export const Flights = () => {
                 )}
 
 
-                {/* Filter option */}
+                {/* Ecoflight Filter */}
                 {formSubmitted && (
                     <Flex justify="center" mt="4" mb="2">
                         <Checkbox id="ecoFlightsCheckbox"
@@ -448,7 +445,7 @@ export const Flights = () => {
                                     </Box>
                                 )}
 
-                                {/* Iterate over legs and display departure times */}
+                                {/* Iterate over flight and display departure times */}
                                 {flights[key].legs.map((leg, index) => (
                                     <Box key={index}>
                                         <hr />
@@ -471,6 +468,7 @@ export const Flights = () => {
                                             {leg.stop_count > 0 &&
                                                 leg.stops.map((stop, index) => (
                                                     <g key={index}>
+
                                                         {/* Dot for stop */}
                                                         <circle cx={`${((index + 1) / (leg.stop_count + 1)) * 80 + 10}%`} cy="50%" r="4" fill="red" />
 
@@ -508,6 +506,7 @@ export const Flights = () => {
                         ))}
                 </Container>
 
+                {/* Load More Button */}
                 {hasNextPage && flights.length > displayResultsCount && (
                     <Flex justify="center" mt="4">
                         <ChakraButton onClick={loadMoreFlights} colorScheme="teal">
