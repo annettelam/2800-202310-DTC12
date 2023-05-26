@@ -322,7 +322,7 @@ app.post('/flights', async (req, res) => {
 
     // End timer
     console.timeEnd('flightSearch');
-    
+
     res.json(filteredResults);
   } catch (error) {
     console.error(error);
