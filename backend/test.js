@@ -44,7 +44,7 @@ async function automate() {
 async function normalUserLogin(driver) {
     try {
         // Open the login page
-        await driver.get('http://localhost:3000/login');
+        await driver.get('https://planetpass-sjfh.onrender.com/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -56,11 +56,11 @@ async function normalUserLogin(driver) {
         // Find and click the submit button
         const submitButton = await driver.findElement(By.id('submitBtn'));
         await submitButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(3000);
 
         // Verify the redirection
         const currentUrl = await driver.getCurrentUrl();
-        const expectedUrl = 'http://localhost:3000/profile';
+        const expectedUrl = 'https://planetpass-sjfh.onrender.com/profile';
         assert.equal(currentUrl, expectedUrl);
 
     } catch (error) {
@@ -71,7 +71,7 @@ async function normalUserLogin(driver) {
 async function specialCharacterLogin(driver) {
     try {
         // Open the login page
-        await driver.get('http://localhost:3000/login');
+        await driver.get('https://planetpass-sjfh.onrender.com/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -87,7 +87,7 @@ async function specialCharacterLogin(driver) {
 
         // Verify the redirection
         const currentUrl = await driver.getCurrentUrl();
-        const expectedUrl = 'http://localhost:3000/login';
+        const expectedUrl = 'https://planetpass-sjfh.onrender.com/login';
         assert.equal(currentUrl, expectedUrl);
 
     } catch (error) {
@@ -98,7 +98,7 @@ async function specialCharacterLogin(driver) {
 async function languageSpecificCharactersLogin(driver) {
     try {
         // Open the login page
-        await driver.get('http://localhost:3000/login');
+        await driver.get('https://planetpass-sjfh.onrender.com/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -114,7 +114,7 @@ async function languageSpecificCharactersLogin(driver) {
 
         // Verify the redirection
         const currentUrl = await driver.getCurrentUrl();
-        const expectedUrl = 'http://localhost:3000/login';
+        const expectedUrl = 'https://planetpass-sjfh.onrender.com/login';
         assert.equal(currentUrl, expectedUrl);
 
     } catch (error) {
@@ -124,7 +124,7 @@ async function languageSpecificCharactersLogin(driver) {
 
 async function invalidEmailLogin(driver) {
     try {
-        await driver.get('http://localhost:3000/login');
+        await driver.get('https://planetpass-sjfh.onrender.com/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -152,7 +152,7 @@ async function invalidEmailLogin(driver) {
 async function characterInNumberFieldFlying(driver) {
     try {
 
-        await driver.get('http://localhost:3000/login');
+        await driver.get('https://planetpass-sjfh.onrender.com/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -166,7 +166,7 @@ async function characterInNumberFieldFlying(driver) {
         await submitButton.click();
         await driver.sleep(1000);
 
-        await driver.get('http://localhost:3000/flights');
+        await driver.get('https://planetpass-sjfh.onrender.com/flights');
 
         // Fill out the form
         // Enter origin
@@ -222,7 +222,7 @@ async function characterInNumberFieldFlying(driver) {
 async function maxNumberOfAdultsFlying(driver) {
     try {
 
-        await driver.get('http://localhost:3000/login');
+        await driver.get('https://planetpass-sjfh.onrender.com/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -236,7 +236,7 @@ async function maxNumberOfAdultsFlying(driver) {
         await submitButton.click();
         await driver.sleep(1000);
 
-        await driver.get('http://localhost:3000/flights');
+        await driver.get('https://planetpass-sjfh.onrender.com/flights');
 
         // Fill out the form
         // Enter origin
@@ -290,7 +290,7 @@ async function maxNumberOfAdultsFlying(driver) {
 async function decimalNumberInputFlight(driver) {
     try {
 
-        await driver.get('http://localhost:3000/login');
+        await driver.get('https://planetpass-sjfh.onrender.com/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -304,7 +304,7 @@ async function decimalNumberInputFlight(driver) {
         await submitButton.click();
         await driver.sleep(1000);
 
-        await driver.get('http://localhost:3000/flights');
+        await driver.get('https://planetpass-sjfh.onrender.com/flights');
 
         // Fill out the form
         // Enter origin
@@ -358,7 +358,7 @@ async function decimalNumberInputFlight(driver) {
 async function negativeNumberInputFlight(driver) {
     try {
 
-        await driver.get('http://localhost:3000/login');
+        await driver.get('https://planetpass-sjfh.onrender.com/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -372,7 +372,7 @@ async function negativeNumberInputFlight(driver) {
         await submitButton.click();
         await driver.sleep(1000);
 
-        await driver.get('http://localhost:3000/flights');
+        await driver.get('https://planetpass-sjfh.onrender.com/flights');
 
         // Fill out the form
         // Enter origin
@@ -425,7 +425,7 @@ async function negativeNumberInputFlight(driver) {
 async function noFlightsFoundError(driver) {
     try {
 
-        await driver.get('http://localhost:3000/login');
+        await driver.get('https://planetpass-sjfh.onrender.com/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -439,7 +439,7 @@ async function noFlightsFoundError(driver) {
         await submitButton.click();
         await driver.sleep(1000);
 
-        await driver.get('http://localhost:3000/flights');
+        await driver.get('https://planetpass-sjfh.onrender.com/flights');
 
         // Fill out the form
         // Enter origin
@@ -494,7 +494,7 @@ async function noFlightsFoundError(driver) {
 async function maxNumberOfAdultsHotel(driver) {
     try {
 
-        await driver.get('http://localhost:3000/login');
+        await driver.get('https://planetpass-sjfh.onrender.com/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -508,7 +508,7 @@ async function maxNumberOfAdultsHotel(driver) {
         await submitButton.click();
         await driver.sleep(1000);
 
-        await driver.get('http://localhost:3000/hotels');
+        await driver.get('https://planetpass-sjfh.onrender.com/hotels');
 
         // Find the city select element
         const citySelect = await driver.wait(until.elementLocated(By.id('city')), 80000);
@@ -521,25 +521,25 @@ async function maxNumberOfAdultsHotel(driver) {
         const checkInDateInput = await driver.wait(until.elementLocated(By.name('checkInDate')), 5000);
         await checkInDateInput.click();
         await checkInDateInput.sendKeys(06);
-        await checkInDateInput.sendKeys(Key.TAB); 
-        await checkInDateInput.sendKeys(2023); 
-        await checkInDateInput.sendKeys(Key.TAB); 
-        await checkInDateInput.sendKeys(1101); 
+        await checkInDateInput.sendKeys(Key.TAB);
+        await checkInDateInput.sendKeys(2023);
+        await checkInDateInput.sendKeys(Key.TAB);
+        await checkInDateInput.sendKeys(1101);
         await driver.sleep(1000);
 
 
         // Find the check-out date input field
         const checkOutDateInput = await driver.wait(until.elementLocated(By.name('checkOutDate')), 5000);
-        await checkOutDateInput.sendKeys(06); 
-        await checkOutDateInput.sendKeys(Key.TAB); 
-        await checkOutDateInput.sendKeys(2023); 
-        await checkOutDateInput.sendKeys(Key.TAB); 
-        await checkOutDateInput.sendKeys(1105); 
+        await checkOutDateInput.sendKeys(06);
+        await checkOutDateInput.sendKeys(Key.TAB);
+        await checkOutDateInput.sendKeys(2023);
+        await checkOutDateInput.sendKeys(Key.TAB);
+        await checkOutDateInput.sendKeys(1105);
         await driver.sleep(1000);
 
         // Find the number of adults input field
         const numAdultsInput = await driver.wait(until.elementLocated(By.id('increaseBtn')), 5000);
-        const numClicks = 11; 
+        const numClicks = 11;
         for (let i = 0; i < numClicks; i++) {
             await numAdultsInput.click();
         }
@@ -562,7 +562,7 @@ async function maxNumberOfAdultsHotel(driver) {
 async function maxNumberOfRoomsHotel(driver) {
     try {
 
-        await driver.get('http://localhost:3000/login');
+        await driver.get('https://planetpass-sjfh.onrender.com/login');
 
         // Find email and password input fields and enter values
         const emailInput = await driver.findElement(By.name('email'));
@@ -576,7 +576,7 @@ async function maxNumberOfRoomsHotel(driver) {
         await submitButton.click();
         await driver.sleep(1000);
 
-        await driver.get('http://localhost:3000/hotels');
+        await driver.get('https://planetpass-sjfh.onrender.com/hotels');
 
         // Find the city select element
         const citySelect = await driver.wait(until.elementLocated(By.id('city')), 80000);
@@ -588,26 +588,26 @@ async function maxNumberOfRoomsHotel(driver) {
         // Find the check-in date input field
         const checkInDateInput = await driver.wait(until.elementLocated(By.name('checkInDate')), 5000);
         await checkInDateInput.click();
-        await checkInDateInput.sendKeys(06); 
-        await checkInDateInput.sendKeys(Key.TAB); 
+        await checkInDateInput.sendKeys(06);
+        await checkInDateInput.sendKeys(Key.TAB);
         await checkInDateInput.sendKeys(2023);
-        await checkInDateInput.sendKeys(Key.TAB); 
-        await checkInDateInput.sendKeys(1101); 
+        await checkInDateInput.sendKeys(Key.TAB);
+        await checkInDateInput.sendKeys(1101);
         await driver.sleep(1000);
 
 
         // Find the check-out date input field
         const checkOutDateInput = await driver.wait(until.elementLocated(By.name('checkOutDate')), 5000);
-        await checkOutDateInput.sendKeys(06); 
-        await checkOutDateInput.sendKeys(Key.TAB); 
-        await checkOutDateInput.sendKeys(2023); 
-        await checkOutDateInput.sendKeys(Key.TAB); 
-        await checkOutDateInput.sendKeys(1105); 
+        await checkOutDateInput.sendKeys(06);
+        await checkOutDateInput.sendKeys(Key.TAB);
+        await checkOutDateInput.sendKeys(2023);
+        await checkOutDateInput.sendKeys(Key.TAB);
+        await checkOutDateInput.sendKeys(1105);
         await driver.sleep(1000);
 
         // Find the number of rooms input field
         const numRoomInput = await driver.wait(until.elementLocated(By.id('increaseBtnRoom')), 5000);
-        const numberOfClicks = 12; 
+        const numberOfClicks = 12;
         for (let i = 0; i < numberOfClicks; i++) {
             await numRoomInput.click();
         }
@@ -615,7 +615,7 @@ async function maxNumberOfRoomsHotel(driver) {
         // Submit the form
         const submitButtons = await driver.findElement(By.id('submitButton'));
         await submitButtons.click();
-        await driver.sleep(1000);
+        await driver.sleep(3000);
 
         // Assertion: Verify that hotel results are displayed
         const hotelRoomResultsElement = await driver.findElement(By.className('hotel-results'));
